@@ -31,3 +31,29 @@
     transform: rotate(360deg);
   }
 }
+
+
+body {
+  width: 100%;
+}
+
+header {
+}
+
+footer {
+  background-color: #000;
+  margin-top: 1em;
+  color: #FFF;
+}
+
+.services {
+  margin: 1em;
+  display:grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-gap: 1em;
+}
+
+.service {
+  background-color: black;
+  color: #FFF;
+}
