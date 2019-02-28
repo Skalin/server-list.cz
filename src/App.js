@@ -6,6 +6,8 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Services from './Services/Services';
 import Servers from './Servers/Servers';
+import Server from './Servers/Server';
+
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class App extends Component {
@@ -19,7 +21,8 @@ class App extends Component {
                 <Services />
                 </React.Fragment>
             )} />
-            <Route path="/service/:id" component={Servers}/>
+            <Route exact path="/services/:id" component={Servers}/>
+            <Route path="/services/:id/servers/:id" component={Server}/>
             <Footer />
         </div>
         </Router>

@@ -6,11 +6,10 @@ class ServiceItem extends Component
 {
     state = {
         service: this.props.service,
-        url: "service/"+this.props.service.id
+        url: "services/"+this.props.service.id
     };
 
     render() {
-
         return (
             <Link to={this.state.url}>
             <div className="service">
