@@ -57,3 +57,11 @@ footer {
   background-color: black;
   color: #FFF;
 }
+
+a {
+  text-decoration: none;
+}
+
+a:hover .service {
+  background-color: #282c34;
+}

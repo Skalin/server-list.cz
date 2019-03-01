@@ -1,0 +1,1 @@
+export const apiUrl = 'http://localhost/serverlist-api/v1/';

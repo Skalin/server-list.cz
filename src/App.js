@@ -1,34 +1,30 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
-import Services from './Services/Services';
-import Servers from './Servers/Servers';
-import Server from './Servers/Server';
+import Service from './components/Service';
+import servers from './components/Servers';
+import { withCookies } from 'react-cookie';
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Switch, Route } from "react-router-dom";
+
 
 class App extends Component {
-  render() {
-    return (
-        <Router>
-        <div className="App">
-            <Header />
-            <Route exact path="/" render={props => (
-                <React.Fragment>
-                <Services />
-                </React.Fragment>
-            )} />
-            <Route exact path="/services/:id" component={Servers}/>
-            <Route path="/services/:id/servers/:id" component={Server}/>
-            <Footer />
-        </div>
-        </Router>
-
-    );
-  }
+    render() {
+        return (
+            <Switch>
+            <div className="App">
+                <Header />
+                <Route exact path="/" render={props => (
+                    <Service />
+                )} />
+                <Route path="/services/:id" component={servers} />
+                <Footer />
+            </div>
+            </Switch>
+        );
+    }
 }
 
-export default App;
+export default withCookies(App);
