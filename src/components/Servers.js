@@ -74,6 +74,7 @@ class Server extends Component
             .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}));
 
         this.setState({isLoggedIn: user.checkLogin()});
+        console.log(user.checkLogin());
     }
 
     render() {
