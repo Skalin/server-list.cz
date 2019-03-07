@@ -5,10 +5,14 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Service from './components/Service';
 import servers from './components/Servers';
-import { withCookies } from 'react-cookie';
+import Navigation from './components/Navigation';
 
 import { BrowserRouter as Switch, Route } from "react-router-dom";
+import {Auth} from "./components/Auth";
 
+import axios from 'axios';
+
+axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 
 class App extends Component {
     render() {
@@ -16,10 +20,13 @@ class App extends Component {
             <Switch>
             <div className="App">
                 <Header />
-                <Route exact path="/" render={props => (
-                    <Service />
-                )} />
-                <Route path="/services/:id" component={servers} />
+                <div className="content">
+                    <Route exact path="/" render={props => (
+                        <Service />
+                    )} />
+                    <Route path="/auth" component={Auth}/>
+                    <Route path="/services/:id" component={servers} />
+                </div>
                 <Footer />
             </div>
             </Switch>
@@ -27,4 +34,4 @@ class App extends Component {
     }
 }
 
-export default withCookies(App);
+export default App;

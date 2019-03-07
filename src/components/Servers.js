@@ -4,7 +4,7 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import * as user from '../api/User';
+import * as user from './User';
 
 
 const servers = (props) => (
@@ -64,6 +64,7 @@ class Server extends Component
             match: this.props.match,
             server: null,
             isLoggedIn: false,
+            isOwner: false,
         };
         this.ApiUrl = normalizeUrl(config.apiUrl+this.state.match.url);
     }
@@ -71,10 +72,10 @@ class Server extends Component
 
     componentDidMount() {
         axios.get(this.ApiUrl)
-            .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}));
+            .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}))
+            .then((res) => this.setState({isLoggedIn: user.checkLogin()}))
+            .then((res) => this.state.isLoggedIn ? this.setState({isOwner: user.isOwner(this.state.server.id)}) : '');
 
-        this.setState({isLoggedIn: user.checkLogin()});
-        console.log(user.checkLogin());
     }
 
     render() {

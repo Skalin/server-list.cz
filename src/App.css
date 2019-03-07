@@ -65,3 +65,30 @@ a {
 a:hover .service {
   background-color: #282c34;
 }
+
+.content {
+  display: inline-grid;
+  max-width: 80%;
+}
+.auth {
+  justify-items: center;
+}
+
+.auth__buttons {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 1em;
+}
+
+.auth__buttons .btn {
+  margin: 1em;
+  cursor: pointer;
+}
+
+.auth__form {
+}
+
+.form__input--group label{
+  float: left;
+  word-wrap: break-word;
+}
