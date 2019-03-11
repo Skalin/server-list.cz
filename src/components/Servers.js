@@ -39,9 +39,9 @@ class Servers extends Component
                 <h2>Servers</h2>
                     {
                     this.state.servers.map((server) => (
-                        <div key={server.id}>
+                        <div key={server.id} className="server">
                             <Link to={this.props.match.url+"/servers/"+server.id}>
-                                <div className="service">
+                                <div>
                                     <h2>Server {server.name}</h2>
                                 </div>
                             </Link>
@@ -91,7 +91,7 @@ class Server extends Component
         else
         {
             return (
-                    <div className="server">
+                    <div className="content">
                         <h1>{server.name}</h1>
                         <h3>{server.ip}:{server.port}</h3>
                         <p>

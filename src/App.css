@@ -46,15 +46,25 @@ footer {
   color: #FFF;
 }
 
+
+.servers {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 1em;
+}
+
 .services {
-  margin: 1em;
+  margin: 0 auto;
   display:grid;
   grid-template-columns: 25% 25% 25% 25%;
   grid-gap: 1em;
 }
 
 .service {
+  display: inline-block;
+  padding: 2em;
   background-color: black;
+  white-space: nowrap;
   color: #FFF;
 }
 
@@ -91,4 +101,36 @@ a:hover .service {
 .form__input--group label{
   float: left;
   word-wrap: break-word;
+}
+
+/** media queries */
+
+@media only screen and (max-width: 750px){
+
+  .services {
+    margin: 1em;
+    display:grid;
+    grid-template-columns: 100%;
+    grid-gap: 1em;
+  }
+
+  .service {
+    margin: 0 auto;
+    padding: 10%;
+    background-color: black;
+    color: #FFF;
+  }
+
+
+}
+@media only screen and (max-width: 950px){
+
+  .servers {
+    display: grid;
+    grid-template-columns: 100%;
+    margin-right: 2em;
+  }
+  .server {
+    display: block;
+  }
 }

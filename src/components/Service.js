@@ -26,10 +26,11 @@ class Service extends Component
             <div className="wrapper">
                 <h2>Services</h2>
                 <div className="services">
-                {
-                    this.state.services.map((service) => (
-                        <ServiceItem key={service.id} service={service}/>
-                    ))
+                    {
+                        this.state.services.map((service) => (
+                            <ServiceItem key={service.id} service={service}/>
+                        ))
+                    }
                 }
                 </div>
             </div>

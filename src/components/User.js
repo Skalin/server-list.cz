@@ -6,9 +6,6 @@ import {apiUserUrl} from "../config/config";
 import normalizeUrl from "normalize-url";
 
 export const checkExpiration = ( user ) => {
-    console.log(user);
-    console.log("user: "+user.expiration);
-    console.log("sys: "+new Date().getTime() / 1000);
     return (user.expiration >= new Date().getTime() / 1000);
 };
 
@@ -54,26 +51,18 @@ const storeToken = ( token ) => {
 
 export const isOwner = ( server ) => {
 
-    try
-    {
-        if (!checkLogin())
-        {
-            return false;
-        }
-
-        let url = normalizeUrl(apiUserUrl+'/server/'+server);
-
-        axios.get(url)
-            .then(res => console.log(res));
-
-
-    }
-
-    catch (e)
+    if (!checkLogin())
     {
         return false;
     }
-    return true;
+    let user = getUser();
+
+    let url = normalizeUrl(apiUserUrl+'/server/'+server);
+    var state = false;
+    axios.post(url, {"login_token": user.token})
+        .then(res => state = res.data);
+
+    return state;
 
 };
 

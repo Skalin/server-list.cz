@@ -76,10 +76,7 @@ class Login extends Component
 
     submitForm(e)
     {
-
-        console.log(this.state);
         user.login(this.state.user);
-
     }
 
     render()
@@ -99,7 +96,7 @@ class Login extends Component
                         <input type="password" onChange={this.onChange.bind(this)} name="password" />
                     </label>
                 </div>
-                <button type="button" className="btn" onClick={this.submitForm.bind(this)}>Sign in</button>
+                <button type="submit" className="btn" onClick={this.submitForm.bind(this)}>Sign in</button>
             </div>
         )
     }
