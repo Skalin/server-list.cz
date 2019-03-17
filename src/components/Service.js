@@ -31,7 +31,6 @@ class Service extends Component
                             <ServiceItem key={service.id} service={service}/>
                         ))
                     }
-                }
                 </div>
             </div>
         );
@@ -42,9 +41,12 @@ class Service extends Component
 class ServiceItem extends Component
 {
     state = {
-        service: this.props.service,
+        service: null,
         url: "services/"+this.props.service.id
     };
+    componentWillMount() {
+        this.setState({service: this.props.service})
+    }
 
     render() {
         return (

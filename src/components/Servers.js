@@ -4,7 +4,9 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import * as user from './User';
+import { Container, Row, Col, Card } from 'react-bootstrap'
+import {Context} from "./User";
+import Holder from 'react-holder'
 
 
 const servers = (props) => (
@@ -35,20 +37,36 @@ class Servers extends Component
 
     render() {
         return (
-            <div className="servers">
-                <h2>Servers</h2>
-                    {
-                    this.state.servers.map((server) => (
-                        <div key={server.id} className="server">
-                            <Link to={this.props.match.url+"/servers/"+server.id}>
-                                <div>
-                                    <h2>Server {server.name}</h2>
-                                </div>
-                            </Link>
-                        </div>
-                    ))
+            <Context.Consumer>
+                {
+                    content => {
+                        const {user, logIn, logOut} = content;
+                        return (
+                            <Container>
+                                <h1>Servers</h1>
+                                    <Row>
+                                    {
+                                        this.state.servers.map((server) => (
+                                            <Col xs={12} lg={6} key={server.id}>
+                                                <Link to={this.props.match.url+"/servers/"+server.id}>
+                                                    <Card style={{border: 'none'}}>
+                                                        <Card.Img variant="top" />
+                                                        <Card.Body>
+                                                            <Card.Title>{server.name}</Card.Title>
+                                                            <Card.Text>{server.description}</Card.Text>
+                                                        </Card.Body>
+                                                    </Card>
+                                                </Link>
+                                            </Col>
+                                        ))
+                                    }
+                                    </Row>
+                            </Container>
+                        )
                     }
-            </div>
+
+                }
+            </Context.Consumer>
         );
     }
 }
@@ -73,8 +91,6 @@ class Server extends Component
     componentDidMount() {
         axios.get(this.ApiUrl)
             .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}))
-            .then((res) => this.setState({isLoggedIn: user.checkLogin()}))
-            .then((res) => this.state.isLoggedIn ? this.setState({isOwner: user.isOwner(this.state.server.id)}) : '');
 
     }
 
@@ -91,13 +107,16 @@ class Server extends Component
         else
         {
             return (
-                    <div className="content">
-                        <h1>{server.name}</h1>
-                        <h3>{server.ip}:{server.port}</h3>
-                        <p>
-
-                        </p>
-                    </div>
+                    <Container>
+                        <Row>
+                            <Col xs={12}>
+                                <h1>{server.name}</h1>
+                                <h3>{server.ip}:{server.port}</h3>
+                                <p>{server.description}
+                                </p>
+                            </Col>
+                        </Row>
+                    </Container>
             );
         }
     }

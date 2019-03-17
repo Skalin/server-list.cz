@@ -1,11 +1,10 @@
 import React from 'react';
+import {Navigation} from "./Navigation";
 
 function Header()
 {
     return (
-        <header>
-            <h1>Server-list.cz</h1>
-        </header>
+        <Navigation/>
     )
 }
 export default Header;
