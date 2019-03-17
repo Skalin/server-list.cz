@@ -4,7 +4,7 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import { Container, Row, Col, Card } from 'react-bootstrap'
+import { Container, Row, Col, Card, Button } from 'react-bootstrap'
 import {Context} from "./User";
 import Holder from 'react-holder'
 
@@ -25,6 +25,8 @@ class Servers extends Component
         super(props);
         this.ApiUrl = normalizeUrl(config.apiUrl+"/"+this.props.match.url+"/servers");
         this.state = {
+            error: null,
+            isLoaded: false,
             service: this.props.match.params.id,
             servers: [],
         };
@@ -32,7 +34,7 @@ class Servers extends Component
 
     componentDidMount() {
         axios.get(this.ApiUrl)
-            .then(res => this.setState({servers: res.data}))
+            .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
     }
 
     render() {
@@ -40,29 +42,43 @@ class Servers extends Component
             <Context.Consumer>
                 {
                     content => {
-                        const {user, logIn, logOut} = content;
-                        return (
-                            <Container>
-                                <h1>Servers</h1>
+                        const { error, isLoaded, servers } = this.state;
+                        const { user, logIn, logOut } = content;
+
+                        if (error)
+                        {
+                            return <Container>Error: {error.message}</Container>;
+                        }
+                        else if (!isLoaded)
+                        {
+                            return <Container>Loading...</Container>;
+                        }
+                        else {
+                            return (
+                                <Container>
+                                    <h1>Servers</h1>
                                     <Row>
-                                    {
-                                        this.state.servers.map((server) => (
-                                            <Col xs={12} lg={6} key={server.id}>
-                                                <Link to={this.props.match.url+"/servers/"+server.id}>
-                                                    <Card style={{border: 'none'}}>
-                                                        <Card.Img variant="top" src={server.image_url}/>
-                                                        <Card.Body>
-                                                            <Card.Title>{server.name}</Card.Title>
-                                                            <Card.Text>{server.description}</Card.Text>
-                                                        </Card.Body>
-                                                    </Card>
-                                                </Link>
-                                            </Col>
-                                        ))
-                                    }
+                                        {
+                                            servers.map((server) => (
+                                                <Col xs={12} lg={6} key={server.id}>
+                                                    <Link to={this.props.match.url + "/servers/" + server.id}>
+                                                        <Card style={{border: 'none'}}>
+                                                            <Card.Img variant="top" src={server.image_url} width="64px"
+                                                                      height="64px"/>
+                                                            <Card.Body>
+                                                                <Card.Title>{server.name}</Card.Title>
+                                                                <Card.Text>{server.description}</Card.Text>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </Link>
+                                                </Col>
+                                            ))
+                                        }
+                                        <Button>Load more</Button>
                                     </Row>
-                            </Container>
-                        )
+                                </Container>
+                            )
+                        }
                     }
 
                 }
