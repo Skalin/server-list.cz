@@ -50,7 +50,7 @@ class Servers extends Component
                                             <Col xs={12} lg={6} key={server.id}>
                                                 <Link to={this.props.match.url+"/servers/"+server.id}>
                                                     <Card style={{border: 'none'}}>
-                                                        <Card.Img variant="top" />
+                                                        <Card.Img variant="top" src={server.image_url}/>
                                                         <Card.Body>
                                                             <Card.Title>{server.name}</Card.Title>
                                                             <Card.Text>{server.description}</Card.Text>
