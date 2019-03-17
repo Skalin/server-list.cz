@@ -25,8 +25,10 @@ class Servers extends Component
         super(props);
         this.ApiUrl = normalizeUrl(config.apiUrl+"/"+this.props.match.url+"/servers");
         this.state = {
+            page: 1,
             error: null,
             isLoaded: false,
+            loading: false,
             service: this.props.match.params.id,
             servers: [],
         };
@@ -35,6 +37,19 @@ class Servers extends Component
     componentDidMount() {
         axios.get(this.ApiUrl)
             .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
+    }
+
+    loadServers()
+    {
+        if (!this.state.loading)
+        {
+            this.setState({loading: true});
+            this.state.page = this.state.page+1;
+            console.log(this.state.page);
+            axios.get(this.ApiUrl+'?page='+this.state.page)
+                .then((res) => this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]}), (error) => this.setState({isLoaded: true, error}))
+                .then((res) => this.setState({loading: false}))
+        }
     }
 
     render() {
@@ -74,7 +89,7 @@ class Servers extends Component
                                                 </Col>
                                             ))
                                         }
-                                        <Button>Load more</Button>
+                                        <Button variant={"primary"} xs={6} md={4} onClick={this.loadServers.bind(this)} disabled={this.state.loading} block>Load more</Button>
                                     </Row>
                                 </Container>
                             )

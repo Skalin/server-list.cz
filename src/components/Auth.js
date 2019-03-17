@@ -36,10 +36,10 @@ export class Auth extends Component
                 <div className="auth">
                     <div className="auth__buttons">
                         <Button onClick={this.switchBox.bind(this, signIn)}>
-                            Sign in
+                            Log in
                         </Button>
                         <Button onClick={this.switchBox.bind(this, signUp)}>
-                            Sign up
+                            Register
                         </Button>
                     </div>
                 </div>
