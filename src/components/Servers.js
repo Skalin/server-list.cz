@@ -87,7 +87,11 @@ class Servers extends Component
                                                 </Col>
                                             ))
                                         }
-                                        <Button variant={"primary"} xs={6} md={4} onClick={this.loadServers.bind(this)} disabled={this.state.loading} block>Load more</Button>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={{span: 4, offset: 4}}>
+                                            <Button variant={"primary"} size={"lg"} onClick={this.loadServers.bind(this)} disabled={this.state.loading} active={!this.state.loading} block style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
+                                        </Col>
                                     </Row>
                                 </Container>
                             )
