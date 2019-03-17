@@ -4,7 +4,7 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap'
 import {Context} from "./User";
 import Holder from 'react-holder'
 
@@ -77,9 +77,8 @@ class Servers extends Component
                                                 <Col xs={12} lg={6} key={server.id}>
                                                     <Link to={this.props.match.url + "/servers/" + server.id}>
                                                         <Card style={{border: 'none'}}>
-                                                            <Card.Img variant="top" src={server.image_url} width="64px"
-                                                                      height="64px"/>
                                                             <Card.Body>
+                                                                <Image src={server.image_url} fluid style={{float: 'left'}}/>
                                                                 <Card.Title>{server.name}</Card.Title>
                                                                 <Card.Text>{server.description}</Card.Text>
                                                             </Card.Body>
