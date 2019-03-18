@@ -28,7 +28,7 @@ class App extends Component {
                                 <Service />
                             )} />
                             <Route path="/auth" component={Auth}/>
-                            <Route path="/services/:id" component={servers} />
+                            <Route path="/services/:shortcut" component={servers} />
                         </div>
                         <Footer />
                     </div>

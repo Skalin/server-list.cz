@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
+import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography } from '@material-ui/core/'
 import * as config from "../config/config";
 import normalizeUrl from "normalize-url";
 import {Link} from "react-router-dom";
@@ -23,16 +24,16 @@ class Service extends Component
 
     render() {
         return (
-            <div className="wrapper">
+            <Grid>
                 <h2>Services</h2>
-                <div className="services">
+                <Grid container spacing={16}>
                     {
                         this.state.services.map((service) => (
                             <ServiceItem key={service.id} service={service}/>
                         ))
                     }
-                </div>
-            </div>
+                </Grid>
+            </Grid>
         );
     }
 }
@@ -50,11 +51,17 @@ class ServiceItem extends Component
 
     render() {
         return (
-            <Link to={this.state.url}>
-                <div className="service">
-                    <h2>{this.state.service.name}</h2>
-                </div>
-            </Link>
+            <Grid item xs={6} lg={3}>
+                <Link to={this.state.url}>
+                    <Card>
+                        <CardContent>
+                            <Typography component={"h5"}>
+                                {this.state.service.name}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Link>
+            </Grid>
         )
     }
 }

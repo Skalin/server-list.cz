@@ -4,10 +4,25 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap'
+import { Badge } from 'react-bootstrap';
+import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography } from '@material-ui/core/'
 import {Context} from "./User";
-import Holder from 'react-holder'
 
+const renderPlayersBadge = (server) => {
+
+    if (server.players !== null && server.maxPlayers !== null) {
+        return (
+            <Badge variant={"information"}>{server.players}/{server.maxPlayers}</Badge>
+        )
+    }
+};
+
+const renderStatusBadge = (server) => {
+
+    return (
+        <Badge variant={server.status ? "success" : "danger"}>{server.status ? "Online" : "Offline"}</Badge>
+    );
+}
 
 const servers = (props) => (
     <Switch>
@@ -56,44 +71,53 @@ class Servers extends Component
             <Context.Consumer>
                 {
                     content => {
+                        console.log(content);
                         const { error, isLoaded, servers } = this.state;
                         const { user, logIn, logOut } = content;
 
                         if (error)
                         {
-                            return <Container>Error: {error.message}</Container>;
+                            return <Grid>Error: {error.message}</Grid>;
                         }
                         else if (!isLoaded)
                         {
-                            return <Container>Loading...</Container>;
+                            return <Grid>Loading...</Grid>;
                         }
                         else {
                             return (
-                                <Container>
+                                <Grid>
                                     <h1>Servers</h1>
-                                    <Row>
-                                        {
-                                            servers.map((server) => (
-                                                <Col xs={12} lg={6} key={server.id}>
-                                                    <Link to={this.props.match.url + "/servers/" + server.id}>
-                                                        <Card style={{border: 'none'}}>
-                                                            <Card.Body>
-                                                                <Image src={server.image_url} fluid style={{float: 'left'}}/>
-                                                                <Card.Title>{server.name}</Card.Title>
-                                                                <Card.Text>{server.description}</Card.Text>
-                                                            </Card.Body>
-                                                        </Card>
-                                                    </Link>
-                                                </Col>
-                                            ))
-                                        }
-                                    </Row>
-                                    <Row>
-                                        <Col xs={{span: 4, offset: 4}}>
-                                            <Button variant={"primary"} size={"lg"} onClick={this.loadServers.bind(this)} disabled={this.state.loading} active={!this.state.loading} block style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
-                                        </Col>
-                                    </Row>
-                                </Container>
+                                    <Grid container spacing={16}>
+                                            {
+                                                servers.map((server) => (
+                                                    <Grid item xs={12} lg={6} key={server.id}>
+                                                        <Link to={this.props.match.url + "/servers/" + server.id}>
+                                                                <Card>
+                                                                    {console.log(server)}
+                                                                    <CardMedia image={server.image_url} title={server.name}/>
+                                                                    <CardContent>
+                                                                    <Typography component={"h5"}>
+                                                                        {server.name}
+                                                                    </Typography>
+                                                                    {
+                                                                        renderStatusBadge(server)
+                                                                    }
+                                                                    {
+                                                                        renderPlayersBadge(server)
+                                                                    }
+                                                                    <Typography>{server.description}</Typography>
+                                                                    </CardContent>
+                                                                </Card>
+                                                        </Link>
+                                                    </Grid>
+                                                ))
+                                            }
+                                    </Grid>
+
+                                    <div>
+                                        <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.loading} style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
+                                    </div>
+                                </Grid>
                             )
                         }
                     }
@@ -140,19 +164,18 @@ class Server extends Component
         else
         {
             return (
-                    <Container>
-                        <Row>
-                            <Col xs={12}>
-                                <h1>{server.name}</h1>
-                                <h3>{server.ip}:{server.port}</h3>
-                                <p>{server.description}
-                                </p>
-                            </Col>
-                        </Row>
-                    </Container>
+                    <Paper>
+                        <Grid xs={12}>
+                            <h1>{server.name}</h1>
+                            <h3>{server.ip}:{server.port}</h3>
+                            <p>{server.description}
+                            </p>
+                        </Grid>
+                    </Paper>
             );
         }
     }
 }
+
 
 export default servers;
