@@ -4,15 +4,20 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import { Badge } from 'react-bootstrap';
-import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography } from '@material-ui/core/'
+import { Badge as BootstrapBadge } from 'react-bootstrap';
+import { SupervisorAccount } from '@material-ui/icons';
+import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Badge as MaterialBadge } from '@material-ui/core/'
+
+
 import {Context} from "./User";
 
 const renderPlayersBadge = (server) => {
 
     if (server.players !== null && server.maxPlayers !== null) {
         return (
-            <Badge variant={"information"}>{server.players}/{server.maxPlayers}</Badge>
+            <MaterialBadge badgeContent={server.players+"/"+server.maxPlayers}>
+                <SupervisorAccount />
+            </MaterialBadge>
         )
     }
 };
@@ -20,7 +25,7 @@ const renderPlayersBadge = (server) => {
 const renderStatusBadge = (server) => {
 
     return (
-        <Badge variant={server.status ? "success" : "danger"}>{server.status ? "Online" : "Offline"}</Badge>
+        <BootstrapBadge variant={server.status ? "success" : "danger"}>{server.status ? "Online" : "Offline"}</BootstrapBadge>
     );
 }
 
@@ -66,12 +71,22 @@ class Servers extends Component
         }
     }
 
+    renderBackgroundCardImage(server)
+    {
+        if (server.imageUrl)
+        {
+            return (
+
+                <CardMedia image={server.imageUrl} title={server.name}/>
+            );
+        }
+    }
+
     render() {
         return (
             <Context.Consumer>
                 {
                     content => {
-                        console.log(content);
                         const { error, isLoaded, servers } = this.state;
                         const { user, logIn, logOut } = content;
 
@@ -93,8 +108,9 @@ class Servers extends Component
                                                     <Grid item xs={12} lg={6} key={server.id}>
                                                         <Link to={this.props.match.url + "/servers/" + server.id}>
                                                                 <Card>
-                                                                    {console.log(server)}
-                                                                    <CardMedia image={server.image_url} title={server.name}/>
+                                                                    {
+                                                                        this.renderBackgroundCardImage(server)
+                                                                    }
                                                                     <CardContent>
                                                                     <Typography component={"h5"}>
                                                                         {server.name}
