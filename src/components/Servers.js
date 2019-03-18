@@ -4,9 +4,8 @@ import axios from 'axios';
 import normalizeUrl from "normalize-url";
 import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
-import { Badge as BootstrapBadge } from 'react-bootstrap';
 import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Badge as MaterialBadge } from '@material-ui/core/'
+import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
 
 
 import {Context} from "./User";
@@ -15,9 +14,9 @@ const renderPlayersBadge = (server) => {
 
     if (server.players !== null && server.maxPlayers !== null) {
         return (
-            <MaterialBadge badgeContent={server.players+"/"+server.maxPlayers}>
+            <Chip clickable={false} label={server.players+"/"+server.maxPlayers}>
                 <SupervisorAccount />
-            </MaterialBadge>
+            </Chip>
         )
     }
 };
@@ -25,7 +24,7 @@ const renderPlayersBadge = (server) => {
 const renderStatusBadge = (server) => {
 
     return (
-        <BootstrapBadge variant={server.status ? "success" : "danger"}>{server.status ? "Online" : "Offline"}</BootstrapBadge>
+        <Chip clickable={false} color={server.status ? "primary" : "secondary"} label={server.status ? "Online" : "Offline"}/>
     );
 }
 
