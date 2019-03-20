@@ -70,7 +70,7 @@ class Servers extends Component
         }
     }
 
-    renderBackgroundCardImage(server)
+    renderBackgroundCardImage( server )
     {
         if (server.imageUrl)
         {
