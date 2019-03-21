@@ -44,10 +44,10 @@ class Servers extends Component
         super(props);
         this.ApiUrl = normalizeUrl(config.apiUrl+"/"+this.props.match.url+"/servers");
         this.state = {
-            page: 1,
+            page: 2,
             error: null,
             isLoaded: false,
-            loading: false,
+            isLoading: false,
             service: this.props.match.params.id,
             servers: [],
         };
@@ -60,13 +60,13 @@ class Servers extends Component
 
     loadServers()
     {
-        if (!this.state.loading)
+        if (!this.state.isLoading)
         {
-            this.setState({loading: true});
-            this.state.page = this.state.page+1;
+            this.setState({isLoading: true});
+            this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
                 .then((res) => this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]}), (error) => this.setState({isLoaded: true, error}))
-                .then((res) => this.setState({loading: false}))
+                .then((res) => this.setState({isLoading: false}))
         }
     }
 
@@ -130,7 +130,7 @@ class Servers extends Component
                                     </Grid>
 
                                     <div>
-                                        <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.loading} style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
+                                        <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.isLoading} style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
                                     </div>
                                 </Grid>
                             )
