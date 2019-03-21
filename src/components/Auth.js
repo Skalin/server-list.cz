@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
-import FormGroup from "react-bootstrap/FormGroup";
-import Button from "react-bootstrap/Button";
+import { FormControl, FormControlLabel, FormGroup, Grid, Button } from "@material-ui/core";
 
 const signUp = 1;
 const signIn = 2;
@@ -23,31 +22,51 @@ export class Auth extends Component
 
     }
 
-    renderButtonValue()
+    renderForm()
     {
-        if (this.state.isLoginOpen) return 'Sign in';
-        if (this.state.isRegisterOpen) return 'Sign up';
+        let data = null;
+        if (this.state.isLoginOpen)
+            data = <Login/>;
+
+        if (this.state.isRegisterOpen)
+            data = <Register/>;
+
+        return(
+            data
+        )
+    }
+
+    renderButtons()
+    {
+        let data =
+            <Grid container spacing={16} style={{marginTop: "3em", marginBottom: "3em"}}>
+                <Grid item>
+                    <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>
+                        Přihlásit se
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button variant={"contained"} size={"large"} color={"secondary"} onClick={this.switchBox.bind(this, signUp)}>
+                        Registrovat
+                    </Button>
+                </Grid>
+            </Grid>;
+
+        return(
+            data
+        )
     }
 
     render()
     {
         return(
             <React.Fragment>
-                <div className="auth">
-                    <div className="auth__buttons">
-                        <Button onClick={this.switchBox.bind(this, signIn)}>
-                            Log in
-                        </Button>
-                        <Button onClick={this.switchBox.bind(this, signUp)}>
-                            Register
-                        </Button>
-                    </div>
-                </div>
-
-                <Form>
-                    {this.state.isLoginOpen && <Login/>}
-                    {this.state.isRegisterOpen && <Register/>}
-                </Form>
+                <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
+                    <Grid>
+                        {this.renderButtons()}
+                        {this.renderForm()}
+                    </Grid>
+                </Grid>
             </React.Fragment>
         );
     }
@@ -98,7 +117,7 @@ class Login extends Component
                         <Form.Control type="password" onChange={this.onChange.bind(this)} name="password" />
                     </Form.Label>
                 </FormGroup>
-                <Button type="submit" onClick={this.submitForm.bind(this)}>Sign in</Button>
+                <Button variant={"contained"} color={"primary"} type="submit" onClick={this.submitForm.bind(this)} style={{marginTop: "2em"}}>Sign in</Button>
             </div>
         )
     }
@@ -142,7 +161,7 @@ class Register extends Component
                         <Form.Control type="password" name="Confirm password" />
                     </Form.Label>
                 </FormGroup>
-                <Button type="button" className="btn" onClick={this.submitForm.bind(this)}>Sign up</Button>
+                <Button variant={"contained"} color={"secondary"} type="button" onClick={this.submitForm.bind(this)}>Sign up</Button>
             </div>
         )
     }

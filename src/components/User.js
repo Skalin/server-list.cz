@@ -42,8 +42,9 @@ export class Provider extends Component
 
     login = ( user ) => {
 
-        if (!this.checkLogin())
+        if (!this.checkLogin() && user)
         {
+            console.log(user);
             let loginUrl = normalizeUrl(apiUserUrl + '/login');
             axios.post(loginUrl, {user})
                 .then(res => this.storeToken(res.data));

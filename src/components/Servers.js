@@ -62,6 +62,7 @@ class Servers extends Component
     {
         if (!this.state.isLoading)
         {
+            console.log(this.state.page);
             this.setState({isLoading: true});
             this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
