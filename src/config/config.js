@@ -1,4 +1,4 @@
 
-export const apiUrl = 'http://api.server-list.cz/v1/';
+export const apiUrl = 'http://localhost/server-list.cz-api/v1/';
 
-export const apiUserUrl = apiUrl+'/user';
+export const apiUserUrl = apiUrl+'user';

@@ -8,7 +8,7 @@ import { SupervisorAccount } from '@material-ui/icons';
 import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
 
 
-import {Context} from "./User";
+import {UserContext} from "./User";
 
 const renderPlayersBadge = (server) => {
 
@@ -26,7 +26,7 @@ const renderStatusBadge = (server) => {
     return (
         <Chip clickable={false} color={server.status ? "primary" : "secondary"} label={server.status ? "Online" : "Offline"}/>
     );
-}
+};
 
 const servers = (props) => (
     <Switch>
@@ -84,7 +84,7 @@ class Servers extends Component
 
     render() {
         return (
-            <Context.Consumer>
+            <UserContext.Consumer>
                 {
                     content => {
                         const { error, isLoaded, servers } = this.state;
@@ -139,7 +139,7 @@ class Servers extends Component
                     }
 
                 }
-            </Context.Consumer>
+            </UserContext.Consumer>
         );
     }
 }

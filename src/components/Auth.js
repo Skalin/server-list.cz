@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
-import { FormControl, FormControlLabel, FormGroup, Grid, Button } from "@material-ui/core";
+import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import * as config from '../config/config.js';
+import jwt from 'jsonwebtoken';
 
 const signUp = 1;
 const signIn = 2;
@@ -87,38 +89,33 @@ class Login extends Component
         };
     }
 
-    onChange(e)
+    onChange(formData)
     {
         var user = {...this.state.user};
-        var property = e.target.name;
-        user[property] = e.target.value;
+        var property = formData.target.name;
+        user[property] = formData.target.value;
         this.setState({user})
     }
 
-    submitForm(e)
+    submitForm(formData)
     {
-        //user.login(this.state.user);
+        console.log(this.state.user);
+       // user.login(this.state.user);
     }
 
     render()
     {
         return(
-            <div>
+            <form>
                 <h1>Login</h1>
                 <FormGroup>
-                    <Form.Label>
-                        Username
-                    <Form.Control type="text" name="username" onChange={this.onChange.bind(this)} />
-                </Form.Label>
+                    <TextField autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
                 </FormGroup>
                 <FormGroup>
-                    <Form.Label>
-                        Password
-                        <Form.Control type="password" onChange={this.onChange.bind(this)} name="password" />
-                    </Form.Label>
+                        <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
                 </FormGroup>
-                <Button variant={"contained"} color={"primary"} type="submit" onClick={this.submitForm.bind(this)} style={{marginTop: "2em"}}>Sign in</Button>
-            </div>
+                <Button variant={"contained"} color={"primary"} type="button" onClick={this.submitForm.bind(this)} style={{marginTop: "2em"}}>Sign in</Button>
+            </form>
         )
     }
 }
@@ -129,40 +126,73 @@ class Register extends Component
     constructor(props)
     {
         super(props);
-        this.state = { errors: [] };
+        this.state = {
+            user: {
+                username: null,
+                password: null,
+                name: null,
+                surname: null,
+                tos_agreement: 0,
+
+            },
+            errors: [],
+        };
     }
 
-    submitForm(e)
+    onChange(formData)
     {
-        axios.post()
+        var user = {...this.state.user};
+        var property = formData.target.name;
+        user[property] = formData.target.value;
+        this.setState({user});
+        console.log(user);
+    }
+
+    submitForm()
+    {
+        //this.setState({user: {...this.state.user, confirmPassword: null}});
+        /*
+        axios.post(config.apiUserUrl+'/register', this.state.user)
+            .then((res) => localStorage.setItem("jwtToken", res));*/
+        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiRG9taW5payIsInN1cm5hbWUiOiJTa1x1MDBlMWxhIiwiaXNzIjoiaHR0cDpcL1wvYXBpLnNlcnZlci1saXN0LmN6IiwiYXVkIjoiaHR0cDpcL1wvc2VydmVyLWxpc3QuY3oiLCJpYXQiOiIxNTUzMTk5OTk4IiwicXVlcnlOYW1lc3BhY2UiOiJhcHBcXGNvbXBvbmVudHNcXHF1ZXJpZXMiLCJtYXhpbXVtVGltZW91dHMiOjZ9.pAIsxHX8SV_eUmrbENuCpUCSCB3T1MU9ekDE0TSqCoE";
+        let decoded = jwt.decode(token);
+        console.log(decoded.expiration);
 
     }
 
     render()
     {
         return(
-            <div>
+            <form>
                 <h1>Registration</h1>
                 <FormGroup>
-                    <Form.Label>
-                        Username
-                        <Form.Control type="text" name="username" />
-                    </Form.Label>
+                    <TextField label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <Form.Label>
-                        Password
-                        <Form.Control type="password" name="Password" />
-                    </Form.Label>
-                </FormGroup >
-                <FormGroup>
-                    <Form.Label>
-                        Confirm password
-                        <Form.Control type="password" name="Confirm password" />
-                    </Form.Label>
+                    <TextField label={"Password"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
-                <Button variant={"contained"} color={"secondary"} type="button" onClick={this.submitForm.bind(this)}>Sign up</Button>
-            </div>
+                <FormGroup>
+                    <TextField label={"Name"} type="text" name="name" onChange={this.onChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                    <TextField label={"Surname"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={this.state.tos}
+                                onChange={this.onChange.bind(this)}
+                                value={1}
+                                name="tos_agreement"
+                                color="primary"
+                            />
+                        }
+                        label="ToS Agreement"
+                    />
+                </FormGroup>
+                <Button variant={"contained"} color={"secondary"} type="button" onClick={this.submitForm.bind(this)}  style={{marginTop: "2em"}}>Sign up</Button>
+            </form>
         )
     }
 }

@@ -7,9 +7,9 @@ import normalizeUrl from "normalize-url";
 import React, { Component } from 'react';
 
 
-export const Context = React.createContext();
+export const UserContext = React.createContext();
 
-export class Provider extends Component
+export class UserProvider extends Component
 {
     constructor(props)
     {
@@ -108,14 +108,14 @@ export class Provider extends Component
     render()
     {
         return (
-            <Context.Provider value={{
+            <UserContext.Provider value={{
                 user: this.state,
                 actions: {
                     loginUser: this.login()
                 }
             }}>
                 {this.props.children}
-            </Context.Provider>
+            </UserContext.Provider>
         )
     }
 
