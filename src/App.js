@@ -5,7 +5,7 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Service from './components/Service';
 import servers from './components/Servers';
-import { UserContext, UserProvider } from './components/User';
+import { UserProvider } from './components/User';
 
 import { BrowserRouter as Switch, Route } from "react-router-dom";
 import {Auth} from "./components/Auth";
@@ -18,8 +18,8 @@ axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 class App extends Component {
     render() {
         return (
-            <UserProvider>
                 <Switch>
+                    <UserProvider>
                     <div className="App">
                         <Header />
                         <div className="content">
@@ -31,8 +31,8 @@ class App extends Component {
                         </div>
                         <Footer />
                     </div>
+                    </UserProvider>
                 </Switch>
-            </UserProvider>
         );
     }
 }

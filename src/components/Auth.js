@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component, useContext} from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import * as config from '../config/config.js';
-import jwt from 'jsonwebtoken';
+import {UserContext} from "./User";
 
 const signUp = 1;
 const signIn = 2;
@@ -123,6 +123,8 @@ class Login extends Component
 class Register extends Component
 {
 
+    static contextType = UserContext;
+
     constructor(props)
     {
         super(props);
@@ -150,13 +152,9 @@ class Register extends Component
 
     submitForm()
     {
-        //this.setState({user: {...this.state.user, confirmPassword: null}});
-        /*
+
         axios.post(config.apiUserUrl+'/register', this.state.user)
-            .then((res) => localStorage.setItem("jwtToken", res));*/
-        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiRG9taW5payIsInN1cm5hbWUiOiJTa1x1MDBlMWxhIiwiaXNzIjoiaHR0cDpcL1wvYXBpLnNlcnZlci1saXN0LmN6IiwiYXVkIjoiaHR0cDpcL1wvc2VydmVyLWxpc3QuY3oiLCJpYXQiOiIxNTUzMTk5OTk4IiwicXVlcnlOYW1lc3BhY2UiOiJhcHBcXGNvbXBvbmVudHNcXHF1ZXJpZXMiLCJtYXhpbXVtVGltZW91dHMiOjZ9.pAIsxHX8SV_eUmrbENuCpUCSCB3T1MU9ekDE0TSqCoE";
-        let decoded = jwt.decode(token);
-        console.log(decoded.expiration);
+            .then((res) => this.context.user.storeToken(res.data), (res) => console.log(res));
 
     }
 

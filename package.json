@@ -16,7 +16,7 @@
     "react-dom": "^16.8.3",
     "react-holder": "^1.0.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.5",
+    "react-scripts": "^2.1.8",
     "react-vis": "^1.11.6",
     "typescript": "^3.3.3333"
   },

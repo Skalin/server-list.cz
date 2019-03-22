@@ -5,6 +5,7 @@ import * as config from "../config/config";
 import {apiUserUrl} from "../config/config";
 import normalizeUrl from "normalize-url";
 import React, { Component } from 'react';
+import jwt from 'jsonwebtoken';
 
 
 export const UserContext = React.createContext();
@@ -15,7 +16,16 @@ export class UserProvider extends Component
     {
         super(props);
         this.state = {
-            user: this.getUser()
+            user: {
+                    account: this.getUser(),
+                    actions: {
+                        checkExpiration: this.checkExpiration,
+                        checkLogin: this.checkLogin,
+                        isOwner: this.isOwner,
+                        login: this.login,
+                        storeToken: this.storeToken,
+                    }
+                }
         }
     }
 
@@ -55,12 +65,12 @@ export class UserProvider extends Component
 
 
     getUser = () => {
-        return JSON.parse(localStorage.getItem('user'));
+        return jwt.decode(localStorage.getItem('user'));
     };
 
 
     storeToken = ( token ) => {
-        token.expiration = new Date(token.expiration).getTime() / 1000;
+        token.expiration = new Date(jwt.decode(token).expiration).getTime() / 1000;
         localStorage.setItem('user', JSON.stringify(token));
     };
 
@@ -73,9 +83,9 @@ export class UserProvider extends Component
         let user = this.getUser();
 
         let url = normalizeUrl(apiUserUrl+'/server/'+server);
-        var state = false;
+        let state = false;
         axios.post(url, {"login_token": user.token})
-            .then(res => state = res.data);
+            .then((res) => state = res.data);
 
         return state;
 
@@ -109,10 +119,7 @@ export class UserProvider extends Component
     {
         return (
             <UserContext.Provider value={{
-                user: this.state,
-                actions: {
-                    loginUser: this.login()
-                }
+                user: this.state.user,
             }}>
                 {this.props.children}
             </UserContext.Provider>
