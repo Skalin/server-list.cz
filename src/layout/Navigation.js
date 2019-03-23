@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link, Route, Router} from 'react-router-dom'
-import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress} from "@material-ui/core";
+import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
@@ -81,7 +81,12 @@ class Navigation extends Component
                 </Toolbar>
             </AppBar>
             <Drawer open={this.state.isOpened} onClose={this.toggleDrawer.bind(this)}>
+                <Divider />
                 <List>
+                    <ListItem>
+                        <Typography variant={"h4"}>Services</Typography>
+                    </ListItem>
+                    <Divider/>
                     {
                         this.state.services.map((service) => (
                             <ListItem key={service.id}>
