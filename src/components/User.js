@@ -18,7 +18,10 @@ export class UserProvider extends Component
         this.state = {
             loader: false,
             user: {
-                    account: this.getUser(),
+                    account: {
+                        name: null,
+                        surname: null,
+                    },
                     actions: {
                         checkExpiration: this.checkExpiration,
                         checkLogin: this.checkLogin,
@@ -30,6 +33,10 @@ export class UserProvider extends Component
                     }
                 }
         }
+    }
+
+    componentDidMount() {
+        this.setState({user: { ...this.state.user, account: this.getUser()}})
     }
 
     checkExpiration = ( date ) => {
@@ -63,11 +70,12 @@ export class UserProvider extends Component
         {
             console.log(user);
             let loginUrl = normalizeUrl(apiUserUrl + '/login');
-            axios.post(loginUrl, {user})
-                .then(res => this.storeToken(res.data));
+            axios.post(loginUrl, {user: user})
+                .then(res => this.storeToken(res.data))
+                .then(res => {
+                    this.setState({user: { ...this.state.user, account: this.getUser()}})
+                });
         }
-
-        return true;
     };
 
 
@@ -78,12 +86,15 @@ export class UserProvider extends Component
     register = (user) => {
         axios.post(config.apiUserUrl+'/register', {user: user})
             .then((res) => this.storeToken(res.data), (res) => console.log(res));
+
+        return this.checkLogin();
+
     };
 
     storeToken = ( token ) => {
         let decodedToken = jwt.decode(token);
 
-        if (this.checkExpiration(decodedToken.exp))
+        if (this.checkExpiration(decodedToken.exp) && this.checkIat(decodedToken.iat))
         {
             localStorage.setItem('user', token);
             return true;
@@ -119,10 +130,9 @@ export class UserProvider extends Component
         if (!user)
             return false;
 
-        if (!this.checkExpiration(user.exp))
-            return false;
+        console.log(this.state.user);
 
-        if (!this.checkIat(user.iat))
+        if (!this.checkExpiration(user.exp) || !this.checkIat(user.iat))
             return false;
 
         return true;

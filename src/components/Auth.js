@@ -27,16 +27,26 @@ export class Auth extends Component
 
     renderForm()
     {
-        let data = null;
-        if (this.state.isLoginOpen)
-            data = <Login/>;
+        if (!this.context.user.actions.checkLogin())
+        {
 
-        if (this.state.isRegisterOpen)
-            data = <Register/>;
+            let data = null;
+            if (this.state.isLoginOpen)
+                data = <Login/>;
 
-        return(
-            data
-        )
+            if (this.state.isRegisterOpen)
+                data = <Register/>;
+
+            return(
+                data
+            )
+        }
+        else
+        {
+            return  (
+                <Redirect to={"/account"}/>
+            );
+        }
     }
 
     renderButtons()
@@ -78,6 +88,8 @@ export class Auth extends Component
 
 class Login extends Component
 {
+    static contextType = UserContext;
+
     constructor(props)
     {
         super(props);
@@ -87,6 +99,7 @@ class Login extends Component
                     username: null,
                     password: null
                 },
+            loggedIn: false,
             errors: []
         };
     }
@@ -99,25 +112,35 @@ class Login extends Component
         this.setState({user})
     }
 
-    submitForm(formData)
+    submitForm()
     {
-        console.log(this.state.user);
-       // user.login(this.state.user);
+        if (this.context.user.actions.login(this.state.user))
+        {
+            this.setState({loggedIn: true});
+            console.log(this.state);
+        }
     }
 
-    render()
+    renderForm()
     {
-        return(
+        return (
             <form>
                 <h1>Login</h1>
                 <FormGroup>
                     <TextField autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
                 </FormGroup>
                 <FormGroup>
-                        <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
+                    <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
                 </FormGroup>
                 <Button variant={"contained"} color={"primary"} type="button" onClick={this.submitForm.bind(this)} style={{marginTop: "2em"}}>Sign in</Button>
             </form>
+        )
+    }
+
+    render()
+    {
+        return(
+            this.state.loggedIn ? <Redirect to={"/account"}/> : this.renderForm()
         )
     }
 }
@@ -140,6 +163,7 @@ class Register extends Component
                 tos_agreement: "0",
 
             },
+            loggedIn: false,
             errors: [],
         };
     }
@@ -150,17 +174,18 @@ class Register extends Component
         var property = formData.target.name;
         user[property] = formData.target.value;
         this.setState({user});
-        console.log(user);
     }
 
     submitForm()
     {
-        this.context.user.actions.register(this.state.user);
+        if (this.context.user.actions.register(this.state.user))
+            this.setState({loggedIn: true});
+
     }
 
-    render()
+    renderForm()
     {
-        return(
+        return (
             <form>
                 <h1>Registration</h1>
                 <FormGroup>
@@ -194,6 +219,13 @@ class Register extends Component
                 </FormGroup>
                 <Button variant={"contained"} color={"secondary"} type="button" onClick={this.submitForm.bind(this)}  style={{marginTop: "2em"}}>Sign up</Button>
             </form>
+        );
+    }
+
+    render()
+    {
+        return(
+            this.state.loggedIn ? <Redirect to={"/account"}/> : this.renderForm()
         )
     }
 }
