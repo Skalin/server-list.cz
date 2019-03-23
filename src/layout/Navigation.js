@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
+import {UserContext} from "../components/User";
 
 const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 // TODO add printing name in navigation bar, store info in tokens, get info about user for server
 class Navigation extends Component
 {
+
+    static contextType = UserContext;
+
 
     constructor(props)
     {
@@ -36,9 +40,12 @@ class Navigation extends Component
                     <Typography>
                         Server-list.cz
                     </Typography>
-                    <Button component={Link} color={"inherit"} to={"/auth"}>
-                        Login
-                    </Button>
+                    {
+                        this.context.user.actions.checkLogin() ? this.context.user.account.name :
+                            <Button component={Link} color={"inherit"} to={"/auth"}>
+                                LOGIN
+                            </Button>
+                    }
                 </Toolbar>
             </AppBar>
             <Drawer open={this.state.isOpened} onClose={this.toggleDrawer.bind(this)}>

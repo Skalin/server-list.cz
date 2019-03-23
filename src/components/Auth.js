@@ -1,15 +1,16 @@
-import React, {Component, useContext} from 'react';
-import axios from 'axios';
-import Form from 'react-bootstrap/Form';
+import React, {Component} from 'react';
 import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
-import * as config from '../config/config.js';
-import {UserContext} from "./User";
+import { UserContext } from "./User";
+import { Redirect } from "react-router-dom";
 
 const signUp = 1;
 const signIn = 2;
 
 export class Auth extends Component
 {
+
+    static contextType = UserContext;
+
     constructor(props)
     {
         super(props);
@@ -63,12 +64,13 @@ export class Auth extends Component
     {
         return(
             <React.Fragment>
-                <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
-                    <Grid>
-                        {this.renderButtons()}
-                        {this.renderForm()}
-                    </Grid>
-                </Grid>
+                {this.context.user.actions.checkLogin() ? <Redirect to={"/"} /> :
+                    <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
+                        <Grid>
+                            {this.renderButtons()}
+                            {this.renderForm()}
+                        </Grid>
+                    </Grid>}
             </React.Fragment>
         );
     }
@@ -134,7 +136,8 @@ class Register extends Component
                 password: null,
                 name: null,
                 surname: null,
-                tos_agreement: 0,
+                mail: null,
+                tos_agreement: "0",
 
             },
             errors: [],
@@ -152,10 +155,7 @@ class Register extends Component
 
     submitForm()
     {
-
-        axios.post(config.apiUserUrl+'/register', this.state.user)
-            .then((res) => this.context.user.storeToken(res.data), (res) => console.log(res));
-
+        this.context.user.actions.register(this.state.user);
     }
 
     render()
@@ -176,12 +176,15 @@ class Register extends Component
                     <TextField label={"Surname"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
+                    <TextField label={"E-mail"} type="text" name="mail" onChange={this.onChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
                     <FormControlLabel
                         control={
                             <Checkbox
                                 checked={this.state.tos}
                                 onChange={this.onChange.bind(this)}
-                                value={1}
+                                value={"1"}
                                 name="tos_agreement"
                                 color="primary"
                             />

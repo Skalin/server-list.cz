@@ -24,13 +24,16 @@ export class UserProvider extends Component
                         isOwner: this.isOwner,
                         login: this.login,
                         storeToken: this.storeToken,
+                        register: this.register,
+                        getUser: this.getUser,
                     }
                 }
         }
     }
 
-    checkExpiration = ( user ) => {
-        return (user.expiration >= new Date().getTime() / 1000);
+    checkExpiration = ( date ) => {
+
+        return (new Date(date).getTime() / 1000 >= new Date().getTime() / 1000);
     };
 
 
@@ -68,10 +71,20 @@ export class UserProvider extends Component
         return jwt.decode(localStorage.getItem('user'));
     };
 
+    register = (user) => {
+        axios.post(config.apiUserUrl+'/register', {user: user})
+            .then((res) => this.storeToken(res.data), (res) => console.log(res));
+    };
 
     storeToken = ( token ) => {
-        token.expiration = new Date(jwt.decode(token).expiration).getTime() / 1000;
-        localStorage.setItem('user', JSON.stringify(token));
+        let decodedToken = jwt.decode(token);
+
+        if (this.checkExpiration(decodedToken.exp))
+        {
+            localStorage.setItem('user', token);
+            return true;
+        }
+        return false;
     };
 
     isOwner = ( server ) => {
@@ -102,8 +115,10 @@ export class UserProvider extends Component
         if (!user)
             return false;
 
-        return this.checkExpiration(user);
+        if (!this.checkExpiration(user.exp))
+            return false;
 
+        return true;
     };
 
     getAttribute = ( attribute ) => {

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Navigation from "./Navigation";
 
-function Header()
+class Header extends Component
 {
-    return (
-        <Navigation/>
-    )
+
+    render () {
+        return(
+            <Navigation/>
+        )
+    }
 }
 export default Header;
