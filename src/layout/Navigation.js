@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
 
 const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -28,6 +29,17 @@ class Navigation extends Component
          })
     }
 
+    printUserSection()
+    {
+        return (
+            this.context.user.actions.checkLogin() ?
+                <Typography>{this.context.user.account.name} <AccountCircleOutlinedIcon style={{color: "white"}} /></Typography> :
+            <Button component={Link} color={"inherit"} to={"/auth"}>
+                LOGIN
+            </Button>
+        );
+    }
+
     render()
     {
         return (
@@ -41,10 +53,7 @@ class Navigation extends Component
                         Server-list.cz
                     </Typography>
                     {
-                        this.context.user.actions.checkLogin() ? this.context.user.account.name :
-                            <Button component={Link} color={"inherit"} to={"/auth"}>
-                                LOGIN
-                            </Button>
+                        this.printUserSection()
                     }
                 </Toolbar>
             </AppBar>
