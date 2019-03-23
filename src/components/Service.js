@@ -6,7 +6,7 @@ import * as config from "../config/config";
 import normalizeUrl from "normalize-url";
 import {Link} from "react-router-dom";
 
-class Service extends Component
+class Services extends Component
 {
     constructor(props)
     {
@@ -66,4 +66,4 @@ class ServiceItem extends Component
     }
 }
 
-export default Service;
+export default Services;

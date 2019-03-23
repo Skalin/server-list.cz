@@ -1,5 +1,5 @@
 
-import {BrowserRouter as Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import axios from "axios";
 import * as config from "../config/config";
 import {apiUserUrl} from "../config/config";
@@ -16,6 +16,7 @@ export class UserProvider extends Component
     {
         super(props);
         this.state = {
+            loader: false,
             user: {
                     account: this.getUser(),
                     actions: {
@@ -32,8 +33,11 @@ export class UserProvider extends Component
     }
 
     checkExpiration = ( date ) => {
-
         return (new Date(date).getTime() / 1000 >= new Date().getTime() / 1000);
+    };
+
+    checkIat = ( date ) => {
+        return (new Date(date).getTime() / 1000 <= new Date().getTime() / 1000);
     };
 
 
@@ -48,7 +52,7 @@ export class UserProvider extends Component
 
     };
 
-    reauthenticate = ( user ) => {
+    regenerateToken = ( user ) => {
 
     };
 
@@ -116,6 +120,9 @@ export class UserProvider extends Component
             return false;
 
         if (!this.checkExpiration(user.exp))
+            return false;
+
+        if (!this.checkIat(user.iat))
             return false;
 
         return true;

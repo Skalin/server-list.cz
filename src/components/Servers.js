@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
 import normalizeUrl from "normalize-url";
-import {BrowserRouter as Switch, Link, Route} from "react-router-dom";
+import {Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
 import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
+import {withRouter} from "react-router-dom";
 
 
 import {UserContext} from "./User";
@@ -30,10 +31,8 @@ const renderStatusBadge = (server) => {
 
 const servers = (props) => (
     <Switch>
-        <div>
-            <Route exact path={props.match.url} component={Servers} />
-            <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
-        </div>
+        <Route exact path={props.match.url} component={withRouter(Servers)} />
+        <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
     </Switch>
 );
 
@@ -62,7 +61,6 @@ class Servers extends Component
     {
         if (!this.state.isLoading)
         {
-            console.log(this.state.page);
             this.setState({isLoading: true});
             this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
@@ -181,7 +179,7 @@ class Server extends Component
         {
             return (
                     <Paper>
-                        <Grid xs={12}>
+                        <Grid>
                             <h1>{server.name}</h1>
                             <h3>{server.ip}:{server.port}</h3>
                             <p>{server.description}
