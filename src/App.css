@@ -33,17 +33,4 @@
 }
 
 
-body {
-  width: 100%;
-}
-
-header {
-}
-
-footer {
-  background-color: #000;
-  margin-top: 1em;
-  color: #FFF;
-}
-
 /** media queries */

@@ -70,7 +70,7 @@ class Navigation extends Component
                     <IconButton color={"inherit"} aria-label="Menu" onClick={this.toggleDrawer.bind(this)}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography>
+                    <Typography styles={{flexGrow: 1}}>
                         <Link to={"/"}>
                         Server-list.cz
                         </Link>

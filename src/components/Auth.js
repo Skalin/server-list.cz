@@ -112,8 +112,9 @@ class Login extends Component
         this.setState({user})
     }
 
-    submitForm()
+    submitForm(e)
     {
+        e.preventDefault();
         if (this.context.user.actions.login(this.state.user))
         {
             this.setState({loggedIn: true});
@@ -123,7 +124,7 @@ class Login extends Component
     renderForm()
     {
         return (
-            <form>
+            <form onSubmit={this.submitForm.bind(this)} >
                 <h1>Login</h1>
                 <FormGroup>
                     <TextField autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
@@ -131,7 +132,7 @@ class Login extends Component
                 <FormGroup>
                     <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
                 </FormGroup>
-                <Button variant={"contained"} color={"primary"} type="button" onClick={this.submitForm.bind(this)} style={{marginTop: "2em"}}>Sign in</Button>
+                <Button variant={"contained"} color={"primary"} type="submit" style={{marginTop: "2em"}}>Sign in</Button>
             </form>
         )
     }
@@ -175,8 +176,9 @@ class Register extends Component
         this.setState({user});
     }
 
-    submitForm()
+    submitForm(e)
     {
+        e.preventDefault();
         if (this.context.user.actions.register(this.state.user))
             this.setState({loggedIn: true});
 
@@ -185,7 +187,7 @@ class Register extends Component
     renderForm()
     {
         return (
-            <form>
+            <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Registration</h1>
                 <FormGroup>
                     <TextField label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
@@ -216,7 +218,7 @@ class Register extends Component
                         label="ToS Agreement"
                     />
                 </FormGroup>
-                <Button variant={"contained"} color={"secondary"} type="button" onClick={this.submitForm.bind(this)}  style={{marginTop: "2em"}}>Sign up</Button>
+                <Button variant={"contained"} color={"secondary"} type="submit" style={{marginTop: "2em"}}>Sign up</Button>
             </form>
         );
     }
