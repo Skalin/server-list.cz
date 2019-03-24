@@ -6,6 +6,7 @@ import Footer from './layout/Footer';
 import Services from './components/Service';
 import servers from './components/Servers';
 import { UserProvider } from './components/User';
+import ReactGA from 'react-ga';
 
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Auth} from "./components/Auth";
@@ -15,8 +16,13 @@ import Account from "./components/Account";
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 
+function initializeReactGA() {
+    ReactGA.initialize('UA-136848512-1');
+    ReactGA.pageview('/');
+}
 
 class App extends Component {
+
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return true;
