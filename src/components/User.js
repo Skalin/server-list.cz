@@ -68,7 +68,6 @@ export class UserProvider extends Component
 
         if (!this.checkLogin() && user)
         {
-            console.log(user);
             let loginUrl = normalizeUrl(apiUserUrl + '/login');
             axios.post(loginUrl, {user: user})
                 .then(res => this.storeToken(res.data))
@@ -129,8 +128,6 @@ export class UserProvider extends Component
         let user = this.getUser();
         if (!user)
             return false;
-
-        console.log(this.state.user);
 
         if (!this.checkExpiration(user.exp) || !this.checkIat(user.iat))
             return false;
