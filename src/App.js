@@ -16,10 +16,8 @@ import Account from "./components/Account";
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 
-function initializeReactGA() {
-    ReactGA.initialize('UA-136848512-1');
-    ReactGA.pageview('/');
-}
+ReactGA.initialize('UA-136848512-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 class App extends Component {
 
