@@ -3,11 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
+import * as config from './config/config.js';
+
+import { ReactTitle } from 'react-meta-tags';
+
 
 ReactDOM.render(
+    <>
+        <ReactTitle title={config.pageName} />
         <App/>
+    </>
 
     , document.getElementById('root'));
 

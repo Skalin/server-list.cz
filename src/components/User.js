@@ -127,13 +127,39 @@ export class UserProvider extends Component
         // get login status (from token that was stored in cookies, if cookies are empty, user is not logged in, thus returning false
         let user = this.getUser();
         if (!user)
+        {
             return false;
+        }
 
         if (!this.checkExpiration(user.exp) || !this.checkIat(user.iat))
+        {
+            this.removeToken();
             return false;
+        }
 
         return true;
     };
+
+
+    logout()
+    {
+        let user = this.getUser();
+        if (!user)
+            return false;
+
+        if (!this.checkLogin())
+            return false;
+
+        axios.post(config.apiUserUrl, )
+
+        this.removeToken()
+    }
+
+
+    removeToken()
+    {
+        localStorage.removeItem('user');
+    }
 
     getAttribute = ( attribute ) => {
         let user = this.getUser();

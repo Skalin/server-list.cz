@@ -7,15 +7,16 @@ import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
 import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
+import { ReactTitle } from 'react-meta-tags';
 
 
 import {UserContext} from "./User";
 
 const renderPlayersBadge = (server) => {
 
-    if (server.players !== null && server.maxPlayers !== null) {
+    if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
         return (
-            <Chip clickable={false} label={server.players+"/"+server.maxPlayers}>
+            <Chip clickable={false} label={server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue}>
                 <SupervisorAccount />
             </Chip>
         )
@@ -25,7 +26,7 @@ const renderPlayersBadge = (server) => {
 const renderStatusBadge = (server) => {
 
     return (
-        <Chip clickable={false} color={server.status ? "primary" : "secondary"} label={server.status ? "Online" : "Offline"}/>
+        <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
     );
 };
 
@@ -41,18 +42,25 @@ class Servers extends Component
     constructor(props)
     {
         super(props);
-        this.ApiUrl = normalizeUrl(config.apiUrl+"/"+this.props.match.url+"/servers");
+        this.url = normalizeUrl(config.apiUrl+"/"+this.props.match.url);
+        this.ApiUrl = normalizeUrl(this.url+"/servers");
         this.state = {
             page: 2,
             error: null,
             isLoaded: false,
             isLoading: false,
             service: this.props.match.params.id,
+            serviceObject: null,
             servers: [],
         };
     }
 
     componentDidMount() {
+
+        axios.get(this.url)
+            .then((res) => {this.setState({serviceObject: res.data}); console.log(res.data)});
+
+
         axios.get(this.ApiUrl)
             .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
     }
@@ -80,12 +88,32 @@ class Servers extends Component
         }
     }
 
+    generateSeoTitle()
+    {
+        if (this.state.serviceObject)
+        {
+            return (<ReactTitle title={this.state.serviceObject.name + " servers" + config.titlePageName}/>)
+        }
+    }
+
+    renderStats( server )
+    {
+
+        let data =
+            <>
+                {renderStatusBadge(server)}
+                {renderPlayersBadge(server)}
+            </>;
+        return(data)
+    }
+
     render() {
         return (
             <UserContext.Consumer>
                 {
                     content => {
                         const { error, isLoaded, servers } = this.state;
+                        this.generateSeoTitle();
                         const { user, logIn, logOut } = content;
 
                         if (error)
@@ -101,31 +129,26 @@ class Servers extends Component
                                 <Grid>
                                     <h1>Servers</h1>
                                     <Grid container spacing={16}>
-                                            {
-                                                servers.map((server) => (
-                                                    <Grid item xs={12} lg={6} key={server.id}>
-                                                        <Link to={this.props.match.url + "/servers/" + server.id}>
-                                                                <Card>
-                                                                    {
-                                                                        this.renderBackgroundCardImage(server)
-                                                                    }
-                                                                    <CardContent>
-                                                                    <Typography component={"h5"}>
-                                                                        {server.name}
-                                                                    </Typography>
-                                                                    {
-                                                                        renderStatusBadge(server)
-                                                                    }
-                                                                    {
-                                                                        renderPlayersBadge(server)
-                                                                    }
-                                                                    <Typography>{server.description}</Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                        </Link>
-                                                    </Grid>
-                                                ))
-                                            }
+                                        {
+                                            servers.map((server) => (
+                                                <Grid item xs={12} lg={6} key={server.id}>
+                                                    <Link to={this.props.match.url + "/servers/" + server.id}>
+                                                            <Card>
+                                                                {
+                                                                    this.renderBackgroundCardImage(server)
+                                                                }
+                                                                <CardContent>
+                                                                <Typography component={"h5"}>
+                                                                    {server.name}
+                                                                </Typography>
+                                                                {this.renderStats(server)}
+                                                                <Typography>{server.description}</Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                    </Link>
+                                                </Grid>
+                                            ))
+                                        }
                                     </Grid>
 
                                     <div>
@@ -165,8 +188,19 @@ class Server extends Component
 
     }
 
+
+
+    generateSeoTitle()
+    {
+        if (this.state.server)
+        {
+            return (<ReactTitle title={this.state.server.name + " servers" + config.titlePageName}/>)
+        }
+    }
+
     render() {
         const { error, isLoaded, server } = this.state;
+        this.generateSeoTitle();
         if (error)
         {
             return <div>Error: {error.message}</div>;

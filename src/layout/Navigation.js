@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link, Route, Router} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -9,9 +9,21 @@ import normalizeUrl from "normalize-url";
 import * as config from "../config/config";
 import axios from "axios";
 import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
-import servers from "../components/Servers";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
+const styles = {
+    root: {
+        flex: 1,
+    },
+    grow: {
+        flex: 1,
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+};
+
 
 // TODO add printing name in navigation bar, store info in tokens, get info about user for server
 class Navigation extends Component
@@ -22,6 +34,8 @@ class Navigation extends Component
     constructor(props)
     {
         super(props);
+
+        this.classes = props;
         this.state = {
             isOpened: false,
             services: [],
@@ -54,8 +68,8 @@ class Navigation extends Component
     {
         return (
             this.context.user.actions.checkLogin() ?
-                <Link to={"/account"}><Typography>{this.context.user.account.name} <AccountCircleOutlinedIcon style={{color: "white"}} /></Typography></Link> :
-            <Button component={Link} color={"inherit"} to={"/auth"}>
+                <Link to={"/account"}><Typography>{this.context.user.account.name} <AccountCircleOutlinedIcon style={{color: "white", flex: 1}} /></Typography></Link> :
+            <Button component={Link} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
                 LOGIN
             </Button>
         );
@@ -64,17 +78,17 @@ class Navigation extends Component
     render()
     {
         return (
-            <div>
+            <div className={this.classes.root}>
             <AppBar position={"static"}>
                 <Toolbar>
-                    <IconButton color={"inherit"} aria-label="Menu" onClick={this.toggleDrawer.bind(this)}>
+                    <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={this.classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography styles={{flexGrow: 1}}>
-                        <Link to={"/"}>
-                        Server-list.cz
-                        </Link>
-                    </Typography>
+                    <Link to={"/"} >
+                        <Typography className={this.classes.grow} variant={"h6"} color={"inherit"}>
+                            Server-List
+                        </Typography>
+                    </Link>
                     {
                         this.printUserSection()
                     }
@@ -103,4 +117,4 @@ class Navigation extends Component
 
 }
 
-export default Navigation;
+export default withStyles(styles) (Navigation);

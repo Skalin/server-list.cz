@@ -5,10 +5,11 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Services from './components/Service';
 import servers from './components/Servers';
-import { UserProvider } from './components/User';
+import {UserContext, UserProvider} from './components/User';
 import ReactGA from 'react-ga';
+import { ReactTitle } from 'react-meta-tags';
 
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Auth} from "./components/Auth";
 
 import axios from 'axios';
@@ -20,7 +21,6 @@ ReactGA.initialize('UA-136848512-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 class App extends Component {
-
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return true;
