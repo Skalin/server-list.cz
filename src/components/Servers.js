@@ -63,6 +63,9 @@ class Servers extends Component
 
         axios.get(this.ApiUrl)
             .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
+
+
+        this.generateSeoTitle();
     }
 
     loadServers()
@@ -113,7 +116,6 @@ class Servers extends Component
                 {
                     content => {
                         const { error, isLoaded, servers } = this.state;
-                        this.generateSeoTitle();
                         const { user, logIn, logOut } = content;
 
                         if (error)
@@ -183,9 +185,12 @@ class Server extends Component
 
 
     componentDidMount() {
+
         axios.get(this.ApiUrl)
             .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}))
 
+
+        this.generateSeoTitle();
     }
 
 
@@ -200,7 +205,6 @@ class Server extends Component
 
     render() {
         const { error, isLoaded, server } = this.state;
-        this.generateSeoTitle();
         if (error)
         {
             return <div>Error: {error.message}</div>;
