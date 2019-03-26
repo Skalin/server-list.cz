@@ -49,9 +49,7 @@ class App extends Component {
 
             <Router>
                 <UserProvider>
-                    <MetaTags>
-                        <meta name="google-site-verification" content="rt71yUokFLvt4XliIoFwte_B8Yw10YcRoVyiq7om5Gk" />
-                    </MetaTags>
+                    {this.generateSeo()}
                     <Header/>
                     <div className="App">
                         <div className="content">
