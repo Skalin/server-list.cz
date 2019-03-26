@@ -30,9 +30,9 @@ class App extends Component {
             return (
                 <MetaTags>
                     <meta charSet="utf-8" />
-                    <title>{this.state.serviceObject.name + " servers" + config.titlePageName}</title>
+                    <title>{config.pageName}</title>
                     <meta name="description" content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!" />
-                    <meta property="og:title" content="ServerList" />
+                    <meta property="og:title" content={config.pageName} />
                     <meta property="keywords" content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
                     <meta name="google-site-verification" content="rt71yUokFLvt4XliIoFwte_B8Yw10YcRoVyiq7om5Gk" />
                     <meta name="robots" content="index,follow"/>
