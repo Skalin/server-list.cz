@@ -27,6 +27,15 @@
     "react-dom": "latest",
     "react-router-dom": "latest"
   },
+  "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "http-server": "^0.8.5",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
