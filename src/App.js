@@ -44,11 +44,8 @@ class App extends Component {
         return (
                 <UserProvider>
                     {this.generateSeo()}
-                    <Header/>
+
                     <div className="App">
-                        <div className="content">
-                        </div>
-                        <Footer />
                     </div>
                 </UserProvider>
         );
