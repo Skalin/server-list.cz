@@ -39,8 +39,6 @@ window.onerror = function (message, url, lineNo, colNo, error) {
 document.title=config.pageName;
 
 ReactDOM.render(
-    <>
-
 	<BrowserRouter>
 	<>
         <ReactTitle title={config.pageName} />
@@ -55,7 +53,6 @@ ReactDOM.render(
         <App/>
 	</>
 	</BrowserRouter>
-    </>
 
     , document.getElementById('root'));
 
