@@ -8,7 +8,7 @@ import servers from './components/Servers';
 import {UserProvider} from './components/User';
 import ReactGA from 'react-ga';
 
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {Route} from "react-router-dom";
 import {Auth} from "./components/Auth";
 
 import axios from 'axios';

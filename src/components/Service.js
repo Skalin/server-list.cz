@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
-import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography } from '@material-ui/core/'
+import { Grid, Card, CardContent, Typography } from '@material-ui/core/'
 import * as config from "../config/config";
 import {Link} from "react-router-dom";
 

@@ -4,9 +4,9 @@ import axios from 'axios';
 import {Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip, Avatar } from '@material-ui/core/'
+import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
-import { MetaTags, ReactTitle } from 'react-meta-tags';
+import { MetaTags } from 'react-meta-tags';
 
 
 import {UserContext} from "./User";
@@ -58,7 +58,7 @@ class Servers extends Component
     componentDidMount() {
 
         axios.get(this.url)
-            .then((res) => {this.setState({serviceObject: res.data}); console.log(res.data)});
+            .then((res) => {this.setState({serviceObject: res.data})});
 
 
         axios.get(this.ApiUrl)
@@ -119,7 +119,6 @@ class Servers extends Component
                 {
                     content => {
                         const { error, isLoaded, servers } = this.state;
-                        const { user, logIn, logOut } = content;
 
                         if (error)
                         {

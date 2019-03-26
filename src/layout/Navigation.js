@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
-import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider, Avatar } from "@material-ui/core";
+import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
