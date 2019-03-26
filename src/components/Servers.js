@@ -13,7 +13,18 @@ import {UserContext} from "./User";
 
 const normalizeUrl = require('normalize-url');
 
-const renderPlayersBadge = (server) => {
+function renderBackgroundCardImage( server )
+{
+    if (server.imageUrl)
+    {
+        return (
+
+            <CardMedia image={server.imageUrl} title={server.name}/>
+        );
+    }
+}
+
+function renderPlayersBadge (server) {
 
     if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
         var data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
@@ -21,21 +32,34 @@ const renderPlayersBadge = (server) => {
             <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
         )
     }
-};
+}
 
-const renderStatusBadge = (server) => {
+
+function renderStats( server )
+{
+    var data =
+        <>
+            {renderStatusBadge(server)}
+            {renderPlayersBadge(server)}
+        </>;
+    return(data)
+}
+
+function renderStatusBadge(server) {
 
     return (
         <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
     );
-};
+}
 
-const servers = (props) => (
-    <Switch>
-        <Route exact path={props.match.url} component={withRouter(Servers)} />
-        <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
-    </Switch>
-);
+function servers (props) {
+    return(
+        <Switch>
+            <Route exact path={props.match.url} component={withRouter(Servers)}/>
+            <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
+        </Switch>
+    );
+}
 
 class Servers extends Component
 {
@@ -77,16 +101,6 @@ class Servers extends Component
         }
     }
 
-    renderBackgroundCardImage( server )
-    {
-        if (server.imageUrl)
-        {
-            return (
-
-                <CardMedia image={server.imageUrl} title={server.name}/>
-            );
-        }
-    }
 
     generateSeo()
     {
@@ -100,17 +114,6 @@ class Servers extends Component
                 </MetaTags>
             )
         }
-    }
-
-    renderStats( server )
-    {
-
-        var data =
-            <>
-                {renderStatusBadge(server)}
-                {renderPlayersBadge(server)}
-            </>;
-        return(data)
     }
 
     render() {
@@ -135,19 +138,19 @@ class Servers extends Component
                                     <h1>Servers</h1>
                                     <Grid container spacing={16}>
                                         {
-                                            Object.keys(servers).map( (key) => {
+                                            Object.keys(servers).map( function(key, match = this.props.match) {
                                                    return <Grid item xs={12} lg={6} key={servers[key].id}>
-                                                        <Link to={this.props.match.url + "/servers/" + servers[key].id} style={{textDecoration: "none"}}>
+                                                        <Link to={match.url + "/servers/" + servers[key].id} style={{textDecoration: "none"}}>
                                                             <Card>
                                                                 {
-                                                                    this.renderBackgroundCardImage(servers[key])
+                                                                    renderBackgroundCardImage(servers[key])
                                                                 }
                                                                 <CardContent>
                                                                     <Typography component={"h5"}>
                                                                         {servers[key].name}
                                                                     </Typography>
                                                                     {
-                                                                        this.renderStats(servers[key])
+                                                                        renderStats(servers[key])
                                                                     }
                                                                     <Typography>{servers[key].description}</Typography>
                                                                 </CardContent>

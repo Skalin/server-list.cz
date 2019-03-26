@@ -86,6 +86,8 @@ class Navigation extends Component
 
     render()
     {
+        var services = this.state.services;
+
         return (
             <div className={this.classes.root}>
             <AppBar position={"static"}>
@@ -111,10 +113,10 @@ class Navigation extends Component
                     </ListItem>
                     <Divider/>
                     {
-                        Object.keys(this.state.services).map( (key) => {
-                              return <ListItem key={this.state.services[key].id}>
-                                    <Link to={"/services/" + this.state.services[key].id} value={this.state.services[key].name}>
-                                        <ListItemText primary={this.state.services[key].name}/>
+                        Object.keys(services).map( function(key) {
+                              return <ListItem key={services[key].id}>
+                                    <Link to={"/services/" + services[key].id} value={services[key].name}>
+                                        <ListItemText primary={services[key].name}/>
                                     </Link>
                                 </ListItem>
                             }

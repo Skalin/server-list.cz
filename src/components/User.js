@@ -22,6 +22,7 @@ export class UserProvider extends Component
                     actions: {
                         checkExpiration: this.checkExpiration,
                         checkLogin: this.checkLogin,
+                        checkIssueDate: this.checkIssueDate,
                         isOwner: this.isOwner,
                         login: this.login,
                         storeToken: this.storeToken,
@@ -36,16 +37,16 @@ export class UserProvider extends Component
         this.setState({user: { ...this.state.user, account: this.getUser()}})
     }
 
-    checkExpiration = ( date ) => {
+    checkExpiration( date ) {
         return (new Date(date).getTime() / 1000 >= new Date().getTime() / 1000);
-    };
+    }
 
-    checkIat = ( date ) => {
+    checkIssueDate( date ) {
         return (new Date(date).getTime() / 1000 <= new Date().getTime() / 1000);
-    };
+    }
 
 
-    loginUser = ( user, email = null, password = null) => {
+    loginUser( user, email = null, password = null) {
         if (user)
         {
             if (!this.checkExpiration(user))
@@ -56,12 +57,12 @@ export class UserProvider extends Component
 
     };
 
-    regenerateToken = ( user ) => {
+    regenerateToken( user ) {
 
     };
 
 
-    login = ( user ) => {
+    login( user ) {
 
         if (!this.checkLogin() && user)
         {
@@ -75,11 +76,11 @@ export class UserProvider extends Component
     };
 
 
-    getUser = () => {
+    getUser() {
         return jwt.decode(localStorage.getItem('user'));
     };
 
-    register = (user) => {
+    register(user) {
         axios.post(config.apiUserUrl+'/register', {user: user})
             .then((res) => this.storeToken(res.data), (res) => console.log(res));
 
@@ -87,10 +88,10 @@ export class UserProvider extends Component
 
     };
 
-    storeToken = ( token ) => {
+    storeToken( token ) {
         var decodedToken = jwt.decode(token);
 
-        if (this.checkExpiration(decodedToken.exp) && this.checkIat(decodedToken.iat))
+        if (this.checkExpiration(decodedToken.exp) && this.checkIssueDate(decodedToken.iat))
         {
             localStorage.setItem('user', token);
             return true;
@@ -98,7 +99,7 @@ export class UserProvider extends Component
         return false;
     };
 
-    isOwner = ( server ) => {
+    isOwner( server ) {
 
         if (!this.checkLogin())
         {
@@ -119,7 +120,7 @@ export class UserProvider extends Component
      * get login status (from token that was stored in cookies, if cookies are empty, user is not logged in, thus returning false)
      * @returns boolean
      */
-    checkLogin = () => {
+    checkLogin() {
 
         // get login status (from token that was stored in cookies, if cookies are empty, user is not logged in, thus returning false
         var user = this.getUser();
@@ -128,7 +129,7 @@ export class UserProvider extends Component
             return false;
         }
 
-        if (!this.checkExpiration(user.exp) || !this.checkIat(user.iat))
+        if (!this.checkExpiration(user.exp) || !this.checkIssueDate(user.iat))
         {
             this.removeToken();
             return false;
@@ -158,7 +159,7 @@ export class UserProvider extends Component
         localStorage.removeItem('user');
     }
 
-    getAttribute = ( attribute ) => {
+    getAttribute( attribute ) {
         var user = this.getUser();
         if (user)
         {
