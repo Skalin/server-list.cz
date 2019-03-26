@@ -47,12 +47,6 @@ class App extends Component {
                     <Header/>
                     <div className="App">
                         <div className="content">
-                            <Route exact path="/" render={props => (
-                                <Services />
-                            )} />
-                            <Route path="/auth" component={Auth}/>
-                            <Route path="/services/:id" component={servers} />
-                            <Route path="/account" component={Account} />
                         </div>
                         <Footer />
                     </div>
