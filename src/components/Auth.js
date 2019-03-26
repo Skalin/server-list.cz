@@ -14,7 +14,7 @@ export class Auth extends Component
     constructor(props)
     {
         super(props);
-        let login = true;
+        var login = true;
         this.state = { isLoginOpen: login, isRegisterOpen: !login};
     }
 
@@ -30,7 +30,7 @@ export class Auth extends Component
         if (!this.context.user.actions.checkLogin())
         {
 
-            let data = null;
+            var data = null;
             if (this.state.isLoginOpen)
                 data = <Login/>;
 
@@ -51,7 +51,7 @@ export class Auth extends Component
 
     renderButtons()
     {
-        let data =
+        var data =
             <Grid container spacing={16} style={{marginTop: "3em", marginBottom: "3em"}}>
                 <Grid item>
                     <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>

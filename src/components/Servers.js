@@ -16,7 +16,7 @@ const normalizeUrl = require('normalize-url');
 const renderPlayersBadge = (server) => {
 
     if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
-        let data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
+        var data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
         return (
             <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
         )
@@ -105,7 +105,7 @@ class Servers extends Component
     renderStats( server )
     {
 
-        let data =
+        var data =
             <>
                 {renderStatusBadge(server)}
                 {renderPlayersBadge(server)}

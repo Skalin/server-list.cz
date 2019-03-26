@@ -65,7 +65,7 @@ export class UserProvider extends Component
 
         if (!this.checkLogin() && user)
         {
-            let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
+            var loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then(res => this.storeToken(res.data))
                 .then(res => {
@@ -88,7 +88,7 @@ export class UserProvider extends Component
     };
 
     storeToken = ( token ) => {
-        let decodedToken = jwt.decode(token);
+        var decodedToken = jwt.decode(token);
 
         if (this.checkExpiration(decodedToken.exp) && this.checkIat(decodedToken.iat))
         {
@@ -104,10 +104,10 @@ export class UserProvider extends Component
         {
             return false;
         }
-        let user = this.getUser();
+        var user = this.getUser();
 
-        let url = normalizeUrl(apiUserUrl+'/server/'+server, {stripAuthentication: false});
-        let state = false;
+        var url = normalizeUrl(apiUserUrl+'/server/'+server, {stripAuthentication: false});
+        var state = false;
         axios.post(url, {"login_token": user.token})
             .then((res) => state = res.data);
 
@@ -122,7 +122,7 @@ export class UserProvider extends Component
     checkLogin = () => {
 
         // get login status (from token that was stored in cookies, if cookies are empty, user is not logged in, thus returning false
-        let user = this.getUser();
+        var user = this.getUser();
         if (!user)
         {
             return false;
@@ -140,7 +140,7 @@ export class UserProvider extends Component
 
     logout()
     {
-        let user = this.getUser();
+        var user = this.getUser();
         if (!user)
             return false;
 
@@ -159,10 +159,10 @@ export class UserProvider extends Component
     }
 
     getAttribute = ( attribute ) => {
-        let user = this.getUser();
+        var user = this.getUser();
         if (user)
         {
-            let data = JSON.parse(user);
+            var data = JSON.parse(user);
             return data[attribute];
         }
     };
