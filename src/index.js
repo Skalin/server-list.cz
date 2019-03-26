@@ -1,6 +1,6 @@
 import "babel-standalone";
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import './index.css';
 import {BrowserRouter} from 'react-router-dom'
 import App from './App';
@@ -39,7 +39,7 @@ window.onerror = function (message, url, lineNo, colNo, error) {
 
 document.title=config.pageName;
 
-render((
+ReactDOM.render(
 	<BrowserRouter>
 	<>
         <ReactTitle title={config.pageName} />
@@ -54,7 +54,6 @@ render((
         <App/>
 	</>
 	</BrowserRouter>
-)
     , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
