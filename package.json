@@ -23,7 +23,9 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
     "react-vis": "^1.11.6",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.3.4000",
+    "react-dom": "latest",
+    "react-router-dom": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
