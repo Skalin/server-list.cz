@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
-import normalizeUrl from "normalize-url";
 import {Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
@@ -11,6 +10,8 @@ import { MetaTags, ReactTitle } from 'react-meta-tags';
 
 
 import {UserContext} from "./User";
+
+const normalizeUrl = require('normalize-url');
 
 const renderPlayersBadge = (server) => {
 
@@ -41,8 +42,8 @@ class Servers extends Component
     constructor(props)
     {
         super(props);
-        this.url = normalizeUrl(config.apiUrl+"/"+this.props.match.url);
-        this.ApiUrl = normalizeUrl(this.url+"/servers");
+        this.url = normalizeUrl(config.apiUrl+"/"+this.props.match.url, {stripAuthentication: false});
+        this.ApiUrl = normalizeUrl(this.url+"/servers", {stripAuthentication: false});
         this.state = {
             page: 2,
             error: null,
@@ -185,7 +186,7 @@ class Server extends Component
             isLoggedIn: false,
             isOwner: false,
         };
-        this.ApiUrl = normalizeUrl(config.apiUrl+this.state.match.url);
+        this.ApiUrl = normalizeUrl(config.apiUrl+this.state.match.url, {stripAuthentication: false});
     }
 
 

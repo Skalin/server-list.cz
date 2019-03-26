@@ -1,11 +1,10 @@
 import axios from "axios";
 import * as config from "../config/config";
 import {apiUserUrl} from "../config/config";
-import normalizeUrl from "normalize-url";
 import React, { Component } from 'react';
 import jwt from 'jsonwebtoken';
 
-
+const normalizeUrl = require('normalize-url');
 export const UserContext = React.createContext();
 
 export class UserProvider extends Component
@@ -66,7 +65,7 @@ export class UserProvider extends Component
 
         if (!this.checkLogin() && user)
         {
-            let loginUrl = normalizeUrl(apiUserUrl + '/login');
+            let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then(res => this.storeToken(res.data))
                 .then(res => {
@@ -107,7 +106,7 @@ export class UserProvider extends Component
         }
         let user = this.getUser();
 
-        let url = normalizeUrl(apiUserUrl+'/server/'+server);
+        let url = normalizeUrl(apiUserUrl+'/server/'+server, {stripAuthentication: false});
         let state = false;
         axios.post(url, {"login_token": user.token})
             .then((res) => state = res.data);

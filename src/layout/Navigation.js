@@ -5,11 +5,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
 import ListItem from '@material-ui/core/ListItem';
-import normalizeUrl from "normalize-url";
 import * as config from "../config/config";
 import axios from "axios";
 import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
 import withStyles from "@material-ui/core/es/styles/withStyles";
+
+
+const normalizeUrl = require('normalize-url');
 
 const styles = {
     root: {
@@ -41,7 +43,7 @@ class Navigation extends Component
             services: [],
         };
         this.serviceUrl = "/services/";
-        this.endpoint = normalizeUrl(config.apiUrl+'/services');
+        this.endpoint = normalizeUrl(config.apiUrl+'/services', {stripAuthentication: false});
     }
 
     componentDidMount() {

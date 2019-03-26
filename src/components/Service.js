@@ -3,15 +3,17 @@ import '../App.css';
 import axios from 'axios';
 import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography } from '@material-ui/core/'
 import * as config from "../config/config";
-import normalizeUrl from "normalize-url";
 import {Link} from "react-router-dom";
+
+
+const normalizeUrl = require('normalize-url');
 
 class Services extends Component
 {
     constructor(props)
     {
         super(props);
-        this.endpoint = normalizeUrl(config.apiUrl+'/services');
+        this.endpoint = normalizeUrl(config.apiUrl+'/services', {stripAuthentication: false});
         this.state = {
             services: [],
         };
