@@ -42,8 +42,6 @@ class App extends Component {
 
     render() {
         return (
-
-            <Router>
                 <UserProvider>
                     {this.generateSeo()}
                     <Header/>
@@ -59,7 +57,6 @@ class App extends Component {
                         <Footer />
                     </div>
                 </UserProvider>
-            </Router>
         );
     }
 }
