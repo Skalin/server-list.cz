@@ -14,6 +14,7 @@ import {Auth} from "./components/Auth";
 import axios from 'axios';
 import Account from "./components/Account";
 import { MetaTags } from 'react-meta-tags';
+import * as config from "./config/config";
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -22,6 +23,23 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 class App extends Component {
 
+    generateSeo()
+    {
+        if (this.state.serviceObject)
+        {
+            return (
+                <MetaTags>
+                    <meta charSet="utf-8" />
+                    <title>{this.state.serviceObject.name + " servers" + config.titlePageName}</title>
+                    <meta name="description" content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!" />
+                    <meta property="og:title" content="ServerList" />
+                    <meta property="keywords" content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
+                    <meta name="google-site-verification" content="rt71yUokFLvt4XliIoFwte_B8Yw10YcRoVyiq7om5Gk" />
+                    <meta name="robots" content="index,follow"/>
+                </MetaTags>
+            )
+        }
+    }
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return true;
     }
