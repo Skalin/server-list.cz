@@ -25,13 +25,14 @@ class Services extends Component
     }
 
     render() {
+        var {services } = this.state.services;
         return (
             <Grid>
                 <h2>Services</h2>
                 <Grid container spacing={16}>
                     {
-                        this.state.services.map((service) => (
-                            <ServiceItem key={service.id} service={service}/>
+                        Object.keys(services).map((key) => (
+                            <ServiceItem key={services[key].id} service={service[key]}/>
                         ))
                     }
                 </Grid>

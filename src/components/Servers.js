@@ -135,26 +135,26 @@ class Servers extends Component
                                     <h1>Servers</h1>
                                     <Grid container spacing={16}>
                                         {
-                                            servers.map((server) => (
-                                                <Grid item xs={12} lg={6} key={server.id}>
-                                                    <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
+                                            Object.keys(servers).map( (key) => {
+                                                   return <Grid item xs={12} lg={6} key={servers[key].id}>
+                                                        <Link to={this.props.match.url + "/servers/" + servers[key].id} style={{textDecoration: "none"}}>
                                                             <Card>
                                                                 {
-                                                                    this.renderBackgroundCardImage(server)
+                                                                    this.renderBackgroundCardImage(servers[key])
                                                                 }
                                                                 <CardContent>
-                                                                <Typography component={"h5"}>
-                                                                    {server.name}
-                                                                </Typography>
-                                                                {
-                                                                    this.renderStats(server)
-                                                                }
-                                                                <Typography>{server.description}</Typography>
+                                                                    <Typography component={"h5"}>
+                                                                        {servers[key].name}
+                                                                    </Typography>
+                                                                    {
+                                                                        this.renderStats(servers[key])
+                                                                    }
+                                                                    <Typography>{servers[key].description}</Typography>
                                                                 </CardContent>
                                                             </Card>
-                                                    </Link>
-                                                </Grid>
-                                            ))
+                                                        </Link>
+                                                    </Grid>
+                                            })
                                         }
                                     </Grid>
 
