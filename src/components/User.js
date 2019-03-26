@@ -1,5 +1,3 @@
-
-import {Redirect} from "react-router-dom";
 import axios from "axios";
 import * as config from "../config/config";
 import {apiUserUrl} from "../config/config";

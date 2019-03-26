@@ -5,9 +5,9 @@ import normalizeUrl from "normalize-url";
 import {Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
+import { Grid, Card, Button, Icon, Paper, CardHeader, CardContent, CardMedia, Typography, Chip, Avatar } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
-import { ReactTitle } from 'react-meta-tags';
+import { MetaTags, ReactTitle } from 'react-meta-tags';
 
 
 import {UserContext} from "./User";
@@ -15,10 +15,9 @@ import {UserContext} from "./User";
 const renderPlayersBadge = (server) => {
 
     if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
+        let data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
         return (
-            <Chip clickable={false} label={server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue}>
-                <SupervisorAccount />
-            </Chip>
+            <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
         )
     }
 };
@@ -63,9 +62,6 @@ class Servers extends Component
 
         axios.get(this.ApiUrl)
             .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
-
-
-        this.generateSeoTitle();
     }
 
     loadServers()
@@ -91,11 +87,17 @@ class Servers extends Component
         }
     }
 
-    generateSeoTitle()
+    generateSeo()
     {
         if (this.state.serviceObject)
         {
-            return (<ReactTitle title={this.state.serviceObject.name + " servers" + config.titlePageName}/>)
+            return (
+                <MetaTags>
+                    <title>{this.state.serviceObject.name + " servers" + config.titlePageName}</title>
+                    <meta name="description" content={this.state.serviceObject.description} />
+                    <meta property="og:title" content={this.state.serviceObject.name} />
+                </MetaTags>
+            )
         }
     }
 
@@ -129,6 +131,7 @@ class Servers extends Component
                         else {
                             return (
                                 <Grid>
+                                    {this.generateSeo()}
                                     <h1>Servers</h1>
                                     <Grid container spacing={16}>
                                         {
@@ -188,18 +191,21 @@ class Server extends Component
 
         axios.get(this.ApiUrl)
             .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}))
-
-
-        this.generateSeoTitle();
     }
 
 
 
-    generateSeoTitle()
+    generateSeo()
     {
         if (this.state.server)
         {
-            return (<ReactTitle title={this.state.server.name + " servers" + config.titlePageName}/>)
+            return (
+                <MetaTags>
+                    <title>{this.state.server.name + config.titlePageName}</title>
+                    <meta name="description" content={this.state.server.description} />
+                    <meta property="og:title" content={this.state.server.name} />
+                </MetaTags>
+            )
         }
     }
 
@@ -217,6 +223,7 @@ class Server extends Component
         {
             return (
                     <Paper>
+                        {this.generateSeo()}
                         <Grid>
                             <h1>{server.name}</h1>
                             <h3>{server.ip}:{server.port}</h3>

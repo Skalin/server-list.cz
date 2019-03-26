@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
-import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider} from "@material-ui/core";
+import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider, Avatar } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
@@ -67,11 +67,18 @@ class Navigation extends Component
     printUserSection()
     {
         return (
-            this.context.user.actions.checkLogin() ?
-                <Link to={"/account"}><Typography>{this.context.user.account.name} <AccountCircleOutlinedIcon style={{color: "white", flex: 1}} /></Typography></Link> :
-            <Button component={Link} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
-                LOGIN
-            </Button>
+            this.context.user.actions.checkLogin()
+                ?
+                <Link to={"/account"}>
+                    <Typography style={{color: "white"}} >
+                        {this.context.user.account.name}
+                        <AccountCircleOutlinedIcon />
+                    </Typography>
+                </Link>
+                :
+                <Button component={Link} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
+                    LOGIN
+                </Button>
         );
     }
 
