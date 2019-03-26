@@ -6,13 +6,19 @@ import Footer from './layout/Footer';
 import Services from './components/Service';
 import servers from './components/Servers';
 import {UserProvider} from './components/User';
+import ReactGA from 'react-ga';
+
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Auth} from "./components/Auth";
 
 import axios from 'axios';
 import Account from "./components/Account";
+import { MetaTags } from 'react-meta-tags';
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
+
+ReactGA.initialize('UA-136848512-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 class App extends Component {
 
@@ -25,6 +31,9 @@ class App extends Component {
 
             <Router>
                 <UserProvider>
+                    <MetaTags>
+                        <meta name="google-site-verification" content="rt71yUokFLvt4XliIoFwte_B8Yw10YcRoVyiq7om5Gk" />
+                    </MetaTags>
                     <Header/>
                     <div className="App">
                         <div className="content">

@@ -8,10 +8,6 @@ import * as config from './config/config.js';
 
 import { ReactTitle } from 'react-meta-tags';
 
-import ReactGA from 'react-ga';
-
-ReactGA.initialize('UA-136848512-1');
-ReactGA.pageview(window.location.pathname + window.location.search);
 
 ReactDOM.render(
     <>

@@ -137,7 +137,7 @@ class Servers extends Component
                                         {
                                             servers.map((server) => (
                                                 <Grid item xs={12} lg={6} key={server.id}>
-                                                    <Link to={this.props.match.url + "/servers/" + server.id}>
+                                                    <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
                                                             <Card>
                                                                 {
                                                                     this.renderBackgroundCardImage(server)
@@ -146,7 +146,9 @@ class Servers extends Component
                                                                 <Typography component={"h5"}>
                                                                     {server.name}
                                                                 </Typography>
-                                                                {this.renderStats(server)}
+                                                                {
+                                                                    this.renderStats(server)
+                                                                }
                                                                 <Typography>{server.description}</Typography>
                                                                 </CardContent>
                                                             </Card>
