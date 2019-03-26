@@ -25,19 +25,16 @@ class App extends Component {
 
     generateSeo()
     {
-        if (this.state.serviceObject)
-        {
-            return (
-                <MetaTags>
-                    <meta charSet="utf-8" />
-                    <title>{config.pageName}</title>
-                    <meta name="description" content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!" />
-                    <meta property="og:title" content={config.pageName} />
-                    <meta property="keywords" content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
-                    <meta name="robots" content="index,follow"/>
-                </MetaTags>
-            )
-        }
+        return (
+            <MetaTags>
+                <meta charSet="utf-8" />
+                <title>{config.pageName}</title>
+                <meta name="description" content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!" />
+                <meta property="og:title" content={config.pageName} />
+                <meta property="keywords" content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
+                <meta name="robots" content="index,follow"/>
+            </MetaTags>
+        )
     }
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return true;
