@@ -32,7 +32,7 @@ class Services extends Component
                 <Grid container spacing={16}>
                     {
                         Object.keys(services).map((key) => (
-                            <ServiceItem key={services[key].id} service={service[key]}/>
+                            <ServiceItem key={services[key].id} service={services[key]}/>
                         ))
                     }
                 </Grid>
