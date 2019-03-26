@@ -1,4 +1,4 @@
-import "@babel/polyfill";
+import "babel-standalone";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -39,7 +39,7 @@ window.onerror = function (message, url, lineNo, colNo, error) {
 
 document.title=config.pageName;
 
-ReactDOM.render(
+React.render(
 	<BrowserRouter>
 	<>
         <ReactTitle title={config.pageName} />
