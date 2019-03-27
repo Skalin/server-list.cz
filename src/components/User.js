@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken';
 const normalizeUrl = require('normalize-url');
 export const UserContext = React.createContext();
 
+const timestampSync = 60;
+
 export class UserProvider extends Component
 {
     constructor(props)
@@ -48,16 +50,13 @@ export class UserProvider extends Component
     }
 
     checkExpiration = ( date ) => {
-        console.log("error expiration");
-        console.log(date);
-        let timestamp = new Date().getTime() / 1000;
-        console.log(timestamp);
+        let timestamp = (Date.now() / 1000)+timestampSync;
         return (date > timestamp);
     };
 
     checkIssueDate = ( date ) => {
-        console.log("error issue date");
-        return (date <= (new Date().getTime() / 1000));
+        let timestamp = (Date.now() / 1000)+timestampSync;
+        return (date <= timestamp);
     };
 
 

@@ -127,7 +127,7 @@ class Login extends Component
             <form onSubmit={this.submitForm.bind(this)} >
                 <h1>Login</h1>
                 <FormGroup>
-                    <TextField autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
+                    <TextField autoFocus={true} autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
                 </FormGroup>
                 <FormGroup>
                     <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
@@ -190,7 +190,7 @@ class Register extends Component
             <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Registration</h1>
                 <FormGroup>
-                    <TextField label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
+                    <TextField autoFocus={true} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <TextField label={"Password"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
