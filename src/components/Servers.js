@@ -13,44 +13,6 @@ import {UserContext} from "./User";
 
 const normalizeUrl = require('normalize-url');
 
-function renderBackgroundCardImage( server )
-{
-    if (server.imageUrl)
-    {
-        return (
-
-            <CardMedia image={server.imageUrl} title={server.name}/>
-        );
-    }
-}
-
-function renderPlayersBadge (server) {
-
-    if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
-        var data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
-        return (
-            <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
-        )
-    }
-}
-
-
-function renderStats( server )
-{
-    var data =
-        <>
-            {renderStatusBadge(server)}
-            {renderPlayersBadge(server)}
-        </>;
-    return(data)
-}
-
-function renderStatusBadge(server) {
-
-    return (
-        <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
-    );
-}
 
 function servers (props) {
     return(
@@ -102,6 +64,46 @@ class Servers extends Component
     }
 
 
+
+    renderBackgroundCardImage( server )
+    {
+        if (server.imageUrl)
+        {
+            return (
+
+                <CardMedia image={server.imageUrl} title={server.name}/>
+            );
+        }
+    }
+
+    renderPlayersBadge (server)
+    {
+        if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
+            var data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
+            return (
+                <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
+            )
+        }
+    }
+
+
+    renderStats( server )
+    {
+        var data =
+            <>
+                {this.renderStatusBadge(server)}
+                {this.renderPlayersBadge(server)}
+            </>;
+        return(data)
+    }
+
+    renderStatusBadge(server) {
+
+        return (
+            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
+        );
+    }
+
     generateSeo()
     {
         if (this.state.serviceObject)
@@ -138,26 +140,26 @@ class Servers extends Component
                                     <h1>Servers</h1>
                                     <Grid container spacing={16}>
                                         {
-                                            Object.keys(servers).map( function(key, match = this.props.match) {
-                                                   return <Grid item xs={12} lg={6} key={servers[key].id}>
-                                                        <Link to={match.url + "/servers/" + servers[key].id} style={{textDecoration: "none"}}>
-                                                            <Card>
+                                            servers.map((server) => (
+                                                <Grid item xs={12} lg={6} key={server.id}>
+                                                    <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
+                                                        <Card>
+                                                            {
+                                                                this.renderBackgroundCardImage(server)
+                                                            }
+                                                            <CardContent>
+                                                                <Typography component={"h5"}>
+                                                                    {server.name}
+                                                                </Typography>
                                                                 {
-                                                                    renderBackgroundCardImage(servers[key])
+                                                                    this.renderStats(server)
                                                                 }
-                                                                <CardContent>
-                                                                    <Typography component={"h5"}>
-                                                                        {servers[key].name}
-                                                                    </Typography>
-                                                                    {
-                                                                        renderStats(servers[key])
-                                                                    }
-                                                                    <Typography>{servers[key].description}</Typography>
-                                                                </CardContent>
-                                                            </Card>
-                                                        </Link>
-                                                    </Grid>
-                                            })
+                                                                <Typography>{server.description}</Typography>
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Link>
+                                                </Grid>
+                                            ))
                                         }
                                     </Grid>
 

@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Header from './layout/Header';
-import Footer from './layout/Footer';
-import Services from './components/Service';
-import servers from './components/Servers';
-import {UserProvider} from './components/User';
+import '../App.css';
+import Header from './../layout/Header';
+import Footer from './../layout/Footer';
+import Services from './Service';
+import servers from './Servers';
+import {UserProvider} from './User';
 import ReactGA from 'react-ga';
 
 import {Route} from "react-router-dom";
-import {Auth} from "./components/Auth";
+import {Auth} from "./Auth";
 
 import axios from 'axios';
-import Account from "./components/Account";
+import Account from "./Account";
 import { MetaTags } from 'react-meta-tags';
-import * as config from "./config/config";
+import * as config from "./../config/config";
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 

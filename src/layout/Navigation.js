@@ -113,13 +113,13 @@ class Navigation extends Component
                     </ListItem>
                     <Divider/>
                     {
-                        Object.keys(services).map( function(key) {
-                              return <ListItem key={services[key].id}>
-                                    <Link to={"/services/" + services[key].id} value={services[key].name}>
-                                        <ListItemText primary={services[key].name}/>
-                                    </Link>
-                                </ListItem>
-                            }
+                        this.state.services.map( (service) => (
+                            <ListItem key={service.id}>
+                                <Link to={"/services/" + service.id} value={service.name}>
+                                    <ListItemText primary={service.name}/>
+                                </Link>
+                            </ListItem>
+                            )
                         )
                     }
                 </List>

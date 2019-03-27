@@ -31,9 +31,9 @@ class Services extends Component
                 <h2>Services</h2>
                 <Grid container spacing={16}>
                     {
-                        Object.keys(services).map(function(key) {
-                            return (<ServiceItem key={services[key].id} service={services[key]}/>)
-                        })
+                        this.state.services.map((service) => (
+                            <ServiceItem key={service.id} service={service}/>
+                        ))
                     }
                 </Grid>
             </Grid>

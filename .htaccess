@@ -1,4 +1,0 @@
-RequestHeader set X-Prerender-Token "1ybqomIbAIR75f4zCY6K"
-RewriteEngine On 
-RewriteCond %{HTTPS} off 
-RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L] 
