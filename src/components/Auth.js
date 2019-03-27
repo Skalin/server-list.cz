@@ -14,7 +14,7 @@ export class Auth extends Component
     constructor(props)
     {
         super(props);
-        var login = true;
+        let login = true;
         this.state = { isLoginOpen: login, isRegisterOpen: !login};
     }
 
@@ -30,7 +30,7 @@ export class Auth extends Component
         if (!this.context.user.actions.checkLogin())
         {
 
-            var data = null;
+            let data = null;
             if (this.state.isLoginOpen)
                 data = <Login/>;
 
@@ -51,7 +51,7 @@ export class Auth extends Component
 
     renderButtons()
     {
-        var data =
+        let data =
             <Grid container spacing={16} style={{marginTop: "3em", marginBottom: "3em"}}>
                 <Grid item>
                     <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>
@@ -106,8 +106,8 @@ class Login extends Component
 
     onChange(formData)
     {
-        var user = {...this.state.user};
-        var property = formData.target.name;
+        let user = {...this.state.user};
+        let property = formData.target.name;
         user[property] = formData.target.value;
         this.setState({user})
     }
@@ -170,8 +170,8 @@ class Register extends Component
 
     onChange(formData)
     {
-        var user = {...this.state.user};
-        var property = formData.target.name;
+        let user = {...this.state.user};
+        let property = formData.target.name;
         user[property] = formData.target.value;
         this.setState({user});
     }

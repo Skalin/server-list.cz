@@ -34,7 +34,7 @@ module.exports = {
 			'@babel/preset-env',
 			 {
 				"targets": {
-					"chrome": "41"
+					"node": "current"
 				},
 				 "forceAllTransforms": true,
 			}

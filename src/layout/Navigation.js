@@ -86,7 +86,7 @@ class Navigation extends Component
 
     render()
     {
-        var services = this.state.services;
+        let services = this.state.services;
 
         return (
             <div className={this.classes.root}>
