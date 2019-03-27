@@ -18,6 +18,7 @@ function servers (props) {
     return(
         <Switch>
             <Route exact path={props.match.url} component={withRouter(Servers)}/>
+            <Route path={`${props.match.url}/servers/add`} component={ServerForm}/>
             <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
         </Switch>
     );
@@ -175,6 +176,11 @@ class Servers extends Component
             </UserContext.Consumer>
         );
     }
+}
+
+class ServerForm extends Component
+{
+
 }
 
 class Server extends Component

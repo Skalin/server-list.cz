@@ -29,6 +29,7 @@ export class UserProvider extends Component
                         register: this.register,
                         getUser: this.getUser,
                         tryLogin: this.tryLogin,
+                        getRawToken: this.getRawToken,
                     }
                 }
         }
@@ -47,11 +48,16 @@ export class UserProvider extends Component
     }
 
     checkExpiration = ( date ) => {
-        return (new Date(date).getTime() / 1000 >= new Date().getTime() / 1000);
+        console.log("error expiration");
+        console.log(date);
+        let timestamp = new Date().getTime() / 1000;
+        console.log(timestamp);
+        return (date > timestamp);
     };
 
     checkIssueDate = ( date ) => {
-        return (new Date(date).getTime() / 1000 <= new Date().getTime() / 1000);
+        console.log("error issue date");
+        return (date <= (new Date().getTime() / 1000));
     };
 
 
@@ -73,14 +79,21 @@ export class UserProvider extends Component
 
     login = ( user ) => {
 
+        console.log("in login");
         if (!this.checkLogin() && user)
         {
+            console.log("in nested login");
             let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then((res) => this.storeToken(res.data))
-                .then(() =>  this.setState({user: { ...this.state.user, account: this.getUser()}})
+                .then((res) =>  this.setState({user: { ...this.state.user, account: this.getUser()}})
                 );
         }
+    };
+
+
+    getRawToken = () => {
+        return localStorage.getItem('user');
     };
 
 

@@ -4,6 +4,7 @@ import Header from './../layout/Header';
 import Footer from './../layout/Footer';
 import Services from './Service';
 import servers from './Servers';
+import ServerForm from './Servers';
 import {UserProvider} from './User';
 import ReactGA from 'react-ga';
 
@@ -52,6 +53,7 @@ class App extends Component {
                             <Route path="/auth" component={Auth}/>
                             <Route path="/services/:id" component={servers} />
                             <Route path="/account" component={Account} />
+                            <Route path="/servers/add" component={ServerForm} />
                         </div>
                         <Footer />
                     </div>
