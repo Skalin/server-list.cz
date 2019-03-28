@@ -24,6 +24,10 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
+    heading: {
+        backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+    }
 };
 
 
@@ -90,13 +94,13 @@ class Navigation extends Component
 
         return (
             <div className={this.classes.root}>
-            <AppBar position={"static"} style={{backgroundColor: "rgba(0, 120, 255, 1)"}}>
+            <AppBar position={"static"} style={styles.heading}>
                 <Toolbar>
                     <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={this.classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
-                    <Link to={"/"} >
-                        <Typography className={this.classes.grow} variant={"h6"} color={"inherit"}>
+                    <Link to={"/"}>
+                        <Typography className={this.classes.grow} variant={"h6"} style={styles.heading}>
                             Server-List
                         </Typography>
                     </Link>

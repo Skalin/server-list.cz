@@ -79,14 +79,14 @@ class Account extends Component
                     <TableBody>
                         {servers.map(server => (
                             <TableRow key={server.id}>
-                                <TableCell component={"th"} scope={"row"}>
+                                <TableCell>
                                     {server.name}
                                 </TableCell>
                                 <TableCell>
                                     {server.ip}:{server.port}
                                 </TableCell>
                                 <TableCell align={"right"}>
-                                    <Button component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
+                                    <Button style={styles.heading} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
                                         Detail
                                     </Button>
                                 </TableCell>
@@ -106,7 +106,7 @@ class Account extends Component
                 <Grid item xs={10} >
                     <Paper>
                         <Grid container justify={"center"} spacing={16}>
-                            <Grid item xs={12} spacing={50}>
+                            <Grid item xs={12}>
                                 <Typography variant={"h3"}>Účet</Typography>
                             </Grid>
                             <Grid item xs={12} sm={10} md={8}>
@@ -135,13 +135,13 @@ class Account extends Component
                                         Servery
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails>
-                                        <Grid container >
+                                        <Grid container justify={"center"}>
                                             <Grid item xs={12}>
-                                                <Button component={Link} to={'/servers/add'}>
+                                                <Button style={styles.heading} component={Link} to={'/servers/add'}>
                                                     Přidat server
                                                 </Button>
                                             </Grid>
-                                            <Grid item xs={12}>
+                                            <Grid item xs={10}>
                                                 {
                                                     this.renderServers()
                                                 }
