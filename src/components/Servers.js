@@ -8,6 +8,15 @@ import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Av
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 
+import {
+    XYPlot,
+    XAxis,
+    YAxis,
+    VerticalGridLines,
+    HorizontalGridLines,
+    AreaSeries,
+} from 'react-vis';
+
 
 import {UserContext} from "./User";
 
@@ -195,7 +204,12 @@ class Server extends Component
             server: null,
             isLoggedIn: false,
             isOwner: false,
-            stats: [],
+            stats: {
+                isLoaded: false,
+                keys: [],
+                values: [],
+                selected: 0,
+            },
         };
         this.ApiUrl = normalizeUrl(config.apiUrl+this.state.match.url, {stripAuthentication: false});
     }
@@ -209,22 +223,67 @@ class Server extends Component
                 let statsUrl = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
                 axios.get(statsUrl)
                     .then((res) => {
-                        let arr = [];
-                        for (var key in res.data)
-                        {
-                            arr[key] = res.data[key];
-                        }
-
-                        this.setState({stats: arr});
+                        this.setState({stats: {...this.state.stats, keys: Object.keys(res.data)}}, () => {
+                            this.setState({stats: {...this.state.stats, values: Object.values(res.data)}}, () => {
+                                this.setState({stats: {...this.state.stats, isLoaded: true}})
+                            });
+                        });
                     });
             }), (error) => this.setState({isLoaded: true, error}));
 
     }
 
-    renderStats(type) {
-        console.log(type);
+    changeStat(event, value)
+    {
+        this.setState({stats: {...this.state.stats, selected: value}});
+    }
 
-        return(<Tab label={"Ping"} style={{color: "black"}}>Test</Tab>);
+    renderGraph()
+    {
+
+        let data = this.state.stats.values[this.state.stats.selected];
+        data = data.map((item) => {
+            return {
+                x: new Date(item.date),
+                y: item.value,
+            }
+        });
+
+        return (
+            <Grid container justify={"center"}>
+                <Grid item xs={12}>
+                <XYPlot width={800} height={300} xType={"ordinal"}>
+                    <VerticalGridLines />
+                    <HorizontalGridLines />
+                    <XAxis />
+                    <YAxis />
+                    <AreaSeries
+                        data={data}
+                    />
+                </XYPlot>
+                </Grid>
+            </Grid>
+        );
+    }
+
+    renderStats() {
+        if (this.state.stats.isLoaded)
+        {
+            return (
+                <>
+                <Tabs value={this.state.stats.selected} onChange={this.changeStat.bind(this)}>
+                    {
+
+                        this.state.stats.keys.map((key) =>
+                            <Tab label={key} key={key}>
+                            </Tab>
+                        )
+                    }
+                </Tabs>
+                {this.renderGraph()}
+                </>
+            )
+        }
     };
 
     generateSeo()
@@ -272,11 +331,7 @@ class Server extends Component
                             <Grid item xs={10}>
                                 <Grid container justify={"center"}>
                                     <Grid item>
-                                        <Tabs>
-                                            {
-                                                console.log(Object.keys(this.state.stats))
-                                            }
-                                        </Tabs>
+                                        {this.renderStats()}
                                     </Grid>
                                 </Grid>
                             </Grid>
