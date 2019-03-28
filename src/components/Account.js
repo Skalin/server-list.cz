@@ -48,19 +48,21 @@ class Account extends Component
         }
     }
 
-    componentDidMount() {
-        console.log(this.context.user.actions.getRawToken());
-        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
-            .then((res) => this.setState({servers: res.data}));
+    componentDidMount()
+    {
+            if (this.context.user.actions.getUser())
+            {
+                axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
+                    .then((res) => {this.setState({servers: res.data})});
+            }
     }
 
 
-    renderServers()
+    renderServers = () =>
     {
 
         let { servers } = this.state;
         let data = [];
-        console.log(servers);
         if (servers.length)
         {
             data =
@@ -69,7 +71,7 @@ class Account extends Component
                         <TableRow>
                             <TableCell>Server</TableCell>
                             <TableCell>IP</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>Tlačítka</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -78,16 +80,21 @@ class Account extends Component
                                 <TableCell component={"th"} scope={"row"}>
                                     {server.name}
                                 </TableCell>
+                                <TableCell>
+                                    {server.ip}:{server.port}
+                                </TableCell>
+                                <TableCell>
+                                    <Button component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
+                                        Detail
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>;
         }
-
-
-
         return (data);
-    }
+    };
 
     renderAccount()
     {
