@@ -4,7 +4,7 @@ import axios from 'axios';
 import {Switch, Link, Route} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar } from '@material-ui/core/'
+import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 
@@ -195,6 +195,7 @@ class Server extends Component
             server: null,
             isLoggedIn: false,
             isOwner: false,
+            stats: [],
         };
         this.ApiUrl = normalizeUrl(config.apiUrl+this.state.match.url, {stripAuthentication: false});
     }
@@ -203,10 +204,28 @@ class Server extends Component
     componentDidMount() {
 
         axios.get(this.ApiUrl)
-            .then((res) => this.setState({isLoaded: true, server: res.data}), (error) => this.setState({isLoaded: true, error}))
+            .then((res) => this.setState({isLoaded: true, server: res.data}, () => {
+
+                let statsUrl = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
+                axios.get(statsUrl)
+                    .then((res) => {
+                        let arr = [];
+                        for (var key in res.data)
+                        {
+                            arr[key] = res.data[key];
+                        }
+
+                        this.setState({stats: arr});
+                    });
+            }), (error) => this.setState({isLoaded: true, error}));
+
     }
 
+    renderStats(type) {
+        console.log(type);
 
+        return(<Tab label={"Ping"} style={{color: "black"}}>Test</Tab>);
+    };
 
     generateSeo()
     {
@@ -222,6 +241,7 @@ class Server extends Component
         }
     }
 
+
     render() {
         const { error, isLoaded, server } = this.state;
         if (error)
@@ -235,15 +255,35 @@ class Server extends Component
         else
         {
             return (
+                <Grid container justify={"center"} spacing={40} style={{marginTop: '25px'}}>
+                    <Grid item xs={10}>
                     <Paper>
                         {this.generateSeo()}
-                        <Grid>
+                        <Grid container justify={"center"} spacing={16}>
+                            <Grid item xs={10}>
                             <h1>{server.name}</h1>
+                            </Grid>
+                            <Grid item xs={10}>
                             <h3>{server.ip}:{server.port}</h3>
-                            <p>{server.description}
-                            </p>
+                            </Grid>
+                            <Grid item xs={10}>
+                            {server.description}
+                            </Grid>
+                            <Grid item xs={10}>
+                                <Grid container justify={"center"}>
+                                    <Grid item>
+                                        <Tabs>
+                                            {
+                                                console.log(Object.keys(this.state.stats))
+                                            }
+                                        </Tabs>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Paper>
+                    </Grid>
+                </Grid>
             );
         }
     }

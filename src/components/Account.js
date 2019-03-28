@@ -13,6 +13,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableRow,
     Typography
 } from "@material-ui/core";
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 
 const styles = {
@@ -20,8 +21,11 @@ const styles = {
         width: '100%',
     },
     heading: {
+        backgroundColor: "rgba(0, 120, 255, 1)",
         color: 'white',
-        backgroundColor: 'rgba(0, 120, 62, 1)',
+    },
+    white: {
+        color: 'white',
     },
     icon: {
         verticalAlign: 'bottom',
@@ -72,7 +76,10 @@ class Account extends Component
                     <TableHead>
                         <TableRow>
                             <TableCell>Server</TableCell>
-                            <TableCell>IP</TableCell>
+                            {
+                                isWidthUp('md', this.props.width) ?
+                                    <TableCell>IP</TableCell> : ''
+                            }
                             <TableCell>Tlačítka</TableCell>
                         </TableRow>
                     </TableHead>
@@ -82,9 +89,12 @@ class Account extends Component
                                 <TableCell>
                                     {server.name}
                                 </TableCell>
-                                <TableCell>
-                                    {server.ip}:{server.port}
-                                </TableCell>
+                                {
+                                    isWidthUp('md', this.props.width) ?
+                                    <TableCell>
+                                        {server.ip}:{server.port}
+                                    </TableCell> : ''
+                                }
                                 <TableCell align={"right"}>
                                     <Button style={styles.heading} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
                                         Detail
@@ -104,13 +114,12 @@ class Account extends Component
         return (
             <Grid container justify={"center"} style={{marginTop: '25px'}}>
                 <Grid item xs={10} >
-                    <Paper>
                         <Grid container justify={"center"} spacing={16}>
                             <Grid item xs={12}>
-                                <Typography variant={"h3"}>Účet</Typography>
+                                <Typography style={styles.white} variant={"h3"}>Účet</Typography>
                             </Grid>
                             <Grid item xs={12} sm={10} md={8}>
-                                <ExpansionPanel>
+                                <ExpansionPanel expanded={true}>
                                     <ExpansionPanelSummary style={styles.heading}>
                                         Osobní údaje
                                     </ExpansionPanelSummary>
@@ -120,7 +129,7 @@ class Account extends Component
                                 </ExpansionPanel>
                             </Grid>
                             <Grid item  xs={12} sm={10} md={8}>
-                                <ExpansionPanel>
+                                <ExpansionPanel expanded={true}>
                                     <ExpansionPanelSummary style={styles.heading}>
                                         Nastavení účtu
                                     </ExpansionPanelSummary>
@@ -130,7 +139,7 @@ class Account extends Component
                                 </ExpansionPanel>
                             </Grid>
                             <Grid item xs={12} sm={10} md={8}>
-                                <ExpansionPanel>
+                                <ExpansionPanel expanded={true}>
                                     <ExpansionPanelSummary style={styles.heading}>
                                         Servery
                                     </ExpansionPanelSummary>
@@ -151,7 +160,6 @@ class Account extends Component
                                 </ExpansionPanel>
                             </Grid>
                         </Grid>
-                    </Paper>
                 </Grid>
             </Grid>
         )
@@ -165,4 +173,4 @@ class Account extends Component
     }
 }
 
-export default Account;
+export default withWidth()(Account);
