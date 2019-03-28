@@ -90,7 +90,7 @@ class Navigation extends Component
 
         return (
             <div className={this.classes.root}>
-            <AppBar position={"static"}>
+            <AppBar position={"static"} style={{backgroundColor: "rgba(0, 120, 255, 1)"}}>
                 <Toolbar>
                     <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={this.classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>

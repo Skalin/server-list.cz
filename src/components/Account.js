@@ -20,7 +20,8 @@ const styles = {
         width: '100%',
     },
     heading: {
-        backgroundColor: 'rgba(0,0,0,.03)',
+        color: 'white',
+        backgroundColor: 'rgba(0, 120, 62, 1)',
     },
     icon: {
         verticalAlign: 'bottom',
@@ -101,54 +102,58 @@ class Account extends Component
     {
         let { user } = this.context;
         return (
-            <Paper>
-                <Grid container justify={"center"} spacing={16}>
-                    <Grid item xs={12} spacing={50}>
-                        <Typography variant={"h3"}>Účet</Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={10} md={8}>
-                        <ExpansionPanel>
-                            <ExpansionPanelSummary style={styles.heading}>
-                                Osobní údaje
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                //
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    </Grid>
-                    <Grid item  xs={12} sm={10} md={8}>
-                        <ExpansionPanel>
-                            <ExpansionPanelSummary style={styles.heading}>
-                                Nastavení účtu
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                // odhlášení z účtu + odhlášení ze všech zařízení
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    </Grid>
-                    <Grid item xs={12} sm={10} md={8}>
-                        <ExpansionPanel>
-                            <ExpansionPanelSummary style={styles.heading}>
-                                Servery
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                <Grid container justify={"center"}>
-                                    <Grid item xs={12}>
-                                        <Button component={Link} to={'/servers/add'}>
-                                            Přidat server
-                                        </Button>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        {
-                                            this.renderServers()
-                                        }
-                                    </Grid>
-                                </Grid>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    </Grid>
+            <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                <Grid item xs={10} >
+                    <Paper>
+                        <Grid container justify={"center"} spacing={16}>
+                            <Grid item xs={12} spacing={50}>
+                                <Typography variant={"h3"}>Účet</Typography>
+                            </Grid>
+                            <Grid item xs={12} sm={10} md={8}>
+                                <ExpansionPanel>
+                                    <ExpansionPanelSummary style={styles.heading}>
+                                        Osobní údaje
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        //
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            </Grid>
+                            <Grid item  xs={12} sm={10} md={8}>
+                                <ExpansionPanel>
+                                    <ExpansionPanelSummary style={styles.heading}>
+                                        Nastavení účtu
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        // odhlášení z účtu + odhlášení ze všech zařízení
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            </Grid>
+                            <Grid item xs={12} sm={10} md={8}>
+                                <ExpansionPanel>
+                                    <ExpansionPanelSummary style={styles.heading}>
+                                        Servery
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        <Grid container >
+                                            <Grid item xs={12}>
+                                                <Button component={Link} to={'/servers/add'}>
+                                                    Přidat server
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                {
+                                                    this.renderServers()
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </Grid>
-            </Paper>
+            </Grid>
         )
     }
 
