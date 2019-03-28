@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import * as config from "../config/config";
 import axios from 'axios';
 import {
+    Grid,
     Button,
     ExpansionPanel,
     ExpansionPanelDetails,
@@ -83,7 +84,7 @@ class Account extends Component
                                 <TableCell>
                                     {server.ip}:{server.port}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell align={"right"}>
                                     <Button component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
                                         Detail
                                     </Button>
@@ -101,37 +102,52 @@ class Account extends Component
         let { user } = this.context;
         return (
             <Paper>
-                <Typography variant={"h3"}>Účet</Typography>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary style={styles.heading}>
-                        Osobní údaje
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        //
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary style={styles.heading}>
-                        Nastavení účtu
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        // odhlášení z účtu + odhlášení ze všech zařízení
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary style={styles.heading}>
-                        Servery
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <Button component={Link} to={'/servers/add'}>
-                            Přidat server
-                        </Button>
-                        {
-                            this.renderServers()
-                        }
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-
+                <Grid container justify={"center"} spacing={16}>
+                    <Grid item xs={12} spacing={50}>
+                        <Typography variant={"h3"}>Účet</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={10} md={8}>
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary style={styles.heading}>
+                                Osobní údaje
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                //
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                    </Grid>
+                    <Grid item  xs={12} sm={10} md={8}>
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary style={styles.heading}>
+                                Nastavení účtu
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                // odhlášení z účtu + odhlášení ze všech zařízení
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                    </Grid>
+                    <Grid item xs={12} sm={10} md={8}>
+                        <ExpansionPanel>
+                            <ExpansionPanelSummary style={styles.heading}>
+                                Servery
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <Grid container justify={"center"}>
+                                    <Grid item xs={12}>
+                                        <Button component={Link} to={'/servers/add'}>
+                                            Přidat server
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        {
+                                            this.renderServers()
+                                        }
+                                    </Grid>
+                                </Grid>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                    </Grid>
+                </Grid>
             </Paper>
         )
     }

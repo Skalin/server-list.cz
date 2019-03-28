@@ -181,6 +181,10 @@ class Register extends Component
         e.preventDefault();
         if (this.context.user.actions.register(this.state.user))
             this.setState({loggedIn: true});
+        else
+        {
+
+        }
 
     }
 

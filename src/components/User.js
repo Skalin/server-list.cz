@@ -84,7 +84,7 @@ export class UserProvider extends Component
             console.log("in nested login");
             let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
-                .then((res) => this.storeToken(res.data))
+                .then((res) => this.storeToken(res.data), (res) => {return(res)})
                 .then((res) =>  this.setState({user: { ...this.state.user, account: this.getUser()}})
                 );
         }
@@ -102,7 +102,7 @@ export class UserProvider extends Component
 
     register = (user) => {
         axios.post(config.apiUserUrl+'/register', {user: user})
-            .then((res) => this.storeToken(res.data), (res) => console.log(res));
+            .then((res) => this.storeToken(res.data), (res) => {return(res)});
 
         return this.checkLogin();
 
