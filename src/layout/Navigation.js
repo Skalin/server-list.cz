@@ -119,7 +119,7 @@ class Navigation extends Component
                     {
                         this.state.services.map( (service) => (
                             <ListItem key={service.id}>
-                                <Link to={"/services/" + service.id} value={service.name}>
+                                <Link href={"/services/" + service.id} value={service.name}>
                                     <ListItemText primary={service.name}/>
                                 </Link>
                             </ListItem>
