@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
-import {Switch, Link, Route} from "react-router-dom";
+import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
 import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab } from '@material-ui/core/'
+import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 
@@ -27,7 +27,6 @@ function servers (props) {
     return(
         <Switch>
             <Route exact path={props.match.url} component={withRouter(Servers)}/>
-            <Route path={`${props.match.url}/servers/add`} component={ServerForm}/>
             <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
         </Switch>
     );
@@ -68,8 +67,7 @@ class Servers extends Component
             this.setState({isLoading: true});
             this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
-                .then((res) => this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]}), (error) => this.setState({isLoaded: true, error}))
-                .then((res) => this.setState({isLoading: false}))
+                .then((res) => this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]}, () => this.setState({isLoading: false})), (error) => this.setState({isLoaded: true, error}));
         }
     }
 
@@ -128,12 +126,42 @@ class Servers extends Component
         }
     }
 
+    renderServers() {
+        const {servers} = this.state;
+
+        if (servers.length)
+        {
+            return (
+                servers.map((server) => (
+                    <Grid item xs={12} lg={6} key={server.id}>
+                        <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
+                            <Card>
+                                {
+                                    this.renderBackgroundCardImage(server)
+                                }
+                                <CardContent>
+                                    <Typography component={"h5"}>
+                                        {server.name}
+                                    </Typography>
+                                    {
+                                        this.renderStats(server)
+                                    }
+                                    <Typography>{server.description}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    </Grid>
+                )))
+        }
+    }
+
+
     render() {
         return (
             <UserContext.Consumer>
                 {
                     content => {
-                        const { error, isLoaded, servers } = this.state;
+                        const { error, isLoaded } = this.state;
 
                         if (error)
                         {
@@ -145,37 +173,22 @@ class Servers extends Component
                         }
                         else {
                             return (
-                                <Grid>
+                                <Grid container justify={"center"} spacing={40}>
                                     {this.generateSeo()}
+                                    <Grid item xs={12}>
                                     <h1>Servers</h1>
-                                    <Grid container spacing={16}>
-                                        {
-                                            servers.map((server) => (
-                                                <Grid item xs={12} lg={6} key={server.id}>
-                                                    <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
-                                                        <Card>
-                                                            {
-                                                                this.renderBackgroundCardImage(server)
-                                                            }
-                                                            <CardContent>
-                                                                <Typography component={"h5"}>
-                                                                    {server.name}
-                                                                </Typography>
-                                                                {
-                                                                    this.renderStats(server)
-                                                                }
-                                                                <Typography>{server.description}</Typography>
-                                                            </CardContent>
-                                                        </Card>
-                                                    </Link>
-                                                </Grid>
-                                            ))
-                                        }
+                                    </Grid>
+                                    <Grid item>
+                                        <Grid container spacing={16}>
+                                            {
+                                                this.renderServers()
+                                            }
+                                        </Grid>
                                     </Grid>
 
-                                    <div>
+                                    <Grid item xs={12}>
                                         <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.isLoading} style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
-                                    </div>
+                                    </Grid>
                                 </Grid>
                             )
                         }
@@ -187,8 +200,27 @@ class Servers extends Component
     }
 }
 
-class ServerForm extends Component
+export class ServerForm extends Component
 {
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+
+        };
+        this.apiUrl = normalizeUrl(config.apiUrl, {stripAuthentication: false});
+    }
+
+    renderForm()
+    {
+
+    }
+
+    render()
+    {
+        return ("")
+    }
 
 }
 
@@ -255,7 +287,7 @@ class Server extends Component
                 <XYPlot width={800} height={300} xType={"ordinal"}>
                     <VerticalGridLines />
                     <HorizontalGridLines />
-                    <XAxis />
+                    <XAxis title={""} />
                     <YAxis />
                     <AreaSeries
                         data={data}

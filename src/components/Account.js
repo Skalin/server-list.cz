@@ -14,6 +14,7 @@ import {
     Typography
 } from "@material-ui/core";
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+import {MetaTags} from "react-meta-tags";
 
 
 const styles = {
@@ -63,6 +64,15 @@ class Account extends Component
             }
     }
 
+    generateSeo()
+    {
+        return (
+            <MetaTags>
+                <title>{"Nastavení účtu" + config.titlePageName}</title>
+                <meta name="robots" content="noindex, nofollow"/>
+            </MetaTags>
+        )
+    }
 
     renderServers = () =>
     {
@@ -113,6 +123,7 @@ class Account extends Component
         let { user } = this.context;
         return (
             <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                {this.generateSeo()}
                 <Grid item xs={10} >
                         <Grid container justify={"center"} spacing={16}>
                             <Grid item xs={12}>

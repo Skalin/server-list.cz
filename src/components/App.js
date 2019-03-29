@@ -4,7 +4,7 @@ import Header from './../layout/Header';
 import Footer from './../layout/Footer';
 import Services from './Service';
 import servers from './Servers';
-import ServerForm from './Servers';
+import { ServerForm } from './Servers';
 import {UserProvider} from './User';
 import ReactGA from 'react-ga';
 

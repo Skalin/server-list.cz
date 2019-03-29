@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom'
-import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider } from "@material-ui/core";
+import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider, Link } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
@@ -41,7 +40,6 @@ class Navigation extends Component
     {
         super(props);
 
-        this.classes = props;
         this.state = {
             isOpened: false,
             services: [],
@@ -75,7 +73,7 @@ class Navigation extends Component
         return (
             this.context.user.actions.checkLogin()
                 ?
-                <Link to={"/account"}>
+                <Link href={"/account"}>
                     <Typography style={{color: "white"}} >
                         {this.context.user.account.name}
                         <AccountCircleOutlinedIcon />
@@ -90,23 +88,25 @@ class Navigation extends Component
 
     render()
     {
+        const {classes} = this.props;
         let services = this.state.services;
 
         return (
-            <div className={this.classes.root}>
-            <AppBar position={"static"} style={styles.heading}>
+            <div className={classes.root}>
+            <AppBar position={"static"} className={classes.heading}>
                 <Toolbar>
-                    <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={this.classes.menuButton} aria-label={"Open menu"}>
+                    <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
-                    <Link to={"/"}>
-                        <Typography className={this.classes.grow} variant={"h6"} style={styles.heading}>
+                    <Typography className={classes.grow} variant={"h6"} style={styles.heading}>
+                        <Link href={"/"} color={"primary"} variant={"inherit"}>
                             Server-List
-                        </Typography>
-                    </Link>
-                    {
-                        this.printUserSection()
-                    }
+                        </Link>
+                    </Typography>
+                    <div>
+                        {this.printUserSection()}
+                    </div>
+
                 </Toolbar>
             </AppBar>
             <Drawer open={this.state.isOpened} onClose={this.toggleDrawer.bind(this)}>
