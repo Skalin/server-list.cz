@@ -77,12 +77,12 @@ class Navigation extends Component
         return (
             this.context.user.account
                 ?
-                <RouterLink to={"/account"}>
+                <Link component={RouterLink} to={"/account"}>
                     <Typography style={{color: "white"}} >
                         {this.context.user.account.name}
                         <AccountCircleOutlinedIcon />
                     </Typography>
-                </RouterLink>
+                </Link>
                 :
                 <Link component={RouterLink} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
                     LOGIN

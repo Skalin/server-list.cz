@@ -28,6 +28,9 @@ const styles = {
     white: {
         color: 'white',
     },
+    black: {
+        color: 'black',
+    },
     icon: {
         verticalAlign: 'bottom',
         height: 20,
@@ -133,21 +136,38 @@ class Account extends Component
                                         <ExpansionPanelSummary style={styles.heading}>
                                             Osobní údaje
                                         </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails>
-                                            //
+                                        <ExpansionPanelDetails style={styles.black}>
+                                            <Grid container justify={"center"}>
+                                                <Grid item xs={12}>
+                                                    Zde bude formulář s vypsanými údaji, bude možnost editace dat.
+                                                </Grid>
+                                                <Grid item xs={12} sm={6}>
+                                                    <Button style={styles.heading} onClick={this.context.user.actions.updateUser.bind(this)}>
+                                                        Uložit
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
                                         </ExpansionPanelDetails>
                                     </ExpansionPanel>
                                 </Grid>
                                 <Grid item  xs={12} sm={10} md={8}>
                                     <ExpansionPanel expanded={true}>
                                         <ExpansionPanelSummary style={styles.heading}>
-                                            Nastavení účtu
+                                            Přihlášená zařízení
                                         </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails>
-                                            // odhlášení z účtu + odhlášení ze všech zařízení
-                                            <Button style={styles.heading} onClick={this.context.user.actions.logout.bind(this)}>
-                                                Odhlásit se
-                                            </Button>
+                                        <ExpansionPanelDetails style={styles.black}>
+                                            <Grid container justify={"center"}>
+                                                <Grid item xs={12} md={6}>
+                                                    <Button style={styles.heading} onClick={this.context.user.actions.logout.bind(this)}>
+                                                        Odhlásit se
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item xs={12} md={6}>
+                                                    <Button style={styles.heading} onClick={this.context.user.actions.logoutAll.bind(this)}>
+                                                        Odhlásit ze všech zařízení
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
                                         </ExpansionPanelDetails>
                                     </ExpansionPanel>
                                 </Grid>
@@ -156,8 +176,11 @@ class Account extends Component
                                         <ExpansionPanelSummary style={styles.heading}>
                                             Servery
                                         </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails>
+                                        <ExpansionPanelDetails style={styles.black}>
                                             <Grid container justify={"center"}>
+                                                <Grid item xs={12}>
+                                                    Klepnutím na tlačítko přidat můžete přidat další server!
+                                                </Grid>
                                                 <Grid item xs={12}>
                                                     <Button style={styles.heading} component={Link} to={'/servers/add'}>
                                                         Přidat server

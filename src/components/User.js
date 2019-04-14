@@ -32,11 +32,21 @@ export class UserProvider extends Component
                         tryLogin: this.tryLogin,
                         getRawToken: this.getRawToken,
                         logout: this.logout,
+                        logoutAll: this.logoutAll,
+                        updateUser: this.updateUser,
                     }
             }
         };
     }
 
+
+    updateUser = () => {
+
+    }
+
+    logoutAll = () => {
+
+    }
 
     tryLogin = () =>
     {
