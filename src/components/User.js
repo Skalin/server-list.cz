@@ -3,6 +3,7 @@ import * as config from "../config/config";
 import {apiUserUrl} from "../config/config";
 import React, { Component } from 'react';
 import jwt from 'jsonwebtoken';
+import {Redirect} from "react-router-dom";
 
 const normalizeUrl = require('normalize-url');
 export const UserContext = React.createContext();
@@ -14,13 +15,11 @@ export class UserProvider extends Component
     constructor(props)
     {
         super(props);
+
         this.state = {
             loader: false,
             user: {
-                    account: {
-                        name: null,
-                        surname: null,
-                    },
+                    account: null,
                     actions: {
                         checkExpiration: this.checkExpiration,
                         checkLogin: this.checkLogin,
@@ -32,10 +31,12 @@ export class UserProvider extends Component
                         getUser: this.getUser,
                         tryLogin: this.tryLogin,
                         getRawToken: this.getRawToken,
+                        logout: this.logout,
                     }
-                }
-        }
+            }
+        };
     }
+
 
     tryLogin = () =>
     {
@@ -78,16 +79,21 @@ export class UserProvider extends Component
 
     login = ( user ) => {
 
-        console.log("in login");
+        let errors = [];
         if (!this.checkLogin() && user)
         {
-            console.log("in nested login");
             let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
-                .then((res) => this.storeToken(res.data), (res) => {return(res)})
-                .then((res) =>  this.setState({user: { ...this.state.user, account: this.getUser()}})
-                );
+                .then((res) => {
+                    this.storeToken(res.data);
+                    let acc = {...this.state.user.account};
+                    acc = {name: this.getUser().name, surname: this.getUser().surname};
+                    this.setState({user: {...this.state.user, account: acc}});
+                    }, (res) => {errors = res.data});
+
+            return this.checkLogin();
         }
+        return errors;
     };
 
 
@@ -97,7 +103,7 @@ export class UserProvider extends Component
 
 
     getUser = () => {
-        return jwt.decode(localStorage.getItem('user'));
+        return jwt.decode(this.getRawToken());
     };
 
     register = (user) => {
@@ -133,7 +139,6 @@ export class UserProvider extends Component
             .then((res) => state = res.data);
 
         return state;
-
     };
 
     /**
@@ -159,18 +164,28 @@ export class UserProvider extends Component
     };
 
 
+    removeUser = () => {
+        this.setState({user: {...this.state.user, account: null}}, () => {
+            this.removeToken();
+            return true;
+        })
+    };
+
     logout = () => {
         let user = this.getUser();
         if (!user)
             return false;
 
         if (!this.checkLogin())
+        {
+            this.removeUser();
             return false;
+        }
 
-        axios.post(config.apiUserUrl, )
-
-        this.removeToken()
-    }
+        let logoutUrl = normalizeUrl(config.apiUserUrl+'/logout', {stripAuthentication: false});
+        axios.post(logoutUrl, {login_token: this.getRawToken()});
+        this.removeUser();
+    };
 
 
     removeToken = () => {

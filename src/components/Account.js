@@ -120,66 +120,70 @@ class Account extends Component
 
     renderAccount()
     {
-        let { user } = this.context;
         return (
-            <Grid container justify={"center"} style={{marginTop: '25px'}}>
-                {this.generateSeo()}
-                <Grid item xs={10} >
-                        <Grid container justify={"center"} spacing={16}>
-                            <Grid item xs={12}>
-                                <Typography style={styles.white} variant={"h3"}>Účet</Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={10} md={8}>
-                                <ExpansionPanel expanded={true}>
-                                    <ExpansionPanelSummary style={styles.heading}>
-                                        Osobní údaje
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                        //
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </Grid>
-                            <Grid item  xs={12} sm={10} md={8}>
-                                <ExpansionPanel expanded={true}>
-                                    <ExpansionPanelSummary style={styles.heading}>
-                                        Nastavení účtu
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                        // odhlášení z účtu + odhlášení ze všech zařízení
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                            </Grid>
-                            <Grid item xs={12} sm={10} md={8}>
-                                <ExpansionPanel expanded={true}>
-                                    <ExpansionPanelSummary style={styles.heading}>
-                                        Servery
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                        <Grid container justify={"center"}>
-                                            <Grid item xs={12}>
-                                                <Button style={styles.heading} component={Link} to={'/servers/add'}>
-                                                    Přidat server
-                                                </Button>
+                <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                    {this.generateSeo()}
+                    <Grid item xs={10} >
+                            <Grid container justify={"center"} spacing={16}>
+                                <Grid item xs={12}>
+                                    <Typography style={styles.white} variant={"h3"}>Účet</Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={10} md={8}>
+                                    <ExpansionPanel expanded={true}>
+                                        <ExpansionPanelSummary style={styles.heading}>
+                                            Osobní údaje
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails>
+                                            //
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                                </Grid>
+                                <Grid item  xs={12} sm={10} md={8}>
+                                    <ExpansionPanel expanded={true}>
+                                        <ExpansionPanelSummary style={styles.heading}>
+                                            Nastavení účtu
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails>
+                                            // odhlášení z účtu + odhlášení ze všech zařízení
+                                            <Button style={styles.heading} onClick={this.context.user.actions.logout.bind(this)}>
+                                                Odhlásit se
+                                            </Button>
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                                </Grid>
+                                <Grid item xs={12} sm={10} md={8}>
+                                    <ExpansionPanel expanded={true}>
+                                        <ExpansionPanelSummary style={styles.heading}>
+                                            Servery
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails>
+                                            <Grid container justify={"center"}>
+                                                <Grid item xs={12}>
+                                                    <Button style={styles.heading} component={Link} to={'/servers/add'}>
+                                                        Přidat server
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item xs={10}>
+                                                    {
+                                                        this.renderServers()
+                                                    }
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={10}>
-                                                {
-                                                    this.renderServers()
-                                                }
-                                            </Grid>
-                                        </Grid>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                    </Grid>
                 </Grid>
-            </Grid>
-        )
+        );
     }
 
     render()
     {
         return(
-            this.context.user.actions.checkLogin() ? this.renderAccount() : <Redirect to={"/auth"} />
+            <>
+            {this.context.user.account ? this.renderAccount() : <Redirect to={"/auth"} />}
+            </>
         );
     }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider, Link } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
+import {Link as RouterLink} from 'react-router-dom';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
 import ListItem from '@material-ui/core/ListItem';
@@ -25,6 +26,9 @@ const styles = {
     },
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+    },
+    link: {
         color: 'white',
     }
 };
@@ -71,18 +75,18 @@ class Navigation extends Component
     printUserSection()
     {
         return (
-            this.context.user.actions.checkLogin()
+            this.context.user.account
                 ?
-                <Link href={"/account"}>
+                <RouterLink to={"/account"}>
                     <Typography style={{color: "white"}} >
                         {this.context.user.account.name}
                         <AccountCircleOutlinedIcon />
                     </Typography>
-                </Link>
+                </RouterLink>
                 :
-                <Button component={Link} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
+                <Link component={RouterLink} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
                     LOGIN
-                </Button>
+                </Link>
         );
     }
 
@@ -99,7 +103,7 @@ class Navigation extends Component
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.grow} variant={"h6"} style={styles.heading}>
-                        <Link href={"/"} color={"primary"} variant={"inherit"}>
+                        <Link href={"/"} color={"inherit"} variant={"inherit"}>
                             Server-List
                         </Link>
                     </Typography>
@@ -113,13 +117,13 @@ class Navigation extends Component
                 <Divider />
                 <List>
                     <ListItem>
-                        <Typography variant={"h4"}>Services</Typography>
+                        <Typography variant={"h4"}>{"Aplikace"}</Typography>
                     </ListItem>
                     <Divider/>
                     {
                         this.state.services.map( (service) => (
                             <ListItem key={service.id}>
-                                <Link href={"/services/" + service.id} value={service.name}>
+                                <Link component={RouterLink} to={"/services/" + service.id}>
                                     <ListItemText primary={service.name}/>
                                 </Link>
                             </ListItem>

@@ -7,6 +7,8 @@ import { SupervisorAccount } from '@material-ui/icons';
 import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
+import withStyles from "@material-ui/core/es/styles/withStyles";
+
 
 import {
     XYPlot,
@@ -18,6 +20,21 @@ import {
 } from 'react-vis';
 
 
+const styles = {
+    button: {
+        marginTop: '5em',
+        marginBottom: '5em',
+        "&:hover": {
+            textDecoration: "none",
+
+        }
+    },
+    serverItem: {
+
+        textDecoration: "none",
+    }
+};
+
 import {UserContext} from "./User";
 
 const normalizeUrl = require('normalize-url');
@@ -26,7 +43,7 @@ const normalizeUrl = require('normalize-url');
 function servers (props) {
     return(
         <Switch>
-            <Route exact path={props.match.url} component={withRouter(Servers)}/>
+            <Route exact path={props.match.url} component={withStyles(styles) (withRouter(Servers))}/>
             <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
         </Switch>
     );
@@ -53,11 +70,18 @@ class Servers extends Component
     componentDidMount() {
 
         axios.get(this.url)
-            .then((res) => {this.setState({serviceObject: res.data})});
+            .then((res) => {
+                this.setState({serviceObject: res.data})
+            });
 
 
         axios.get(this.ApiUrl)
-            .then((res)=> this.setState({isLoaded: true, servers: res.data}), (error) => this.setState({isLoaded: true, error}));
+            .then((res) => {
+                    this.setState({isLoaded: true, servers: res.data})
+                },
+                (error) => {
+                    this.setState({isLoaded: true, error})
+            });
     }
 
     loadServers()
@@ -67,7 +91,14 @@ class Servers extends Component
             this.setState({isLoading: true});
             this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
-                .then((res) => this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]}, () => this.setState({isLoading: false})), (error) => this.setState({isLoaded: true, error}));
+                .then((res) => {
+                    this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]},
+                        () => {
+                                this.setState({isLoading: false})
+                        })
+                }, (error) => {
+                    this.setState({isLoaded: true, error})
+                });
         }
     }
 
@@ -129,12 +160,12 @@ class Servers extends Component
     renderServers() {
         const {servers} = this.state;
 
-        if (servers.length)
+        if (servers.length > 0)
         {
             return (
                 servers.map((server) => (
                     <Grid item xs={12} lg={6} key={server.id}>
-                        <Link to={this.props.match.url + "/servers/" + server.id} style={{textDecoration: "none"}}>
+                        <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                             <Card>
                                 {
                                     this.renderBackgroundCardImage(server)
@@ -153,6 +184,21 @@ class Servers extends Component
                     </Grid>
                 )))
         }
+    }
+
+    renderLoadButton()
+    {
+        const {servers} = this.state;
+        const { classes } = this.props;
+
+        if (servers.length > 0) {
+            return (
+                <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.isLoading} className={classes.button}>
+                    Načíst další
+                </Button>
+            )
+        }
+
     }
 
 
@@ -176,7 +222,7 @@ class Servers extends Component
                                 <Grid container justify={"center"} spacing={40}>
                                     {this.generateSeo()}
                                     <Grid item xs={12}>
-                                    <h1>Servers</h1>
+                                    <h1>{this.state.serviceObject.name}</h1>
                                     </Grid>
                                     <Grid item>
                                         <Grid container spacing={16}>
@@ -187,7 +233,7 @@ class Servers extends Component
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.isLoading} style={{marginTop: '5em', marginBottom: '5em'}}>Load more</Button>
+                                        {this.renderLoadButton()}
                                     </Grid>
                                 </Grid>
                             )

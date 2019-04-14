@@ -45,15 +45,15 @@ class App extends Component {
                 <UserProvider>
                     {this.generateSeo()}
                     <Header/>
-                    <div className="App">
-                        <div className="content">
-                            <Route exact path="/" render={props => (
-                                <Services />
-                            )} />
-                            <Route path="/auth" component={Auth}/>
-                            <Route path="/services/:id" component={servers} />
-                            <Route path="/account" component={Account} />
-                            <Route path="/servers/add" component={ServerForm} />
+                            <div className="App">
+                                <div className="content">
+                                    <Route exact path="/" render={props => (
+                                        <Services />
+                                    )} />
+                                    <Route path="/auth" component={Auth}/>
+                                    <Route path="/services/:id" component={servers} />
+                                    <Route path="/account" component={Account} />
+                                    <Route path="/servers/add" component={ServerForm} />
                         </div>
                         <Footer />
                     </div>

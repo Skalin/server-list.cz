@@ -28,7 +28,7 @@ class Services extends Component
         let services = this.state.services;
         return (
             <Grid>
-                <h2>Services</h2>
+                <h2>{"Aplikace"}</h2>
                 <Grid container spacing={16}>
                     {
                         this.state.services.map((service) => (
@@ -60,6 +60,9 @@ class ServiceItem extends Component
                         <CardContent>
                             <Typography component={"h5"}>
                                 {this.state.service.name}
+                            </Typography>
+                            <Typography component={"p"}>
+
                             </Typography>
                         </CardContent>
                     </Card>
