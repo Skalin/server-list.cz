@@ -335,16 +335,17 @@ export class ServerForm extends Component
                                         <Grid container justify={"center"} spacing={16}>
                                             <form onSubmit={this.submitForm.bind(this)} style={{marginTop: '25px'}}>
                                                 <FormGroup>
-                                                    <InputLabel>Služba</InputLabel>
+                                                    <InputLabel htmlFor="service-select">Služba</InputLabel>
                                                     <Select
                                                         value={this.state.server.service}
                                                         onChange={this.onChange.bind(this)}
                                                         inputProps={{
                                                             name: 'service',
+                                                            id: 'service-select'
                                                         }}
                                                     >
                                                         <MenuItem value={"none"}>
-                                                            <em>None</em>
+                                                            <em>Nevybrána</em>
                                                         </MenuItem>
                                                         {
                                                             this.state.services.map( (service) => (
@@ -396,7 +397,6 @@ export class ServerForm extends Component
     {
         return (
             <>
-
                 {this.context.user.account ? this.renderForm() : <Redirect to={"/auth"} />}
             </>
         )
