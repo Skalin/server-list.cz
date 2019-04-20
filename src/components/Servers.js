@@ -396,7 +396,8 @@ export class ServerForm extends Component
     {
         return (
             <>
-                {this.renderForm()}
+
+                {this.context.user.account ? this.renderForm() : <Redirect to={"/auth"} />}
             </>
         )
     }
