@@ -130,7 +130,7 @@ class Servers extends Component
 
     renderPlayersBadge (server)
     {
-        if (server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
+        if (server.stats.StatusStat.value && server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
             let data = server.stats.PlayersStat.value+"/"+server.stats.PlayersStat.maxValue;
             return (
                 <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>

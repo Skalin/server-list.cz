@@ -30,7 +30,7 @@ const styles = {
         marginTop: "2em",
     },
     headingRed: {
-        backgroundColor: "rgba(183, 79, 111, 1)",
+        backgroundColor: "rgba(209, 10, 60, 1)",
         color: 'white',
         marginTop: "2em",
     }
