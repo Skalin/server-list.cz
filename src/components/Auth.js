@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox, Snackbar } from "@material-ui/core";
 import { UserContext } from "./User";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import amber from '@material-ui/core/colors/amber';
 import { Redirect } from "react-router-dom";
 
 const signUp = 1;
@@ -100,7 +103,8 @@ class Login extends Component
                     password: null
                 },
             loggedIn: false,
-            errors: []
+            state: null,
+            snackOpen: false,
         };
     }
 
@@ -109,15 +113,26 @@ class Login extends Component
         let user = {...this.state.user};
         let property = formData.target.name;
         user[property] = formData.target.value;
+        this.context.error = null;
         this.setState({user})
+    }
+
+    handleClose = () => {
+        this.setState({snackOpen: false});
     }
 
     submitForm(e)
     {
         e.preventDefault();
-        if (this.context.user.actions.login(this.state.user))
+        let state = this.context.user.actions.login(this.state.user);
+
+        if (typeof(state) == "boolean" && state)
         {
             this.setState({loggedIn: true});
+        }
+        else
+        {
+            this.setState({snackOpen: true})
         }
     }
 
@@ -194,16 +209,16 @@ class Register extends Component
             <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Registration</h1>
                 <FormGroup>
-                    <TextField autoFocus={true} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
+                    <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Password"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Heslo"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Name"} type="text" name="name" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Jméno"} type="text" name="name" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Surname"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Příjmení"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <TextField label={"E-mail"} type="text" name="mail" onChange={this.onChange.bind(this)}/>
@@ -219,7 +234,7 @@ class Register extends Component
                                 color="primary"
                             />
                         }
-                        label="ToS Agreement"
+                        label={"Souhlasím s "+<Link to={'/conditions'}>"podmínkami služby Server-List.cz"</Link>}
                     />
                 </FormGroup>
                 <Button variant={"contained"} color={"secondary"} type="submit" style={{marginTop: "2em"}}>Sign up</Button>

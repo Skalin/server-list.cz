@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
-import {Switch, Link, Route, Redirect} from "react-router-dom";
+import {Switch, Link, Route, Redirect, Link as RouterLink} from "react-router-dom";
 import * as config from '../config/config.js';
-import { SupervisorAccount } from '@material-ui/icons';
-import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent } from '@material-ui/core/'
+import {Input, SupervisorAccount} from '@material-ui/icons';
+import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent, FormGroup } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 import withStyles from "@material-ui/core/es/styles/withStyles";
@@ -29,6 +29,9 @@ const styles = {
 
         }
     },
+    white: {
+        color: "white",
+    },
     serverItem: {
 
         textDecoration: "none",
@@ -36,6 +39,16 @@ const styles = {
 };
 
 import {UserContext} from "./User";
+import {
+    ExpansionPanel,
+    ExpansionPanelDetails,
+    ExpansionPanelSummary,
+    FormControl,
+    InputLabel, MenuItem,
+    Select
+} from "@material-ui/core";
+import TextField from "@material-ui/core/es/TextField/TextField";
+import ListItemText from "../layout/Navigation";
 
 const normalizeUrl = require('normalize-url');
 
@@ -248,24 +261,144 @@ class Servers extends Component
 
 export class ServerForm extends Component
 {
-
+    static contextType = UserContext;
     constructor(props)
     {
         super(props);
         this.state = {
-
+            server: {
+                service: "",
+                name: null,
+                description: null,
+                ip: null,
+                port: null,
+                domain: null,
+            },
+            services: [],
         };
         this.apiUrl = normalizeUrl(config.apiUrl, {stripAuthentication: false});
     }
 
-    renderForm()
+    generateSeo()
     {
+
+        return (
+            <MetaTags>
+                <title>{"Přidat server" + config.titlePageName}</title>
+                <meta property="og:title" content={"Přidat server"} />
+            </MetaTags>
+        )
 
     }
 
-    render()
+
+    onChange(formData)
     {
-        return ("")
+        let server = {...this.state.server};
+        let property = formData.target.name;
+        server[property] = formData.target.value;
+        this.setState({server}, () => console.log(this.state));
+    }
+
+
+    submitForm(e)
+    {
+        e.preventDefault();
+        if (this.state.server.service !== "")
+        {
+            let url = normalizeUrl(this.apiUrl+"/services/"+this.state.server.service+"/servers/", {stripAuthentication: false});
+            axios.post(url, {"login_token": this.context.user.actions.getRawToken(), "server": this.state.server})
+                .then((res) => {return (<Redirect to={"/services/"+this.state.server.service+"/servers/"+res.data.server.id} />)})
+                .catch();
+        }
+    }
+
+    componentDidMount() {
+        axios.get(this.apiUrl+"/services")
+            .then(res => this.setState({services: res.data}));
+    }
+
+    renderForm = () =>
+    {
+        return (
+            <>
+                <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                    {this.generateSeo()}
+                    <Grid item xs={10} >
+                        <Grid container justify={"center"} spacing={16}>
+                            <Grid item xs={12}>
+                                <Typography style={styles.white} variant={"h3"}>Nový server</Typography>
+                            </Grid>
+                            <Grid item xs={8} sm={6}>
+                                <ExpansionPanel expanded={true} xs={6}>
+                                    <ExpansionPanelDetails xs={6}>
+                                        <Grid container justify={"center"} spacing={16}>
+                                            <form onSubmit={this.submitForm.bind(this)} style={{marginTop: '25px'}}>
+                                                <FormGroup>
+                                                    <InputLabel>Služba</InputLabel>
+                                                    <Select
+                                                        value={this.state.server.service}
+                                                        onChange={this.onChange.bind(this)}
+                                                        inputProps={{
+                                                            name: 'service',
+                                                        }}
+                                                    >
+                                                        <MenuItem value={"none"}>
+                                                            <em>None</em>
+                                                        </MenuItem>
+                                                        {
+                                                            this.state.services.map( (service) => (
+                                                                    <MenuItem key={service.id} value={service.id}>
+                                                                        <em>{service.name}</em>
+                                                                    </MenuItem>
+                                                                )
+                                                            )
+                                                        }
+                                                    </Select>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                <TextField name={"name"}
+                                                            label={"Název"} autoFocus={true} onChange={this.onChange.bind(this)}/>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <TextField rows={4}
+                                                                multiline name={"description"} label={"Popis"} onChange={this.onChange.bind(this)} />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <TextField
+                                                         name={"ip"} label={"IP adresa"} onChange={this.onChange.bind(this)} />
+                                                    <TextField
+                                                         name={"port"} label={"Port"} onChange={this.onChange.bind(this)} />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                <TextField
+                                                     name={"domain"} label={"Doména"} onChange={this.onChange.bind(this)} />
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <Button variant={"contained"} color={"default"} type="submit" style={styles.button}>
+                                                        Vytvořit
+                                                    </Button>
+                                                </FormGroup>
+
+                                            </form>
+                                        </Grid>
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </>
+        );
+    }
+
+    render = () =>
+    {
+        return (
+            <>
+                {this.renderForm()}
+            </>
+        )
     }
 
 }

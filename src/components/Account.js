@@ -91,7 +91,7 @@ class Account extends Component
                             <TableCell>Server</TableCell>
                             {
                                 isWidthUp('md', this.props.width) ?
-                                    <TableCell>IP</TableCell> : ''
+                                    <TableCell>IP</TableCell> : null
                             }
                             <TableCell>Tlačítka</TableCell>
                         </TableRow>
@@ -106,7 +106,7 @@ class Account extends Component
                                     isWidthUp('md', this.props.width) ?
                                     <TableCell>
                                         {server.ip}:{server.port}
-                                    </TableCell> : ''
+                                    </TableCell> : null
                                 }
                                 <TableCell align={"right"}>
                                     <Button style={styles.heading} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
@@ -137,7 +137,7 @@ class Account extends Component
                                             Osobní údaje
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"}>
+                                            <Grid container justify={"center"} spacing={16}>
                                                 <Grid item xs={12}>
                                                     Zde bude formulář s vypsanými údaji, bude možnost editace dat.
                                                 </Grid>
@@ -156,13 +156,13 @@ class Account extends Component
                                             Přihlášená zařízení
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"}>
+                                            <Grid container justify={"center"} spacing={16}>
                                                 <Grid item xs={12} md={6}>
                                                     <Button style={styles.heading} onClick={this.context.user.actions.logout.bind(this)}>
                                                         Odhlásit se
                                                     </Button>
                                                 </Grid>
-                                                <Grid item xs={12} md={6}>
+                                                <Grid item xs={12} md={6} >
                                                     <Button style={styles.heading} onClick={this.context.user.actions.logoutAll.bind(this)}>
                                                         Odhlásit ze všech zařízení
                                                     </Button>
@@ -177,10 +177,7 @@ class Account extends Component
                                             Servery
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"}>
-                                                <Grid item xs={12}>
-                                                    Klepnutím na tlačítko přidat můžete přidat další server!
-                                                </Grid>
+                                            <Grid container justify={"center"} spacing={16}>
                                                 <Grid item xs={12}>
                                                     <Button style={styles.heading} component={Link} to={'/servers/add'}>
                                                         Přidat server

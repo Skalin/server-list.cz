@@ -18,9 +18,12 @@ export class UserProvider extends Component
 
         this.state = {
             loader: false,
+            error: null,
+            loadingError: false,
             user: {
                     account: null,
                     actions: {
+                        checkToken: this.checkToken,
                         checkExpiration: this.checkExpiration,
                         checkLogin: this.checkLogin,
                         checkIssueDate: this.checkIssueDate,
@@ -40,6 +43,32 @@ export class UserProvider extends Component
     }
 
 
+    checkToken = () => {
+        let user = this.getUser();
+        if (!user)
+            return false;
+
+        this.storeUserInfo();
+
+        if (!this.checkExpiration(user.exp))
+        {
+            this.removeUser();
+            return false;
+        }
+
+        if ((user.exp-7*24*3600) < ((Date.now() / 1000)+timestampSync))
+        {
+            // regain token
+            let loginUrl = normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
+            axios.post(loginUrl, {'login_token': this.getRawToken()})
+                .then((res) => this.storeUser(res.data), (res) => console.log(res));
+        }
+
+
+
+        return true;
+    };
+
     updateUser = () => {
 
     }
@@ -54,10 +83,7 @@ export class UserProvider extends Component
     };
 
     componentDidMount() {
-        if (this.state.user.actions.tryLogin())
-        {
-            this.setState({user: { ...this.state.user, account: this.getUser()}})
-        }
+        this.state.user.actions.checkToken();
     }
 
     checkExpiration = ( date ) => {
@@ -70,40 +96,30 @@ export class UserProvider extends Component
         return (date <= timestamp);
     };
 
-
-    loginUser = ( user, email = null, password = null) => {
-        if (user)
-        {
-            if (!this.checkExpiration(user))
-            {
-                this.reauthenticate(user)
-            }
-        }
-
-    };
-
-    regenerateToken = ( user ) => {
-
-    };
-
-
     login = ( user ) => {
 
-        let errors = [];
         if (!this.checkLogin() && user)
         {
             let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then((res) => {
-                    this.storeToken(res.data);
-                    let acc = {...this.state.user.account};
-                    acc = {name: this.getUser().name, surname: this.getUser().surname};
-                    this.setState({user: {...this.state.user, account: acc}});
-                    }, (res) => {errors = res.data});
-
+                    this.storeUser(res.data);
+                }, (error) => this.setState({loadingError: true, error: error.response}));
             return this.checkLogin();
         }
-        return errors;
+        return false;
+    };
+
+    storeUserInfo = () => {
+
+        let acc = {...this.state.user.account};
+        acc = {name: this.getUser().name, surname: this.getUser().surname};
+        this.setState({user: {...this.state.user, account: acc}});
+    }
+
+    storeUser = (data) => {
+        this.storeToken(data);
+        this.storeUserInfo();
     };
 
 
