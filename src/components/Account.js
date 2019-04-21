@@ -250,7 +250,7 @@ class Account extends Component
                                                     <Typography>
                                                         Generátor widgetů slouží k tvorbě jednoduchých statusů pro vkládání na Váš web. Jedná se o jednoduchý nástroj umožňující generování PHP a jQuery widgetů. Widgety stačí do webu pouze zkopírovat, není nutné nic dalšího řešit.
                                                     </Typography>
-                                                    <Button style={styles.headingButton} onClick={this.context.user.actions.logout.bind(this)}>
+                                                    <Button component={Link} style={styles.headingButton} to={'/servers/generator'}>
                                                         Generátor widgetů pro weby
                                                     </Button>
                                                 </Grid>
