@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {UserContext} from "./User";
 import {Link, Redirect} from "react-router-dom";
-import Paper from '@material-ui/core/Paper';
 import * as config from "../config/config";
 import axios from 'axios';
 import {
@@ -11,11 +10,12 @@ import {
     ExpansionPanelDetails,
     ExpansionPanelSummary,
     Table, TableBody, TableCell, TableHead, TableRow,
-    Typography
+    Typography, Dialog, DialogTitle, DialogActions
 } from "@material-ui/core";
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 import {MetaTags} from "react-meta-tags";
 
+const normalizeUrl = require('normalize-url');
 
 const styles = {
     root: {
@@ -39,9 +39,19 @@ const styles = {
     details: {
         alignItems: 'center',
     },
+    headingButton: {
+        backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+        margin: "1em",
+    },
     column: {
         flexBasis: '33.33%',
     },
+    headingButtonRed: {
+        backgroundColor: "rgba(209, 10, 60, 1)",
+        color: 'white',
+        margin: "1em",
+    }
 };
 
 class Account extends Component
@@ -55,6 +65,7 @@ class Account extends Component
         this.classes = props;
         this.state = {
             servers: [],
+            dialogOpen: false,
         }
     }
 
@@ -62,9 +73,15 @@ class Account extends Component
     {
             if (this.context.user.actions.getUser())
             {
-                axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
-                    .then((res) => {this.setState({servers: res.data})});
+                this.setServers();
             }
+    }
+
+    setServers = () =>
+    {
+
+        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
+            .then((res) => {this.setState({servers: res.data})});
     }
 
     generateSeo()
@@ -109,9 +126,8 @@ class Account extends Component
                                     </TableCell> : null
                                 }
                                 <TableCell align={"right"}>
-                                    <Button style={styles.heading} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
-                                        Detail
-                                    </Button>
+                                    {this.renderDetailButton(server)}
+                                    {this.renderDeleteButton(server)}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -120,6 +136,58 @@ class Account extends Component
         }
         return (data);
     };
+
+    renderDetailButton(server)
+    {
+        return (
+            <Button style={styles.headingButton} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
+                Detail
+            </Button>
+        )
+    }
+
+    handleDeleteButton = () =>
+    {
+        this.setState({dialogOpen: true});
+    }
+
+    handleDialogClose = () => {
+        this.setState({dialogOpen: false})
+    }
+
+    handleDeleteServer = (server) => {
+        let deleteServerUrl = normalizeUrl(config.apiUrl+"/services/"+server.service_id+"/servers/"+server.id, {stripAuthentication: false});
+        axios.delete(deleteServerUrl, {data: {'login_token': this.context.user.actions.getRawToken()}})
+            .then((res) =>
+                {
+                    this.setServers();
+                    this.handleDialogClose();
+                }
+            );
+    }
+
+    renderDeleteButton = (server) =>
+    {
+        return (
+            <>
+                <Button variant={"outlined"} style={styles.headingButtonRed} onClick={this.handleDeleteButton}>
+                    Odebrat
+                </Button>
+                <Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose}>
+                    <DialogTitle>Opravdu si přejete smazat server?</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={this.handleDialogClose}>
+                            Ne
+                        </Button>
+                        <Button onClick={this.handleDeleteServer.bind(this, server)}>
+                            Ano
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+        )
+    }
+
 
     renderAccount()
     {
