@@ -8,6 +8,7 @@ import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Av
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 import withStyles from "@material-ui/core/es/styles/withStyles";
+import ReactCodeSinppet from 'react-code-snippet'
 
 
 import {
@@ -556,5 +557,224 @@ class Server extends Component
     }
 }
 
+
+export class ServerWidgetGenerator extends Component
+{
+    static contextType = UserContext;
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            servers: [],
+            languages: ['JavaScript', 'PHP'],
+            generator: {
+                language: "",
+                server: "",
+            }
+        };
+    }
+
+    componentDidMount()
+    {
+
+        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
+            .then((res) => {this.setState({servers: res.data})});
+    }
+
+    generateSeo()
+    {
+        if (this.state.server)
+        {
+            return (
+                <MetaTags>
+                    <title>{"Vygenerovat status widget" + config.titlePageName}</title>
+                    <meta name="description" content={this.state.server.description} />
+                    <meta property="og:title" content={this.state.server.name} />
+                </MetaTags>
+            )
+        }
+    }
+
+
+    onChange(formData)
+    {
+        let generator = {...this.state.generator};
+        let property = formData.target.name;
+        generator[property] = formData.target.value;
+        this.setState({generator});
+    }
+
+
+    renderForm = () => {
+        return (
+            <>
+                <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                    {this.generateSeo()}
+                    <Grid item xs={10} >
+                        <Grid container justify={"center"} spacing={16}>
+                            <Grid item xs={12}>
+                                <Typography style={styles.white} variant={"h3"}>Generátor widgetů</Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <ExpansionPanel expanded={true} xs={6}>
+                                    <ExpansionPanelDetails xs={6}>
+                                        <Grid container justify={"center"} spacing={16}>
+                                            <Grid item>
+                                                <form style={{marginTop: '25px'}}>
+                                                    <FormGroup style={{margin: "1em"}}>
+                                                        <InputLabel htmlFor="server-select">Server</InputLabel>
+                                                        <Select
+                                                            value={this.state.generator.server}
+                                                            displayEmpty
+                                                            onChange={this.onChange.bind(this)}
+                                                            inputProps={{
+                                                                name: 'server',
+                                                                id: 'server-select'
+                                                            }}
+                                                        >
+                                                            <MenuItem disabled selected value={""}>
+                                                                <em>Nevybrán</em>
+                                                            </MenuItem>
+                                                            {
+                                                                this.state.servers.map( (server) => (
+                                                                        <MenuItem key={server.id} value={server.id}>
+                                                                            <em>{server.name} - {server.ip}:{server.port}</em>
+                                                                        </MenuItem>
+                                                                    )
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormGroup>
+                                                    <FormGroup style={{margin: "1em"}}>
+                                                        <InputLabel htmlFor="language-select">Jazyk</InputLabel>
+                                                        <Select
+                                                            displayEmpty
+                                                            value={this.state.generator.language}
+                                                            onChange={this.onChange.bind(this)}
+                                                            inputProps={{
+                                                                name: 'language',
+                                                                id: 'language-select'
+                                                            }}
+                                                        >
+                                                            <MenuItem disabled selected value={""}>
+                                                                <em>Nevybrán</em>
+                                                            </MenuItem>
+                                                            {
+                                                                this.state.languages.map( (key, value) => (
+                                                                        <MenuItem key={value} value={value}>
+                                                                            <em>{key}</em>
+                                                                        </MenuItem>
+                                                                    )
+                                                                )
+                                                            }
+                                                        </Select>
+                                                    </FormGroup>
+                                                    <FormGroup>
+                                                        <Typography>
+
+                                                        </Typography>
+                                                    </FormGroup>
+                                                </form>
+                                            </Grid>
+                                            <Grid item>
+                                                {this.renderWidget()}
+                                            </Grid>
+                                        </Grid>
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </>
+        )
+    }
+
+    renderWidget = () => {
+        if (this.state.generator.server !== "" && this.state.generator.language !== "")
+        {
+            var data = null;
+            if (this.state.languages[this.state.generator.language] === 'PHP')
+            {
+                console.log("a");
+                data =
+                    <pre style={{textAlign: 'left', whiteSpace: 'pre-wrap'}}><code>{`
+                    <?php
+
+                    class Widget
+                    {
+
+                        public $name = null;
+                        public $address = null;
+                        public $status = null;
+                        public $ping = null;
+                        public $players = null;
+
+                        private function parseOutput($c)
+                        {
+                            $this->name = $c['name'];
+                            $this->address = (isset($c['domain']) && !empty($c['domain'])) ? $c['domain'] : ($c['ip'].":".$c['port']);
+                            $this->status = (isset($c['stats']['StatusStat']['value']) && $c['stats']['StatusStat']['value']) ? "Online" : "Offline";
+                            $this->ping = isset($c['stats']['PingStat']['value']) ? $c['stats']['PingStat']['value'] : null;
+                            $this->players = (isset($c['stats']['PlayersStat']['value']) && isset($c['stats']['PlayersStat']['maxValue'])) ? $c['stats']['PlayersStat']['value']."/".$c['stats']['PlayersStat']['maxValue'] : null;
+                        }
+
+                        private function get()
+                        {
+
+                            $url = "https://api.server-list.cz/v1/services/`+this.state.generator.server.service_id+`/servers/`+this.state.generator.server.id+`";
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $url);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+                            $contents = curl_exec($ch);
+                            $contents = json_decode($contents, true);
+                            $this->parseOutput($contents);
+
+                            curl_close($ch);
+                        }
+
+                        public function render()
+                        {
+                            $this->get();
+                            return "
+                                <div style=\"box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;\">
+                                    <div style=\"padding: 2px 16px;\">
+                                        <h4><b>{$this->name}</b></h4>
+                                        <p>IP: {$this->address}</p>
+                                        <p>Status: {$this->status}</p>
+                                        <?php if (!$this->status): ?>
+                                            <p>Počet hráčů: {$this->players}</p>
+                                            <p>Ping: {$this->ping}</p>
+                                        <?php endif;>
+                                    </div>
+                                </div>
+                            ";
+                        }
+                    }
+
+                    $widget = new Widget;
+                    echo $widget->render();
+
+                    ?>
+                    `}</code></pre>;
+                console.log(data);
+            }
+            return (
+                data
+            )
+        }
+    }
+
+    render()
+    {
+        return (
+            <>
+            {this.renderForm()}
+            </>
+        )
+    }
+}
 
 export default servers;

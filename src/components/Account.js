@@ -221,18 +221,37 @@ class Account extends Component
                                 <Grid item  xs={12} sm={10} md={8}>
                                     <ExpansionPanel expanded={true}>
                                         <ExpansionPanelSummary style={styles.heading}>
-                                            Přihlášená zařízení
+                                            Nástroje
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails style={styles.black}>
                                             <Grid container justify={"center"} spacing={16}>
+                                                <Grid item xs={12}>
+                                                    <Typography variant={"h3"} style={{margin: "1em"}}>
+                                                        Odhlášení
+                                                    </Typography>
+                                                    <Typography>
+                                                        Využitím jednoho z těchto nástrojů se můžete odhlásit z tohoto zařízení a nebo se odhlásit ze všech zařízení, na kterých jste se v průběhu posledních 30 dní přihlásil.
+                                                    </Typography>
+                                                </Grid>
                                                 <Grid item xs={12} md={6}>
-                                                    <Button style={styles.heading} onClick={this.context.user.actions.logout.bind(this)}>
+                                                    <Button style={styles.headingButton} onClick={this.context.user.actions.logout.bind(this)}>
                                                         Odhlásit se
                                                     </Button>
                                                 </Grid>
                                                 <Grid item xs={12} md={6} >
-                                                    <Button style={styles.heading} onClick={this.context.user.actions.logoutAll.bind(this)}>
+                                                    <Button style={styles.headingButtonRed} onClick={this.context.user.actions.logoutAll.bind(this)}>
                                                         Odhlásit ze všech zařízení
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <Typography variant={"h3"} style={{margin: "1em"}}>
+                                                        Generátor widgetů
+                                                    </Typography>
+                                                    <Typography>
+                                                        Generátor widgetů slouží k tvorbě jednoduchých statusů pro vkládání na Váš web. Jedná se o jednoduchý nástroj umožňující generování PHP a jQuery widgetů. Widgety stačí do webu pouze zkopírovat, není nutné nic dalšího řešit.
+                                                    </Typography>
+                                                    <Button style={styles.headingButton} onClick={this.context.user.actions.logout.bind(this)}>
+                                                        Generátor widgetů pro weby
                                                     </Button>
                                                 </Grid>
                                             </Grid>
