@@ -4,12 +4,64 @@ import axios from 'axios';
 import { Grid, Card, CardContent, Typography } from '@material-ui/core/'
 import * as config from "../config/config";
 import {Link} from "react-router-dom";
-
+import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+import {CardMedia} from "@material-ui/core";
 
 const normalizeUrl = require('normalize-url');
 
+const styles = theme => ({
+    appBar: {
+        position: 'relative',
+    },
+    icon: {
+        marginRight: theme.spacing.unit * 2,
+    },
+    heroUnit: {
+        color: theme.palette.background.paper,
+        backgroundColor: "#02182B",
+    },
+    heroContent: {
+        maxWidth: 600,
+        margin: '0 auto',
+        padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
+    },
+    heroButtons: {
+        marginTop: theme.spacing.unit * 4,
+    },
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+            width: 1100,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    cardGrid: {
+        padding: `${theme.spacing.unit * 8}px 0`,
+    },
+    card: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    cardMedia: {
+        paddingTop: '56.25%', // 16:9
+    },
+    cardContent: {
+        flexGrow: 1,
+    },
+    footer: {
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing.unit * 6,
+    },
+});
+
 class Services extends Component
 {
+
     constructor(props)
     {
         super(props);
@@ -25,51 +77,49 @@ class Services extends Component
     }
 
     render() {
+
+        const {classes} = this.props;
         let services = this.state.services;
         return (
-            <Grid>
-                <h2>{"Aplikace"}</h2>
-                <Grid container spacing={16}>
-                    {
-                        this.state.services.map((service) => (
-                            <ServiceItem key={service.id} service={service}/>
-                        ))
-                    }
-                </Grid>
-            </Grid>
+            <main>
+                <div className={classes.heroUnit}>
+                    <div className={classes.heroContent}>
+                        <Typography component="h1" variant="h2" align="center" color={"inherit"} gutterBottom>
+                            Server-List
+                        </Typography>
+                        <Typography variant={"h6"} align={"center"} color={"inherit"} paragraph>
+                            Text
+                        </Typography>
+
+                    </div>
+                </div>
+                <div className={classNames(classes.layout, classes.cardGrid)}>
+                    <Grid container spacing={40}>
+                        {
+                            this.state.services.map((service) => (
+                                <Grid item xs={12} sm={6} md={4} key={service.id}>
+                                    <Link to={'/services/'+service.id}>
+                                        <Card className={classes.card}>
+                                            <CardMedia/>
+                                            <CardContent>
+                                                <Typography component={"h5"}>
+                                                    {service.name}
+                                                </Typography>
+                                                <Typography component={"p"}>
+
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </div>
+            </main>
         );
     }
 }
 
 
-class ServiceItem extends Component
-{
-    state = {
-        service: null,
-        url: "services/"+this.props.service.id
-    };
-    componentWillMount() {
-        this.setState({service: this.props.service})
-    }
-
-    render() {
-        return (
-            <Grid item xs={6} lg={3}>
-                <Link to={this.state.url}>
-                    <Card>
-                        <CardContent>
-                            <Typography component={"h5"}>
-                                {this.state.service.name}
-                            </Typography>
-                            <Typography component={"p"}>
-
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Link>
-            </Grid>
-        )
-    }
-}
-
-export default Services;
+export default withStyles(styles)(Services);

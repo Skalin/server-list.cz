@@ -9,6 +9,7 @@ import * as config from "../config/config";
 import axios from "axios";
 import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
 import withStyles from "@material-ui/core/es/styles/withStyles";
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 
 const normalizeUrl = require('normalize-url');
@@ -97,6 +98,7 @@ class Navigation extends Component
 
         return (
             <div className={classes.root}>
+            <CssBaseline />
             <AppBar position={"static"} className={classes.heading}>
                 <Toolbar>
                     <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={classes.menuButton} aria-label={"Open menu"}>
