@@ -76,7 +76,7 @@ class Services extends Component
 
                 <CardMedia
                     className={classes.cardMedia} title={service.name}>
-                    <img src={service.thumbnailImageUrl} height={200} />
+                    <img src={service.thumbnailImageUrl} />
                 </CardMedia>
             );
         }
