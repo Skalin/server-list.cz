@@ -88,7 +88,7 @@ class Services extends Component
                             Server-List
                         </Typography>
                         <Typography variant={"h6"} align={"center"} color={"inherit"} paragraph>
-                            Text
+                            Webová aplikace vytvořená v Reactu sloužící pro účely monitorování herních serverů. Tato aplikace byla vytvořena pro účely bakalářské práce `Game Server Monitoring Portal`.
                         </Typography>
 
                     </div>
