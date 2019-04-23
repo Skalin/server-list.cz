@@ -84,9 +84,9 @@ class Account extends Component
 
         axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
             .then((res) => {this.setState({servers: res.data})});
-    }
+    };
 
-    generateSeo()
+    generateSeo = () =>
     {
         return (
             <MetaTags>
@@ -94,7 +94,7 @@ class Account extends Component
                 <meta name="robots" content="noindex, nofollow"/>
             </MetaTags>
         )
-    }
+    };
 
     renderServers = () =>
     {
@@ -139,7 +139,7 @@ class Account extends Component
         return (data);
     };
 
-    renderDetailButton(server)
+    renderDetailButton = (server) =>
     {
         return (
             <Tooltip title="Detail">
@@ -148,16 +148,16 @@ class Account extends Component
                 </IconButton>
             </Tooltip>
         )
-    }
+    };
 
     handleDeleteButton = () =>
     {
         this.setState({dialogOpen: true});
-    }
+    };
 
     handleDialogClose = () => {
         this.setState({dialogOpen: false})
-    }
+    };
 
     handleDeleteServer = (server) => {
         let deleteServerUrl = normalizeUrl(config.apiUrl+"/services/"+server.service_id+"/servers/"+server.id, {stripAuthentication: false});
@@ -168,7 +168,7 @@ class Account extends Component
                     this.handleDialogClose();
                 }
             );
-    }
+    };
 
     renderDeleteButton = (server) =>
     {
