@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import {CardMedia} from "@material-ui/core";
+import Image from "react-bootstrap/Image";
 
 const normalizeUrl = require('normalize-url');
 
@@ -76,7 +77,7 @@ class Services extends Component
 
                 <CardMedia
                     className={classes.cardMedia} title={service.name}>
-                    <img src={service.thumbnailImageUrl} />
+                    <Image src={service.thumbnailImageUrl} fluid/>
                 </CardMedia>
             );
         }
