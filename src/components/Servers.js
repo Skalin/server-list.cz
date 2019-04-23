@@ -27,7 +27,7 @@ const styles = theme => ({
         backgroundColor: "#02182B",
     },
     heroContent: {
-        maxWidth: 600,
+        maxWidth: 1000,
         margin: '0 auto',
         padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
     },
