@@ -105,7 +105,7 @@ class Navigation extends Component
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.grow} variant={"h6"} style={styles.heading}>
-                        <Link href={"/"} color={"inherit"} variant={"inherit"}>
+                        <Link component={RouterLink} to={"/"} color={"inherit"} variant={"inherit"}>
                             Server-List
                         </Link>
                     </Typography>
