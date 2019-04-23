@@ -8,7 +8,7 @@ import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Av
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import ReactCodeSinppet from 'react-code-snippet'
+import classNames from 'classnames';
 
 
 import {
@@ -21,7 +21,43 @@ import {
 } from 'react-vis';
 
 
-const styles = {
+const styles = theme => ({
+    heroUnit: {
+        color: theme.palette.background.paper,
+        backgroundColor: "#02182B",
+    },
+    heroContent: {
+        maxWidth: 600,
+        margin: '0 auto',
+        padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
+    },
+    heroButtons: {
+        marginTop: theme.spacing.unit * 4,
+    },
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+            width: 1100,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    cardGrid: {
+        padding: `${theme.spacing.unit * 8}px 0`,
+    },
+    card: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    cardMedia: {
+        paddingTop: '56.25%', // 16:9
+    },
+    cardContent: {
+        flexGrow: 1,
+    },
     button: {
         marginTop: '5em',
         marginBottom: '5em',
@@ -37,19 +73,16 @@ const styles = {
 
         textDecoration: "none",
     }
-};
+});
 
 import {UserContext} from "./User";
 import {
     ExpansionPanel,
     ExpansionPanelDetails,
-    ExpansionPanelSummary,
-    FormControl,
     InputLabel, MenuItem,
     Select
 } from "@material-ui/core";
 import TextField from "@material-ui/core/es/TextField/TextField";
-import ListItemText from "../layout/Navigation";
 
 const normalizeUrl = require('normalize-url');
 
@@ -73,45 +106,58 @@ class Servers extends Component
         this.state = {
             page: 2,
             error: null,
-            isLoaded: false,
-            isLoading: false,
+            serviceLoaded: false,
+            serviceLoading: false,
+            serversLoaded: false,
+            serversLoading: false,
             service: this.props.match.params.id,
-            serviceObject: null,
             servers: [],
+            serviceObject: (typeof this.props.location.state !== 'undefined') ? this.props.location.state.service : null
         };
     }
 
     componentDidMount() {
 
-        axios.get(this.url)
-            .then((res) => {
-                this.setState({serviceObject: res.data})
-            });
+        if (!this.state.serviceObject)
+        {
+            this.setState({serviceLoading: true});
+            axios.get(this.url)
+                .then((res) => {
+                    this.setState({serviceLoaded: true, serviceObject: res.data}, () => (
+                        this.setState({serviceLoading: false})
+                    ));
+                });
 
+        }
+        else
+        {
+            this.setState({serviceLoaded: true})
+        }
 
+        this.setState({serversLoading: true});
         axios.get(this.ApiUrl)
             .then((res) => {
-                    this.setState({isLoaded: true, servers: res.data})
+                    this.setState({serversLoaded: true, servers: res.data}, () => (this.setState({serversLoading: false})))
                 },
                 (error) => {
-                    this.setState({isLoaded: true, error})
+                    this.setState({serversLoaded: true, error})
             });
     }
 
     loadServers()
     {
-        if (!this.state.isLoading)
+        if (!this.state.serversLoading)
         {
-            this.setState({isLoading: true});
+            this.setState({serversLoading: true});
             this.setState({page: (1+this.state.page)});
             axios.get(this.ApiUrl+'?page='+this.state.page)
                 .then((res) => {
-                    this.setState({isLoaded: true, servers: [...this.state.servers, ...res.data]},
+                    this.setState({serversLoaded: true, servers: [...this.state.servers, ...res.data]},
                         () => {
-                                this.setState({isLoading: false})
+                                this.setState({serversLoading: false})
                         })
                 }, (error) => {
-                    this.setState({isLoaded: true, error})
+                    this.setState({serversLoaded: true, error})
                 });
         }
     }
@@ -163,7 +209,7 @@ class Servers extends Component
         {
             return (
                 <MetaTags>
-                    <title>{this.state.serviceObject.name + " servers" + config.titlePageName}</title>
+                    <title>{this.state.serviceObject.name + " servery" + config.titlePageName}</title>
                     <meta name="description" content={this.state.serviceObject.description} />
                     <meta property="og:title" content={this.state.serviceObject.name} />
                 </MetaTags>
@@ -178,7 +224,7 @@ class Servers extends Component
         {
             return (
                 servers.map((server) => (
-                    <Grid item xs={12} lg={6} key={server.id}>
+                    <Grid item xs={12} sm={6} key={server.id}>
                         <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                             <Card>
                                 {
@@ -205,9 +251,9 @@ class Servers extends Component
         const {servers} = this.state;
         const { classes } = this.props;
 
-        if (servers.length > 0) {
+        if (servers.length > 0 && servers.length < 50) {
             return (
-                <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.isLoading} className={classes.button}>
+                <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.serversLoading} className={classes.button}>
                     Načíst další
                 </Button>
             )
@@ -215,43 +261,67 @@ class Servers extends Component
 
     }
 
+    renderService = (classes) => {
+        return (
+            <>
+                {this.generateSeo()}
+                <div className={classes.heroUnit}>
+                    <div className={classes.heroContent}>
+                        <Typography component="h1" variant="h2" align="center" color={"inherit"} gutterBottom>
+                            {this.state.serviceObject.name}
+                        </Typography>
+                        <Typography variant={"h6"} align={"center"} color={"inherit"} paragraph>
+                            {this.state.serviceObject.description}
+                        </Typography>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
 
     render() {
+        const {classes} = this.props;
         return (
             <UserContext.Consumer>
                 {
                     content => {
-                        const { error, isLoaded } = this.state;
-
+                        const { error } = this.state;
+                        let servers, service = null;
                         if (error)
                         {
-                            return <Grid>Error: {error.message}</Grid>;
+                            servers = <Grid>Error: {error.message}</Grid>;
                         }
-                        else if (!isLoaded)
+                        else if (!this.state.serversLoaded)
                         {
-                            return <Grid>Loading...</Grid>;
+                            servers = <Grid>Loading...</Grid>;
                         }
                         else {
-                            return (
-                                <Grid container justify={"center"} spacing={40}>
-                                    {this.generateSeo()}
-                                    <Grid item xs={12}>
-                                    <h1>{this.state.serviceObject.name}</h1>
-                                    </Grid>
-                                    <Grid item>
-                                        <Grid container spacing={16}>
-                                            {
-                                                this.renderServers()
-                                            }
-                                        </Grid>
-                                    </Grid>
+                            servers = (this.renderServers())
+                        }
 
+                        if (!this.state.serviceLoaded)
+                        {
+                            service = <Grid>Loading...</Grid>;
+                        }
+                        else {
+                            service = (this.renderService(classes));
+                        }
+
+                        return (
+                            <main>
+                                {service}
+                                <div className={classNames(classes.layout, classes.cardGrid)}>
+                                    <Grid container spacing={40}>
+                                        {servers}
+                                    </Grid>
                                     <Grid item xs={12}>
                                         {this.renderLoadButton()}
                                     </Grid>
-                                </Grid>
-                            )
-                        }
+                                </div>
+                            </main>
+
+                        )
                     }
 
                 }

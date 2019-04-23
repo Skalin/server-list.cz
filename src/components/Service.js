@@ -11,12 +11,7 @@ import {CardMedia} from "@material-ui/core";
 const normalizeUrl = require('normalize-url');
 
 const styles = theme => ({
-    appBar: {
-        position: 'relative',
-    },
-    icon: {
-        marginRight: theme.spacing.unit * 2,
-    },
+
     heroUnit: {
         color: theme.palette.background.paper,
         backgroundColor: "#02182B",
@@ -53,10 +48,6 @@ const styles = theme => ({
     cardContent: {
         flexGrow: 1,
     },
-    footer: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing.unit * 6,
-    },
 });
 
 class Services extends Component
@@ -88,9 +79,8 @@ class Services extends Component
                             Server-List
                         </Typography>
                         <Typography variant={"h6"} align={"center"} color={"inherit"} paragraph>
-                            Webová aplikace vytvořená v Reactu sloužící pro účely monitorování herních serverů. Tato aplikace byla vytvořena pro účely bakalářské práce `Game Server Monitoring Portal`.
+                            Webová aplikace vytvořená v Reactu sloužící k monitorování herních serverů. Tato aplikace byla vytvořena pro účely bakalářské práce `Game Server Monitoring Portal`.
                         </Typography>
-
                     </div>
                 </div>
                 <div className={classNames(classes.layout, classes.cardGrid)}>
@@ -98,7 +88,7 @@ class Services extends Component
                         {
                             this.state.services.map((service) => (
                                 <Grid item xs={12} sm={6} md={4} key={service.id}>
-                                    <Link to={'/services/'+service.id}>
+                                    <Link to={{pathname: '/services/'+service.id, state: {service: service}}}>
                                         <Card className={classes.card}>
                                             <CardMedia/>
                                             <CardContent>
@@ -106,7 +96,6 @@ class Services extends Component
                                                     {service.name}
                                                 </Typography>
                                                 <Typography component={"p"}>
-
                                                 </Typography>
                                             </CardContent>
                                         </Card>
