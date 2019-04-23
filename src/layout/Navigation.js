@@ -10,11 +10,16 @@ import axios from "axios";
 import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import CssBaseline from '@material-ui/core/CssBaseline';
+import classNames from 'classnames';
 
 
 const normalizeUrl = require('normalize-url');
 
 const styles = {
+    loginLink: {
+        color: "white",
+        flex: 1
+    },
     root: {
         flex: 1,
     },
@@ -75,6 +80,7 @@ class Navigation extends Component
 
     printUserSection()
     {
+        const {classes} = this.props;
         return (
             this.context.user.account
                 ?
@@ -85,7 +91,7 @@ class Navigation extends Component
                     </Typography>
                 </Link>
                 :
-                <Link component={RouterLink} color={"inherit"} to={"/auth"} style={{color: "white", flex: 1}} >
+                <Link component={RouterLink} color={"inherit"} to={"/auth"} className={classes.loginLink} >
                     LOGIN
                 </Link>
         );
@@ -104,7 +110,7 @@ class Navigation extends Component
                     <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography className={classes.grow} variant={"h6"} style={styles.heading}>
+                    <Typography className={classNames(classes.grow, classes.heading)} variant={"h6"}>
                         <Link component={RouterLink} to={"/"} color={"inherit"} variant={"inherit"}>
                             Server-List
                         </Link>

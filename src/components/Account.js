@@ -10,10 +10,12 @@ import {
     ExpansionPanelDetails,
     ExpansionPanelSummary,
     Table, TableBody, TableCell, TableHead, TableRow,
-    Typography, Dialog, DialogTitle, DialogActions
+    Typography, Dialog, DialogTitle, DialogActions, IconButton, DialogContent, DialogContentText, Tooltip
 } from "@material-ui/core";
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 import {MetaTags} from "react-meta-tags";
+import DeleteIcon from '@material-ui/icons/Delete';
+import PageviewIcon from '@material-ui/icons/Pageview';
 
 const normalizeUrl = require('normalize-url');
 
@@ -140,9 +142,11 @@ class Account extends Component
     renderDetailButton(server)
     {
         return (
-            <Button style={styles.headingButton} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
-                Detail
-            </Button>
+            <Tooltip title="Detail">
+                <IconButton style={styles.headingButton} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
+                    <PageviewIcon />
+                </IconButton>
+            </Tooltip>
         )
     }
 
@@ -170,19 +174,27 @@ class Account extends Component
     {
         return (
             <>
-                <Button variant={"outlined"} style={styles.headingButtonRed} onClick={this.handleDeleteButton}>
-                    Odebrat
-                </Button>
+
+                <Tooltip title="Smazat">
+                    <IconButton variant={"outlined"} style={styles.headingButtonRed} onClick={this.handleDeleteButton}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
                 <Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose}>
                     <DialogTitle>Opravdu si přejete smazat server?</DialogTitle>
-                    <DialogActions>
-                        <Button onClick={this.handleDialogClose}>
-                            Ne
-                        </Button>
-                        <Button onClick={this.handleDeleteServer.bind(this, server)}>
-                            Ano
-                        </Button>
-                    </DialogActions>
+                    <DialogContent>
+                        <DialogContentText>
+                            Smazáním serveru `{server.name}` - {server.ip}:{server.port} dojde k jeho nenávratnému smazání. Nebude dostupný ve výpisu serveru, nikdo jej nebude moci najít a nebudou o něm sbírány žádné statistiky.
+                        </DialogContentText>
+                        <DialogActions>
+                            <Button onClick={this.handleDialogClose}>
+                                Ne
+                            </Button>
+                            <Button onClick={this.handleDeleteServer.bind(this, server)}>
+                                Ano
+                            </Button>
+                        </DialogActions>
+                    </DialogContent>
                 </Dialog>
             </>
         )
