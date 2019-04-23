@@ -239,7 +239,7 @@ class Servers extends Component
         {
             return (
                 servers.map((server) => (
-                    <Grid item xs={12} sm={6} key={server.id}>
+                    <Grid item xs={12} md={6} key={server.id}>
                         <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                             <Card>
                                 {
