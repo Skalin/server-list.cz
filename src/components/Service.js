@@ -70,7 +70,7 @@ class Services extends Component
     renderBackgroundCardImage( service )
     {
         const { classes } = this.props;
-        if (service.imageUrl)
+        if (service.thumbnailImageUrl)
         {
             return (
 
