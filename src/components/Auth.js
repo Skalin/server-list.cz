@@ -1,10 +1,41 @@
 import React, {Component} from 'react';
-import { TextField, FormGroup, Grid, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import {
+    TextField,
+    FormGroup,
+    Grid,
+    Button,
+    FormControlLabel,
+    Checkbox,
+    Snackbar,
+    Link,
+    ExpansionPanel, ExpansionPanelDetails
+} from "@material-ui/core";
 import { UserContext } from "./User";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import amber from '@material-ui/core/colors/amber';
 import { Redirect } from "react-router-dom";
 
 const signUp = 1;
 const signIn = 2;
+
+
+const styles = {
+    root: {
+        width: '100%',
+    },
+    heading: {
+        backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+        marginTop: "2em",
+    },
+    headingRed: {
+        backgroundColor: "rgba(209, 10, 60, 1)",
+        color: 'white',
+        marginTop: "2em",
+    }
+};
+
 
 export class Auth extends Component
 {
@@ -38,7 +69,11 @@ export class Auth extends Component
                 data = <Register/>;
 
             return(
-                data
+                <>
+                    <Grid item xs={12}>
+                        {data}
+                    </Grid>
+                </>
             )
         }
         else
@@ -52,18 +87,18 @@ export class Auth extends Component
     renderButtons()
     {
         let data =
-            <Grid container spacing={16} style={{marginTop: "3em", marginBottom: "3em"}}>
-                <Grid item>
-                    <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>
+            <>
+                <Grid item xs={6}>
+                    <Button variant={"contained"} style={styles.heading} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>
                         Přihlásit se
                     </Button>
                 </Grid>
-                <Grid item>
-                    <Button variant={"contained"} size={"large"} color={"secondary"} onClick={this.switchBox.bind(this, signUp)}>
+                <Grid item xs={6}>
+                    <Button variant={"contained"} style={styles.headingRed} size={"large"} color={"secondary"} onClick={this.switchBox.bind(this, signUp)}>
                         Registrovat
                     </Button>
                 </Grid>
-            </Grid>;
+            </>;
 
         return(
             data
@@ -76,9 +111,15 @@ export class Auth extends Component
             <React.Fragment>
                 {this.context.user.actions.checkLogin() ? <Redirect to={"/"} /> :
                     <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
-                        <Grid>
-                            {this.renderButtons()}
-                            {this.renderForm()}
+                        <Grid item xs={12}>
+                            <ExpansionPanel expanded={true} xs={6} style={{marginTop: "25px"}}>
+                                <ExpansionPanelDetails>
+                                    <Grid container justify={"center"} alignItems={"center"}>
+                                        {this.renderButtons()}
+                                        {this.renderForm()}
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
                         </Grid>
                     </Grid>}
             </React.Fragment>
@@ -100,24 +141,32 @@ class Login extends Component
                     password: null
                 },
             loggedIn: false,
-            errors: []
+            state: null,
+            snackOpen: false,
         };
     }
 
     onChange(formData)
     {
-        var user = {...this.state.user};
-        var property = formData.target.name;
+        let user = {...this.state.user};
+        let property = formData.target.name;
         user[property] = formData.target.value;
+        this.context.error = null;
         this.setState({user})
     }
 
     submitForm(e)
     {
         e.preventDefault();
-        if (this.context.user.actions.login(this.state.user))
+        let state = this.context.user.actions.login(this.state.user);
+
+        if (typeof(state) == "boolean" && state)
         {
             this.setState({loggedIn: true});
+        }
+        else
+        {
+            this.setState({snackOpen: true})
         }
     }
 
@@ -127,12 +176,12 @@ class Login extends Component
             <form onSubmit={this.submitForm.bind(this)} >
                 <h1>Login</h1>
                 <FormGroup>
-                    <TextField autoComplete={"username"} label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)} />
+                    <TextField autoFocus={true} autoComplete={"username"} label={"Uživatelské jméno"} type="text" name="username" onChange={this.onChange.bind(this)} />
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Password"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
+                    <TextField label={"Heslo"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
                 </FormGroup>
-                <Button variant={"contained"} color={"primary"} type="submit" style={{marginTop: "2em"}}>Sign in</Button>
+                <Button variant={"contained"} color={"primary"} type="submit"  style={styles.heading}>Přihlásit se</Button>
             </form>
         )
     }
@@ -170,8 +219,8 @@ class Register extends Component
 
     onChange(formData)
     {
-        var user = {...this.state.user};
-        var property = formData.target.name;
+        let user = {...this.state.user};
+        let property = formData.target.name;
         user[property] = formData.target.value;
         this.setState({user});
     }
@@ -181,6 +230,10 @@ class Register extends Component
         e.preventDefault();
         if (this.context.user.actions.register(this.state.user))
             this.setState({loggedIn: true});
+        else
+        {
+
+        }
 
     }
 
@@ -190,16 +243,16 @@ class Register extends Component
             <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Registration</h1>
                 <FormGroup>
-                    <TextField label={"Username"} type="text" name="username" onChange={this.onChange.bind(this)}/>
+                    <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Password"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Heslo"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Name"} type="text" name="name" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Jméno"} type="text" name="name" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Surname"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Příjmení"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <TextField label={"E-mail"} type="text" name="mail" onChange={this.onChange.bind(this)}/>
@@ -215,10 +268,15 @@ class Register extends Component
                                 color="primary"
                             />
                         }
-                        label="ToS Agreement"
+                        label={
+                            <>
+                                {"Souhlasím s "}
+                                <Link to={'/conditions'} >podmínkami služby Server-List.cz</Link>
+                            </>
+                        }
                     />
                 </FormGroup>
-                <Button variant={"contained"} color={"secondary"} type="submit" style={{marginTop: "2em"}}>Sign up</Button>
+                <Button style={styles.headingRed} variant={"contained"} color={"secondary"} type="submit">Registrovat se</Button>
             </form>
         );
     }

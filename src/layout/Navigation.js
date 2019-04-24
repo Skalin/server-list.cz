@@ -1,17 +1,44 @@
 import React, { Component } from 'react';
-import {Link, Route, Router} from 'react-router-dom'
-import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider} from "@material-ui/core";
+import {AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, LinearProgress, Divider, Link } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
+import {Link as RouterLink} from 'react-router-dom';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {UserContext} from "../components/User";
 import ListItem from '@material-ui/core/ListItem';
-import normalizeUrl from "normalize-url";
 import * as config from "../config/config";
 import axios from "axios";
 import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
-import servers from "../components/Servers";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import classNames from 'classnames';
 
-const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+const normalizeUrl = require('normalize-url');
+
+const styles = {
+    loginLink: {
+        color: "white",
+        flex: 1
+    },
+    root: {
+        flex: 1,
+    },
+    grow: {
+        flex: 1,
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+    heading: {
+        backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+    },
+    link: {
+        color: 'white',
+    }
+};
+
 
 // TODO add printing name in navigation bar, store info in tokens, get info about user for server
 class Navigation extends Component
@@ -22,12 +49,13 @@ class Navigation extends Component
     constructor(props)
     {
         super(props);
+
         this.state = {
             isOpened: false,
             services: [],
         };
         this.serviceUrl = "/services/";
-        this.endpoint = normalizeUrl(config.apiUrl+'/services');
+        this.endpoint = normalizeUrl(config.apiUrl+'/services', {stripAuthentication: false});
     }
 
     componentDidMount() {
@@ -52,49 +80,64 @@ class Navigation extends Component
 
     printUserSection()
     {
+        const {classes} = this.props;
         return (
-            this.context.user.actions.checkLogin() ?
-                <Link to={"/account"}><Typography>{this.context.user.account.name} <AccountCircleOutlinedIcon style={{color: "white"}} /></Typography></Link> :
-            <Button component={Link} color={"inherit"} to={"/auth"}>
-                LOGIN
-            </Button>
+            this.context.user.account
+                ?
+                <Link component={RouterLink} to={"/account"}>
+                    <Typography style={{color: "white"}} >
+                        {this.context.user.account.name}
+                        <AccountCircleOutlinedIcon />
+                    </Typography>
+                </Link>
+                :
+                <Link component={RouterLink} color={"inherit"} to={"/auth"} className={classes.loginLink} >
+                    LOGIN
+                </Link>
         );
     }
 
     render()
     {
+        const {classes} = this.props;
+        let services = this.state.services;
+
         return (
-            <div>
-            <AppBar position={"static"}>
+            <div className={classes.root}>
+            <CssBaseline />
+            <AppBar position={"static"} className={classes.heading}>
                 <Toolbar>
-                    <IconButton color={"inherit"} aria-label="Menu" onClick={this.toggleDrawer.bind(this)}>
+                    <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography styles={{flexGrow: 1}}>
-                        <Link to={"/"}>
-                        Server-list.cz
+                    <Typography className={classNames(classes.grow, classes.heading)} variant={"h6"}>
+                        <Link component={RouterLink} to={"/"} color={"inherit"} variant={"inherit"}>
+                            Server-List
                         </Link>
                     </Typography>
-                    {
-                        this.printUserSection()
-                    }
+                    <div>
+                        {this.printUserSection()}
+                    </div>
+
                 </Toolbar>
             </AppBar>
             <Drawer open={this.state.isOpened} onClose={this.toggleDrawer.bind(this)}>
                 <Divider />
                 <List>
                     <ListItem>
-                        <Typography variant={"h4"}>Services</Typography>
+                        <Typography variant={"h4"}>{"Aplikace"}</Typography>
                     </ListItem>
                     <Divider/>
                     {
-                        this.state.services.map((service) => (
+                        this.state.services.map( (service) => (
                             <ListItem key={service.id}>
-                            <Link to={"/services/"+service.id} value={service.name}>
-                                <ListItemText primary={service.name}/>
-                            </Link>
+                                <Link component={RouterLink} to={{pathname: "/services/" + service.id, state: {service: service}}}>
+                                    <ListItemText primary={service.name}/>
+                                </Link>
                             </ListItem>
-                        ))}
+                            )
+                        )
+                    }
                 </List>
             </Drawer>
             </div>
@@ -103,4 +146,4 @@ class Navigation extends Component
 
 }
 
-export default Navigation;
+export default withStyles(styles) (Navigation);
