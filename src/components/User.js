@@ -108,7 +108,7 @@ export class UserProvider extends Component
             axios.post(loginUrl, {user: user})
                 .then((res) => {
                     this.storeUser(res.data);
-                }, (error) => this.setState({loadingError: true, error: error.response}));
+                }, (error) => _this.setState({loadingError: true, error: error.response}));
             return this.checkLogin();
         }
         return false;
