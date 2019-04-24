@@ -16,6 +16,8 @@ export class UserProvider extends Component
     {
         super(props);
         this.state = {
+            hasErrors: false,
+            errors: {},
             loader: false,
             user: {
                     account: {
@@ -66,6 +68,8 @@ export class UserProvider extends Component
 
     login = ( user ) => {
 
+        const _this = this;
+
         if (!this.checkLogin() && user)
         {
             let loginUrl = normalizeUrl(apiUserUrl + '/login');
@@ -73,7 +77,10 @@ export class UserProvider extends Component
                 .then(res => this.storeToken(res.data))
                 .then(res => {
                     this.setState({user: { ...this.state.user, account: this.getUser()}})
-                });
+                })
+                .catch((err) => (
+                    _this.setState({hasErrors: true, error: err.data})
+                ));
         }
     };
 
