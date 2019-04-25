@@ -724,7 +724,7 @@ export class ServerWidgetGenerator extends Component
                                                             </MenuItem>
                                                             {
                                                                 this.state.servers.map( (server) => (
-                                                                        <MenuItem key={server.id} value={server.id}>
+                                                                        <MenuItem key={server.id} value={server}>
                                                                             <em>{server.name} - {server.ip}:{server.port}</em>
                                                                         </MenuItem>
                                                                     )
@@ -783,7 +783,6 @@ export class ServerWidgetGenerator extends Component
             var data = null;
             if (this.state.languages[this.state.generator.language] === 'PHP')
             {
-                console.log("a");
                 data =
                     <pre style={{textAlign: 'left', whiteSpace: 'pre-wrap'}}><code>{`
                     <?php
