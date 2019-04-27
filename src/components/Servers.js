@@ -10,7 +10,11 @@ import { MetaTags } from 'react-meta-tags';
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import classNames from 'classnames';
 import {
-    FacebookShareButton } from 'react-share';
+    FacebookShareButton,
+    FacebookIcon,
+    TwitterShareButton,
+    TwitterIcon
+} from 'react-share';
 
 
 import {
@@ -82,6 +86,7 @@ const styles = theme => ({
 
 import {UserContext} from "./User";
 import {
+    CardActions,
     ExpansionPanel,
     ExpansionPanelDetails,
     InputLabel, MenuItem,
@@ -206,6 +211,12 @@ class Servers extends Component
         }
     }
 
+    renderStatusBadge(server) {
+
+        return (
+            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
+        );
+    }
 
     renderStats( server )
     {
@@ -215,13 +226,6 @@ class Servers extends Component
                 {this.renderPlayersBadge(server)}
             </>;
         return(data)
-    }
-
-    renderStatusBadge(server) {
-
-        return (
-            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
-        );
     }
 
     generateSeo()
@@ -246,22 +250,37 @@ class Servers extends Component
             return (
                 servers.map((server) => (
                     <Grid item xs={12} md={6} key={server.id}>
-                        <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                             <Card>
+                                <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                                 {
                                     this.renderBackgroundCardImage(server)
                                 }
+                                </Link>
                                 <CardContent>
-                                    <Typography component={"h5"}>
-                                        {server.name}
-                                    </Typography>
-                                    {
-                                        this.renderStats(server)
-                                    }
-                                    <Typography>{server.description}</Typography>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
+                                                <Typography component={"h5"}>
+                                                    {server.name}
+                                                </Typography>
+                                            </Link>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                        {
+                                            this.renderStats(server)
+                                        }
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Typography>
+                                                {server.domain.length ? server.domain : server.ip+":"+server.port}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
                                 </CardContent>
+                                <CardActions>
+                                    <Button size={"small"}><Link to={this.props.match.url + "/servers/" + server.id}>Otevřít</Link></Button>
+                                </CardActions>
                             </Card>
-                        </Link>
                     </Grid>
                 )))
         }
@@ -614,6 +633,77 @@ class Server extends Component
     }
 
 
+    renderServerImage()
+    {
+        if (this.state.server.imageUrl)
+        {
+             return (
+                 <Grid item xs={6}>
+                    <Image src={this.state.server.imageUrl}/>
+                </Grid>
+            );
+        }
+    }
+
+
+    renderPlayersBadge ()
+    {
+        if (this.state.server.stats.StatusStat.value && this.state.server.stats.PlayersStat != null && this.state.server.stats.PlayersStat.value !== null && this.state.server.stats.PlayersStat.maxValue !== null) {
+            let data = this.state.server.stats.PlayersStat.value+"/"+this.state.server.stats.PlayersStat.maxValue;
+            return (
+                <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
+            )
+        }
+    }
+
+    renderStatusBadge() {
+
+        return (
+            <Chip clickable={false} color={this.state.server.stats.StatusStat.value ? "primary" : "secondary"} label={this.state.server.stats.StatusStat.value ? "Online" : "Offline"}/>
+        );
+    }
+
+    renderBadges()
+    {
+        let data =
+            <>
+                {this.renderStatusBadge()}
+                {this.renderPlayersBadge()}
+            </>;
+        return(data)
+    }
+
+    renderSocialBadges = () =>
+    {
+        let { server } = this.state;
+        console.log(window.location.href);
+        let quote = "Bavím se na serveru: "+server.name+"! Připoj se taky! "+this.getServerAddress();
+        let data =
+            <>
+                <Grid container justify={"center"}>
+                    <Grid item>
+                        <FacebookShareButton url={window.location.href} quote={quote}>
+                            <FacebookIcon size={64} round={true}/>
+                        </FacebookShareButton>
+                    </Grid>
+                    <Grid item>
+                        <TwitterShareButton url={window.location.href} quote={quote}>
+                            <TwitterIcon size={64} round={true}/>
+                        </TwitterShareButton>
+                    </Grid>
+                </Grid>
+            </>;
+
+
+        return data;
+    }
+
+    getServerAddress()
+    {
+        let {server} = this.state;
+        return (server.domain.length ? server.domain : server.ip+":"+server.port);
+    }
+
     render() {
 
         const {classes} = this.props;
@@ -635,7 +725,7 @@ class Server extends Component
                     <Grid container justify={"center"} spacing={16}>
                         <Grid item xs={12}>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={server.imageUrl ? 6 : 12}>
                             <Grid container alignContent={"flex-start"}>
                                 <Grid item xs={12}>
                                     <Typography variant={"h2"}>
@@ -643,16 +733,27 @@ class Server extends Component
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant={"h5"}>{server.domain.length ? server.domain : server.ip+":"+server.port}</Typography>
-
+                                    <Typography variant={"h5"}>{this.getServerAddress()}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Image src={server.imageUrl}/>
+                        {
+                            this.renderServerImage()
+                        }
+                        <Grid item xs={12}>
+                        {
+                            this.renderBadges()
+                        }
+                        </Grid>
+                        <Grid item xs={10} alignContent={"flex-start"}>
+                            <Typography className={classes.dark} color={"inherit"}>
+                                {server.description}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            {server.description}
+                            {
+                                this.renderSocialBadges()
+                            }
                         </Grid>
                         <Grid item xs={10}>
                             <Grid container justify={"center"}>
