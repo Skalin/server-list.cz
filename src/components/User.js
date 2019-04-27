@@ -17,6 +17,8 @@ export class UserProvider extends Component
         super(props);
 
         this.state = {
+            hasErrors: false,
+            errors: {},
             loader: false,
             error: null,
             loadingError: false,
@@ -98,13 +100,15 @@ export class UserProvider extends Component
 
     login = ( user ) => {
 
+        const _this = this;
+
         if (!this.checkLogin() && user)
         {
             let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then((res) => {
                     this.storeUser(res.data);
-                }, (error) => this.setState({loadingError: true, error: error.response}));
+                }, (error) => _this.setState({loadingError: true, error: error.response}));
             return this.checkLogin();
         }
         return false;
