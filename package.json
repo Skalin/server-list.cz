@@ -39,8 +39,9 @@
   "description": "",
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
+    "classnames": "latest",
     "react-code-snippet": "^0.6.13",
-    "react-vis": "^1.11.6",
-    "classnames": "latest"
+    "react-share": "^2.4.0",
+    "react-vis": "^1.11.6"
   }
 }
