@@ -769,8 +769,8 @@ class Server extends Component
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container alignContent={"flex-start"}>
-                                <Grid item xs={12}>
+                            <Grid container justify={"center"}>
+                                <Grid item xs={10}>
                                     <Typography variant={"h1"}>
                                         {server.name}
                                     </Typography>
