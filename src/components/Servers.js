@@ -3,7 +3,7 @@ import '../App.css';
 import axios from 'axios';
 import {Switch, Link, Route, Redirect, Link as RouterLink} from "react-router-dom";
 import * as config from '../config/config.js';
-import {Input, SupervisorAccount} from '@material-ui/icons';
+import {Input, SupervisorAccount, DateRange, AttachFile } from '@material-ui/icons';
 import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent, FormGroup } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
@@ -49,6 +49,9 @@ const styles = theme => ({
             marginLeft: 'auto',
             marginRight: 'auto',
         },
+    },
+    header: {
+        margin: "1em",
     },
     dark: {
         color: "black",
@@ -638,7 +641,7 @@ class Server extends Component
         if (this.state.server.imageUrl)
         {
              return (
-                 <Grid item xs={6}>
+                 <Grid item xs={12}>
                     <Image src={this.state.server.imageUrl}/>
                 </Grid>
             );
@@ -665,10 +668,13 @@ class Server extends Component
 
     renderBadges()
     {
+        let {classes} = this.props;
         let data =
             <>
-                {this.renderStatusBadge()}
-                {this.renderPlayersBadge()}
+                <div className={classes.header}>
+                    {this.renderStatusBadge()}
+                    {this.renderPlayersBadge()}
+                </div>
             </>;
         return(data)
     }
@@ -676,22 +682,24 @@ class Server extends Component
     renderSocialBadges = () =>
     {
         let { server } = this.state;
-        console.log(window.location.href);
+        let {classes} = this.props;
         let quote = "Bavím se na serveru: "+server.name+"! Připoj se taky! "+this.getServerAddress();
         let data =
             <>
-                <Grid container justify={"center"}>
-                    <Grid item>
-                        <FacebookShareButton url={window.location.href} quote={quote}>
-                            <FacebookIcon size={64} round={true}/>
-                        </FacebookShareButton>
+                <div className={classes.header}>
+                    <Grid container justify={"center"}>
+                        <Grid item>
+                            <FacebookShareButton url={window.location.href} quote={quote}>
+                                <FacebookIcon size={64} round={true}/>
+                            </FacebookShareButton>
+                        </Grid>
+                        <Grid item>
+                            <TwitterShareButton url={window.location.href} quote={quote}>
+                                <TwitterIcon size={64} round={true}/>
+                            </TwitterShareButton>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <TwitterShareButton url={window.location.href} quote={quote}>
-                            <TwitterIcon size={64} round={true}/>
-                        </TwitterShareButton>
-                    </Grid>
-                </Grid>
+                </div>
             </>;
 
 
@@ -702,6 +710,27 @@ class Server extends Component
     {
         let {server} = this.state;
         return (server.domain.length ? server.domain : server.ip+":"+server.port);
+    }
+
+    renderDate = () =>
+    {
+        let {server} = this.state;
+        let {classes} = this.props;
+        return (
+            <div className={classes.header}>
+                <Chip clickable={false} avatar={<Avatar><DateRange/></Avatar>} label={new Date(server.createdAt).toLocaleDateString('cs', {year: "numeric", month: "2-digit", day: "numeric"})} />
+            </div>
+        )
+    }
+
+    clipAddress = () =>
+    {
+        var doc = document.createElement('textarea');
+        doc.value = this.getServerAddress();
+        document.body.appendChild(doc);
+        doc.select();
+        document.execCommand("copy");
+        document.body.removeChild(doc);
     }
 
     render() {
@@ -724,36 +753,56 @@ class Server extends Component
                     {this.generateSeo()}
                     <Grid container justify={"center"} spacing={16}>
                         <Grid item xs={12}>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-start"}>
+                                        {this.renderDate()}
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-end"}>
+                                    {
+                                        this.renderBadges()
+                                    }
+                                    </Grid>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={server.imageUrl ? 6 : 12}>
+                        <Grid item xs={12}>
                             <Grid container alignContent={"flex-start"}>
                                 <Grid item xs={12}>
-                                    <Typography variant={"h2"}>
+                                    <Typography variant={"h1"}>
                                         {server.name}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant={"h5"}>{this.getServerAddress()}</Typography>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Typography variant={"h5"}>{this.getServerAddress()}</Typography>
+                                            <Chip clickable={true} avatar={<Avatar><AttachFile/></Avatar>} onClick={this.clipAddress.bind(this)} label={"Zkopírovat"}/>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
                         {
                             this.renderServerImage()
                         }
-                        <Grid item xs={12}>
-                        {
-                            this.renderBadges()
-                        }
-                        </Grid>
-                        <Grid item xs={10} alignContent={"flex-start"}>
-                            <Typography className={classes.dark} color={"inherit"}>
-                                {server.description}
-                            </Typography>
+                        <Grid item xs={10}>
+                            <Grid container justify={"flex-start"}>
+                                <Typography variant={"body1"}>
+                                    {server.description}
+                                </Typography>
+                            </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            {
-                                this.renderSocialBadges()
-                            }
+                            <Grid container justify={"flex-end"}>
+                                <Grid item>
+                                {
+                                    this.renderSocialBadges()
+                                }
+                                </Grid>
+                            </Grid>
                         </Grid>
                         <Grid item xs={10}>
                             <Grid container justify={"center"}>
