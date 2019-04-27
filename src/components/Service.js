@@ -113,7 +113,6 @@ class Services extends Component
     render() {
 
         const {classes} = this.props;
-        let services = this.state.services;
         return (
             <main>
                 {this.generateSeo()}
