@@ -8,6 +8,8 @@ import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import {CardMedia} from "@material-ui/core";
 import Image from "react-bootstrap/Image";
+import {UserProvider} from "./User";
+import {MetaTags} from "react-meta-tags";
 
 const normalizeUrl = require('normalize-url');
 
@@ -68,6 +70,20 @@ class Services extends Component
             .then(res => this.setState({services: res.data}));
     }
 
+    generateSeo()
+    {
+        return (
+            <MetaTags>
+                <meta charSet="utf-8" />
+                <title>{config.pageName}</title>
+                <meta name="description" content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!" />
+                <meta property="og:title" content={config.pageName} />
+                <meta property="keywords" content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
+                <meta name="robots" content="index,follow"/>
+            </MetaTags>
+        )
+    }
+
     renderBackgroundCardImage( service )
     {
         const { classes } = this.props;
@@ -100,6 +116,7 @@ class Services extends Component
         let services = this.state.services;
         return (
             <main>
+                {this.generateSeo()}
                 <div className={classes.heroUnit}>
                     <div className={classes.heroContent}>
                         <Typography component="h1" variant="h2" align="center" color={"inherit"} gutterBottom>
