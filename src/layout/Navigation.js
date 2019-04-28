@@ -11,6 +11,7 @@ import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
+import {Notification} from "../components/Notification";
 
 
 const normalizeUrl = require('normalize-url');
@@ -84,17 +85,30 @@ class Navigation extends Component
         return (
             this.context.user.account
                 ?
-                <Link component={RouterLink} to={"/account"}>
-                    <Typography style={{color: "white"}} >
-                        {this.context.user.account.name}
-                        <AccountCircleOutlinedIcon />
-                    </Typography>
-                </Link>
+                <>
+                    <Link component={RouterLink} to={"/account"}>
+                        <Typography style={{color: "white"}} >
+                            {this.context.user.account.name}
+                            <AccountCircleOutlinedIcon />
+                        </Typography>
+                    </Link>
+                </>
                 :
                 <Link component={RouterLink} color={"inherit"} to={"/auth"} className={classes.loginLink} >
                     LOGIN
                 </Link>
         );
+    }
+    printNotifications()
+    {
+        const {classes} = this.props;
+        return (
+            this.context.user.account
+            ?
+            <Notification/>
+            :
+            ""
+        )
     }
 
     render()
@@ -117,6 +131,9 @@ class Navigation extends Component
                     </Typography>
                     <div>
                         {this.printUserSection()}
+                    </div>
+                    <div>
+                        {this.printNotifications()}
                     </div>
 
                 </Toolbar>
