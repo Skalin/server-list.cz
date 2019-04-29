@@ -152,7 +152,7 @@ class Navigation extends Component
                     {
                         this.state.services.map( (service) => (
                             <ListItem key={service.id}>
-                                <Link component={RouterLink} to={{pathname: "/services/" + service.id, state: {service: service}}}>
+                                <Link component={RouterLink} to={{pathname: "/services/" + service.id, state: {service: service}}} onClick={this.toggleDrawer.bind(this)}>
                                     <ListItemText primary={service.name}/>
                                 </Link>
                             </ListItem>
