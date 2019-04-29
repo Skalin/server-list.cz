@@ -29,6 +29,10 @@ const styles = {
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
+        '&:hover': {
+            textDecoration: "none",
+            color: 'grey',
+        },
     },
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",
@@ -105,13 +109,13 @@ class Navigation extends Component
         return (
             <div className={classes.root}>
             <CssBaseline />
-            <AppBar position={"static"} className={classes.heading}>
+            <AppBar position={"fixed"} className={classes.heading}>
                 <Toolbar>
                     <IconButton color={"inherit"} onClick={this.toggleDrawer.bind(this)} className={classes.menuButton} aria-label={"Open menu"}>
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classNames(classes.grow, classes.heading)} variant={"h6"}>
-                        <Link component={RouterLink} to={"/"} color={"inherit"} variant={"inherit"}>
+                        <Link component={RouterLink} to={"/"} color={"inherit"} className={classes.menuButton} variant={"inherit"}>
                             Server-List
                         </Link>
                     </Typography>
