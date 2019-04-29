@@ -19,7 +19,11 @@ const normalizeUrl = require('normalize-url');
 const styles = {
     loginLink: {
         color: "white",
-        flex: 1
+        flex: 1,
+        '&:hover': {
+            textDecoration: "none",
+            color: "rgb(72,72,72)",
+        },
     },
     root: {
         flex: 1,
@@ -38,7 +42,6 @@ const styles = {
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",
         color: 'white',
-        marginBottom: "2em",
     },
     link: {
         color: 'white',
@@ -92,14 +95,14 @@ class Navigation extends Component
                 ?
                 <>
                     <Link component={RouterLink} to={"/account"}>
-                        <Typography style={{color: "white"}} >
+                        <Typography style={{color: "white"}}  className={classes.menuButton}>
                             {this.context.user.account.name}
                             <AccountCircleOutlinedIcon />
                         </Typography>
                     </Link>
                 </>
                 :
-                <Link component={RouterLink} color={"inherit"} to={"/auth"} className={classes.loginLink} >
+                <Link component={RouterLink} color={"inherit"} to={"/auth"} className={classes.menuButton} >
                     LOGIN
                 </Link>
         );
