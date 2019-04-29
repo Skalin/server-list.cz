@@ -94,8 +94,8 @@ class Navigation extends Component
             this.context.user.account
                 ?
                 <>
-                    <Link component={RouterLink} to={"/account"}>
-                        <Typography style={{color: "white"}}  className={classes.menuButton}>
+                    <Link component={RouterLink} to={"/account"} className={classes.menuButton}>
+                        <Typography style={{color: "white"}}>
                             {this.context.user.account.name}
                             <AccountCircleOutlinedIcon />
                         </Typography>
