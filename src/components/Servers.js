@@ -3,12 +3,18 @@ import '../App.css';
 import axios from 'axios';
 import {Switch, Link, Route, Redirect, Link as RouterLink} from "react-router-dom";
 import * as config from '../config/config.js';
-import {Input, SupervisorAccount} from '@material-ui/icons';
+import {Input, SupervisorAccount, DateRange, AttachFile } from '@material-ui/icons';
 import { Grid, Card, Button, Paper, CardContent, CardMedia, Typography, Chip, Avatar, Tabs, Tab, Snackbar, SnackbarContent, FormGroup } from '@material-ui/core/'
 import {withRouter} from "react-router-dom";
 import { MetaTags } from 'react-meta-tags';
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import classNames from 'classnames';
+import {
+    FacebookShareButton,
+    FacebookIcon,
+    TwitterShareButton,
+    TwitterIcon
+} from 'react-share';
 
 
 import {
@@ -44,6 +50,12 @@ const styles = theme => ({
             marginRight: 'auto',
         },
     },
+    header: {
+        margin: "1em",
+    },
+    dark: {
+        color: "black",
+    },
     cardGrid: {
         padding: `${theme.spacing.unit * 8}px 0`,
     },
@@ -77,6 +89,7 @@ const styles = theme => ({
 
 import {UserContext} from "./User";
 import {
+    CardActions,
     ExpansionPanel,
     ExpansionPanelDetails,
     InputLabel, MenuItem,
@@ -92,7 +105,7 @@ function servers (props) {
     return(
         <Switch>
             <Route exact path={props.match.url} component={withStyles(styles) (withRouter(Servers))}/>
-            <Route path={`${props.match.url}/servers/:serverId`} component={Server}/>
+            <Route path={`${props.match.url}/servers/:serverId`} component={withStyles(styles)(Server)}/>
         </Switch>
     );
 }
@@ -201,6 +214,12 @@ class Servers extends Component
         }
     }
 
+    renderStatusBadge(server) {
+
+        return (
+            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
+        );
+    }
 
     renderStats( server )
     {
@@ -210,13 +229,6 @@ class Servers extends Component
                 {this.renderPlayersBadge(server)}
             </>;
         return(data)
-    }
-
-    renderStatusBadge(server) {
-
-        return (
-            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"} label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
-        );
     }
 
     generateSeo()
@@ -241,22 +253,37 @@ class Servers extends Component
             return (
                 servers.map((server) => (
                     <Grid item xs={12} md={6} key={server.id}>
-                        <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                             <Card>
+                                <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                                 {
                                     this.renderBackgroundCardImage(server)
                                 }
+                                </Link>
                                 <CardContent>
-                                    <Typography component={"h5"}>
-                                        {server.name}
-                                    </Typography>
-                                    {
-                                        this.renderStats(server)
-                                    }
-                                    <Typography>{server.description}</Typography>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
+                                                <Typography component={"h5"}>
+                                                    {server.name}
+                                                </Typography>
+                                            </Link>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                        {
+                                            this.renderStats(server)
+                                        }
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Typography>
+                                                {server.domain.length ? server.domain : server.ip+":"+server.port}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
                                 </CardContent>
+                                <CardActions>
+                                    <Button size={"small"}><Link to={this.props.match.url + "/servers/" + server.id}>Otevřít</Link></Button>
+                                </CardActions>
                             </Card>
-                        </Link>
                     </Grid>
                 )))
         }
@@ -267,7 +294,7 @@ class Servers extends Component
         const {servers} = this.state;
         const { classes } = this.props;
 
-        if (servers.length > 0 && servers.length < 50) {
+        if (servers.length > 0 && servers.length < this.state.serviceObject.serverCount) {
             return (
                 <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)} disabled={this.state.serversLoading} className={classes.button}>
                     Načíst další
@@ -524,6 +551,7 @@ class Server extends Component
                     .then((res) => {
                         this.setState({stats: {...this.state.stats, keys: Object.keys(res.data)}}, () => {
                             this.setState({stats: {...this.state.stats, values: Object.values(res.data)}}, () => {
+                                this.reduceStats();
                                 this.setState({stats: {...this.state.stats, isLoaded: true}})
                             });
                         });
@@ -532,8 +560,13 @@ class Server extends Component
 
     }
 
+    reduceStats = () => {
+
+    };
+
     changeStat(event, value)
     {
+        console.log(value);
         this.setState({stats: {...this.state.stats, selected: value}});
     }
 
@@ -566,16 +599,19 @@ class Server extends Component
     }
 
     renderStats() {
+        const {classes} = this.props;
         if (this.state.stats.isLoaded)
         {
             return (
                 <>
-                <Tabs value={this.state.stats.selected} onChange={this.changeStat.bind(this)}>
+                <Tabs className={classes.dark} value={this.state.stats.selected} onChange={this.changeStat.bind(this)}>
                     {
-
-                        this.state.stats.keys.map((key) =>
-                            <Tab label={key} key={key}>
-                            </Tab>
+                        this.state.stats.keys.map((key, id) =>
+                            {
+                                let keyTitle = key.slice(0, key.indexOf("Stat"));
+                                if (this.state.stats.values[id].length > 0)
+                                    return(<Tab label={keyTitle} value={id} key={id}/>)
+                            }
                         )
                     }
                 </Tabs>
@@ -600,265 +636,193 @@ class Server extends Component
     }
 
 
-    render() {
-        const { error, isLoaded, server } = this.state;
-        if (error)
+    renderServerImage()
+    {
+        if (this.state.server.imageUrl)
         {
-            return <div>Error: {error.message}</div>;
-        }
-        else if (!isLoaded)
-        {
-            return <div>Loading...</div>;
-        }
-        else
-        {
-            return (
-                <Grid container justify={"center"} spacing={40} style={{marginTop: '25px'}}>
-                    <Grid item xs={10}>
-                    <Paper>
-                        {this.generateSeo()}
-                        <Grid container justify={"center"} spacing={16}>
-                            <Grid item xs={10}>
-                            <h1>{server.name}</h1>
-                            </Grid>
-                            <Grid item xs={10}>
-                            <h3>{server.ip}:{server.port}</h3>
-                            </Grid>
-                            <Grid item xs={10}>
-                            {server.description}
-                            </Grid>
-                            <Grid item xs={10}>
-                                <Grid container justify={"center"}>
-                                    <Grid item>
-                                        {this.renderStats()}
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                    </Grid>
+             return (
+                 <Grid item xs={12}>
+                    <Image src={this.state.server.imageUrl}/>
                 </Grid>
             );
         }
     }
-}
 
 
-export class ServerWidgetGenerator extends Component
-{
-    static contextType = UserContext;
-
-    constructor(props)
+    renderPlayersBadge ()
     {
-        super(props);
-        this.state = {
-            servers: [],
-            languages: ['JavaScript', 'PHP'],
-            generator: {
-                language: "",
-                server: "",
-            }
-        };
-    }
-
-    componentDidMount()
-    {
-
-        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
-            .then((res) => {this.setState({servers: res.data})});
-    }
-
-    generateSeo()
-    {
-        if (this.state.server)
-        {
+        if (this.state.server.stats.StatusStat.value && this.state.server.stats.PlayersStat != null && this.state.server.stats.PlayersStat.value !== null && this.state.server.stats.PlayersStat.maxValue !== null) {
+            let data = this.state.server.stats.PlayersStat.value+"/"+this.state.server.stats.PlayersStat.maxValue;
             return (
-                <MetaTags>
-                    <title>{"Vygenerovat status widget" + config.titlePageName}</title>
-                    <meta name="description" content={this.state.server.description} />
-                    <meta property="og:title" content={this.state.server.name} />
-                </MetaTags>
+                <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
             )
         }
     }
 
+    renderStatusBadge() {
 
-    onChange(formData)
-    {
-        let generator = {...this.state.generator};
-        let property = formData.target.name;
-        generator[property] = formData.target.value;
-        this.setState({generator});
+        return (
+            <Chip clickable={false} color={this.state.server.stats.StatusStat.value ? "primary" : "secondary"} label={this.state.server.stats.StatusStat.value ? "Online" : "Offline"}/>
+        );
     }
 
-
-    renderForm = () => {
-        return (
+    renderBadges()
+    {
+        let {classes} = this.props;
+        let data =
             <>
-                <Grid container justify={"center"} style={{marginTop: '25px'}}>
-                    {this.generateSeo()}
-                    <Grid item xs={10} >
-                        <Grid container justify={"center"} spacing={16}>
-                            <Grid item xs={12}>
-                                <Typography style={styles.white} variant={"h3"}>Generátor widgetů</Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <ExpansionPanel expanded={true} xs={6}>
-                                    <ExpansionPanelDetails xs={6}>
-                                        <Grid container justify={"center"} spacing={16}>
-                                            <Grid item>
-                                                <form style={{marginTop: '25px'}}>
-                                                    <FormGroup style={{margin: "1em"}}>
-                                                        <InputLabel htmlFor="server-select">Server</InputLabel>
-                                                        <Select
-                                                            value={this.state.generator.server}
-                                                            displayEmpty
-                                                            onChange={this.onChange.bind(this)}
-                                                            inputProps={{
-                                                                name: 'server',
-                                                                id: 'server-select'
-                                                            }}
-                                                        >
-                                                            <MenuItem disabled selected value={""}>
-                                                                <em>Nevybrán</em>
-                                                            </MenuItem>
-                                                            {
-                                                                this.state.servers.map( (server) => (
-                                                                        <MenuItem key={server.id} value={server}>
-                                                                            <em>{server.name} - {server.ip}:{server.port}</em>
-                                                                        </MenuItem>
-                                                                    )
-                                                                )
-                                                            }
-                                                        </Select>
-                                                    </FormGroup>
-                                                    <FormGroup style={{margin: "1em"}}>
-                                                        <InputLabel htmlFor="language-select">Jazyk</InputLabel>
-                                                        <Select
-                                                            displayEmpty
-                                                            value={this.state.generator.language}
-                                                            onChange={this.onChange.bind(this)}
-                                                            inputProps={{
-                                                                name: 'language',
-                                                                id: 'language-select'
-                                                            }}
-                                                        >
-                                                            <MenuItem disabled selected value={""}>
-                                                                <em>Nevybrán</em>
-                                                            </MenuItem>
-                                                            {
-                                                                this.state.languages.map( (key, value) => (
-                                                                        <MenuItem key={value} value={value}>
-                                                                            <em>{key}</em>
-                                                                        </MenuItem>
-                                                                    )
-                                                                )
-                                                            }
-                                                        </Select>
-                                                    </FormGroup>
-                                                    <FormGroup>
-                                                        <Typography>
+                <div className={classes.header}>
+                    {this.renderStatusBadge()}
+                    {this.renderPlayersBadge()}
+                </div>
+            </>;
+        return(data)
+    }
 
-                                                        </Typography>
-                                                    </FormGroup>
-                                                </form>
-                                            </Grid>
-                                            <Grid item>
-                                                {this.renderWidget()}
-                                            </Grid>
+    renderSocialBadges = () =>
+    {
+        let { server } = this.state;
+        let {classes} = this.props;
+        let quote = "Bavím se na serveru: "+server.name+"! Připoj se taky! "+this.getServerAddress();
+        let data =
+            <>
+                <div className={classes.header}>
+                    <Grid container justify={"center"}>
+                        <Grid item>
+                            <FacebookShareButton url={window.location.href} quote={quote}>
+                                <FacebookIcon size={64} round={true}/>
+                            </FacebookShareButton>
+                        </Grid>
+                        <Grid item>
+                            <TwitterShareButton url={window.location.href} quote={quote}>
+                                <TwitterIcon size={64} round={true}/>
+                            </TwitterShareButton>
+                        </Grid>
+                    </Grid>
+                </div>
+            </>;
+
+
+        return data;
+    }
+
+    getServerAddress()
+    {
+        let {server} = this.state;
+        return (server.domain.length ? server.domain : server.ip+":"+server.port);
+    }
+
+    renderDate = () =>
+    {
+        let {server} = this.state;
+        let {classes} = this.props;
+        return (
+            <div className={classes.header}>
+                <Chip clickable={false} avatar={<Avatar><DateRange/></Avatar>} label={new Date(server.createdAt).toLocaleDateString('cs', {year: "numeric", month: "2-digit", day: "numeric"})} />
+            </div>
+        )
+    }
+
+    clipAddress = () =>
+    {
+        var doc = document.createElement('textarea');
+        doc.value = this.getServerAddress();
+        document.body.appendChild(doc);
+        doc.select();
+        document.execCommand("copy");
+        document.body.removeChild(doc);
+    }
+
+    render() {
+
+        const {classes} = this.props;
+        const { error, isLoaded, server } = this.state;
+        let data = null;
+        if (error)
+        {
+            data = (<div>Error: {error.message}</div>);
+        }
+        else if (!isLoaded)
+        {
+            data = (<div>Loading...</div>);
+        }
+        else
+        {
+            data = (
+                <Paper className={classes.paper}>
+                    {this.generateSeo()}
+                    <Grid container justify={"center"} spacing={16}>
+                        <Grid item xs={12}>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-start"}>
+                                        {this.renderDate()}
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-end"}>
+                                    {
+                                        this.renderBadges()
+                                    }
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container justify={"center"}>
+                                <Grid item xs={12}>
+                                    <Typography variant={"h1"}>
+                                        {server.name}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Typography variant={"h5"}>{this.getServerAddress()}</Typography>
+                                            <Chip clickable={true} avatar={<Avatar><AttachFile/></Avatar>} onClick={this.clipAddress.bind(this)} label={"Zkopírovat"}/>
                                         </Grid>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        {
+                            this.renderServerImage()
+                        }
+                        <Grid item xs={10}>
+                            <Grid container justify={"flex-start"}>
+                                <Typography variant={"body1"}>
+                                    {server.description}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container justify={"flex-end"}>
+                                <Grid item>
+                                {
+                                    this.renderSocialBadges()
+                                }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Grid container justify={"center"}>
+                                <Grid item>
+                                    {this.renderStats()}
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </>
-        )
-    }
-
-    renderWidget = () => {
-        if (this.state.generator.server !== "" && this.state.generator.language !== "")
-        {
-            var data = null;
-            if (this.state.languages[this.state.generator.language] === 'PHP')
-            {
-                data =
-                    <pre style={{textAlign: 'left', whiteSpace: 'pre-wrap'}}><code>{`
-                    <?php
-
-                    class Widget
-                    {
-
-                        public $name = null;
-                        public $address = null;
-                        public $status = null;
-                        public $ping = null;
-                        public $players = null;
-
-                        private function parseOutput($c)
-                        {
-                            $this->name = $c['name'];
-                            $this->address = (isset($c['domain']) && !empty($c['domain'])) ? $c['domain'] : ($c['ip'].":".$c['port']);
-                            $this->status = (isset($c['stats']['StatusStat']['value']) && $c['stats']['StatusStat']['value']) ? "Online" : "Offline";
-                            $this->ping = isset($c['stats']['PingStat']['value']) ? $c['stats']['PingStat']['value'] : null;
-                            $this->players = (isset($c['stats']['PlayersStat']['value']) && isset($c['stats']['PlayersStat']['maxValue'])) ? $c['stats']['PlayersStat']['value']."/".$c['stats']['PlayersStat']['maxValue'] : null;
-                        }
-
-                        private function get()
-                        {
-
-                            $url = "https://api.server-list.cz/v1/services/`+this.state.generator.server.service_id+`/servers/`+this.state.generator.server.id+`";
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, $url);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-                            $contents = curl_exec($ch);
-                            $contents = json_decode($contents, true);
-                            $this->parseOutput($contents);
-
-                            curl_close($ch);
-                        }
-
-                        public function render()
-                        {
-                            $this->get();
-                            return "
-                                <div style=\"box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;\">
-                                    <div style=\"padding: 2px 16px;\">
-                                        <h4><b>{$this->name}</b></h4>
-                                        <p>IP: {$this->address}</p>
-                                        <p>Status: {$this->status}</p>
-                                        <?php if (!$this->status): ?>
-                                            <p>Počet hráčů: {$this->players}</p>
-                                            <p>Ping: {$this->ping}</p>
-                                        <?php endif;>
-                                    </div>
-                                </div>
-                            ";
-                        }
-                    }
-
-                    $widget = new Widget;
-                    echo $widget->render();
-
-                    ?>
-                    `}</code></pre>;
-                console.log(data);
-            }
-            return (
-                data
-            )
+                </Paper>
+            );
         }
-    }
 
-    render()
-    {
         return (
-            <>
-            {this.renderForm()}
-            </>
-        )
+            <Grid container justify={"center"} spacing={40} style={{marginTop: '25px'}}>
+                <Grid item xs={10} sm={10} md={8}>
+                    {data}
+                </Grid>
+            </Grid>
+        );
     }
 }
 
