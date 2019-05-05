@@ -676,8 +676,7 @@ class Server extends Component {
                                         <Typography variant={"body1"} paragraph={true}>
                                             Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes()}.
 
-                                            Z Vašeho aktuálního času se vypočte průměrný počet hráčů a maximální počet
-                                            hráčů za posledních 14 dní.
+                                            Z Vašeho aktuálního času se vypočtou průměrné a maximální hodnoty za posledních 14 dní.
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={10}>
