@@ -563,10 +563,9 @@ class Server extends Component {
                 let statsUrl = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
                 axios.get(statsUrl)
                     .then((res) => {
-                        let data = this.removeEmptyStats(res.data);
+                        const data = this.processStats(res.data);
                         this.setState({stats: {...this.state.stats, keys: Object.keys(data)}}, () => {
                             this.setState({stats: {...this.state.stats, values: Object.values(data)}}, () => {
-                                this.reduceStats();
                                 this.setState({stats: {...this.state.stats, isLoaded: true}})
                             });
                         });
@@ -575,12 +574,11 @@ class Server extends Component {
 
     }
 
-    removeEmptyStats = (data) => {
+    processStats = (data) => {
         let _keys = Object.keys(data);
         let values = Object.values(data);
-        let keys = [];
 
-        let stats = {};
+        let stats = [];
 
         _keys.map((key, id) => {
             if (values[id].length) {
@@ -601,66 +599,63 @@ class Server extends Component {
                     return (hour === currentHour);
                 });
 
-                let sumArray = [];
+                let filteredArray = [];
 
                 const data = groupBy(statsFromCurrentHour, it => new Date(it.date).getUTCDate());
 
                 data.forEach(key => {
-                    sumArray.push(
+                    filteredArray.push(
                         {
                             date: key[0].date,
-                            value: Math.round(key.reduce((prev, cur) => prev + cur.value, 0) / key.length),
+                            avg: Math.round(key.reduce((prev, cur) => prev + cur.value, 0) / key.length),
+                            max: Math.round(key.reduce((max, p) => p.value > max ? p.value : max, key[0].value)),
                         });
                 });
 
+                stats[id]['filteredArray'] = filteredArray;
             }
+        });
 
-        })
-    };
-
-    reduceStats = () => {
-
+        return stats.filter(value => Object.keys(value).length);
     };
 
     changeStat(event, value) {
-        console.log(value);
-        this.setState({stats: {...this.state.stats, selected: value}});
+        this.setState({stats: {...this.state.stats, selected: parseInt(value)}});
     }
 
     renderGraph() {
 
-        let data = this.state.stats.values[this.state.stats.selected];
-        data = data.map((item) => {
+        const {stats} = this.state;
+        const {selected} = this.state.stats;
+        const {filteredArray} = stats.values[selected];
+        const data = filteredArray.map((item) => {
             return {
-                x: new Date(item.date).getTime(),
-                y: item.value,
+                x: new Date(item.date).toLocaleDateString('cs-CZ', {hour: "2-digit", minute: "2-digit"}),
+                avg: item.avg,
+                max: item.max,
             }
         });
 
-        console.log(data);
 
         return (
-            <Grid container>
-                <Grid item xs={12}>
-                    <ResponsiveContainer width={"99%"} height={320}>
-                        <LineChart data={data}>
-                            <XAxis dataKey={"x"}/>
-                            <YAxis/>
-                            <CartesianGrid vertical={false} strokeDasharray="3 3"/>
-                            <Tooltip/>
-                            <Legend/>
-                            <Line type="monotone" dataKey="Průměrný počet hráčů v tuto hodinu" stroke="#82ca9d"/>
-                            <Line type="monotone" dataKey="Maximální počet hráčů v tuto hodinu" stroke="#8884d8"
-                                  activeDot={{r: 8}}/>
-                        </LineChart>
-                    </ResponsiveContainer>
-                </Grid>
-            </Grid>
+            <ResponsiveContainer width={"95%"} height={320}>
+                <LineChart data={data}>
+                    <XAxis dataKey="x"/>
+                    <YAxis/>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3"/>
+                    <Tooltip/>
+                    <Legend/>
+                    <Line type="monotone" name={"Průměr"} dataKey="avg" stroke="#007bff"/>
+                    <Line type="monotone" name={"Maximum"} dataKey="max" stroke="#dc3545"/>
+                </LineChart>
+            </ResponsiveContainer>
         );
     }
 
     renderStats() {
         const {classes} = this.props;
+        const {stats} = this.state;
+
         if (this.state.stats.isLoaded) {
             return (
                 <Grid item xs={12}>
@@ -676,20 +671,27 @@ class Server extends Component {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={10}>
+                            <Grid item xs={12}>
                                 <Grid container justify={"center"}>
-                                    <Grid item>
-                                        <Tabs className={classes.dark} value={this.state.stats.selected}
+                                    <Grid item xs={10}>
+                                        <Typography variant={"body1"}>
+                                            Statistiky jsou vždy získávány k aktuální hodině. Z Vašeho aktuálního času se vypočte průměrný počet hráčů za posledních 14 dní ve stejný čas a také se získá maximální počet hráčů v tuto hodinu.
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <Tabs className={classes.dark} style={{marginBottom: "1em"}} value={stats.selected}
                                               onChange={this.changeStat.bind(this)}>
                                             {
-                                                this.state.stats.keys.map((key, id) => {
-                                                        let keyTitle = key.slice(0, key.indexOf("Stat"));
-                                                        if (this.state.stats.values[id].length > 0)
-                                                            return (<Tab label={keyTitle} value={id} key={id}/>)
+                                                stats.keys.map((key) => {
+                                                        let keyTitle = stats.values[key]["title"];
+                                                        if (stats.values[key].items.length > 0)
+                                                            return (<Tab label={keyTitle} value={key} key={parseInt(key)}/>)
                                                     }
                                                 )
                                             }
                                         </Tabs>
+                                    </Grid>
+                                    <Grid item xs={12}>
                                         {this.renderGraph()}
                                     </Grid>
                                 </Grid>
@@ -717,7 +719,7 @@ class Server extends Component {
     renderServerImage() {
         if (this.state.server.imageUrl) {
             return (
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} sm={10} md={8} lg={6}>
                     <Card>
                         <CardMedia>
                             <Image src={this.state.server.imageUrl}/>
@@ -826,7 +828,7 @@ class Server extends Component {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item>
+                            <Grid item xs={10}>
                                 <Grid container justify={"flex-start"}>
                                     <Typography variant={"body1"}>
                                         {server.description}
@@ -841,6 +843,71 @@ class Server extends Component {
         return data;
     };
 
+    renderServerInfo = () => {
+        let {classes} = this.props;
+        return (<Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
+            <Paper className={classes.paper}>
+                <Grid container justify={"center"} spacing={16}>
+                    <Grid item xs={12}>
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Grid container justify={"flex-start"}>
+                                    {this.renderDate()}
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Grid container justify={"flex-end"}>
+                                    {
+                                        this.renderBadges()
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container justify={"center"}>
+                            <Grid item xs={12}>
+                                <Grid container justify={"center"}>
+                                    <Grid item xs={12}>
+                                        <Grid container style={{marginTop: "1em"}}>
+                                            <Grid item xs={6}>
+                                                <Typography variant={"h5"}>
+                                                    {this.getServerAddress()}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Chip clickable={true}
+                                                      avatar={<Avatar><AttachFile/></Avatar>}
+                                                      onClick={this.clipAddress.bind(this)}
+                                                      label={"Zkopírovat"}/>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                {this.renderSocialBadges()}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Paper>
+        </Grid>);
+    };
+
+    renderServerTitle = () => {
+        let {classes} = this.props;
+        let {server} = this.state;
+
+        return (
+            <Grid item xs={12}>
+                <Typography className={classes.white} variant={"h2"}>
+                    {server.name}
+                </Typography>
+            </Grid>
+        )
+    };
+
     clipAddress = () => {
         var doc = document.createElement('textarea');
         doc.value = this.getServerAddress();
@@ -852,8 +919,7 @@ class Server extends Component {
 
     render() {
 
-        const {classes} = this.props;
-        const {error, isLoaded, server} = this.state;
+        const {error, isLoaded} = this.state;
         let data = null;
         if (error) {
             data = (<div>Error: {error.message}</div>);
@@ -864,61 +930,10 @@ class Server extends Component {
                 <>
                     {this.generateSeo()}
                     <Grid style={{marginTop: "1em"}} container justify={"center"}>
-                        <Grid item xs={10} sm={8} md={6}>
+                        <Grid item xs={12} sm={10} md={8}>
                             <Grid container spacing={40}>
-                                <Grid item xs={12} md={this.state.server.imageUrl ? 6 : 12}>
-                                    <Paper className={classes.paper}>
-                                        <Grid container justify={"center"} spacing={16}>
-                                            <Grid item xs={12}>
-                                                <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Grid container justify={"flex-start"}>
-                                                            {this.renderDate()}
-                                                        </Grid>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <Grid container justify={"flex-end"}>
-                                                            {
-                                                                this.renderBadges()
-                                                            }
-                                                        </Grid>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <Grid container justify={"center"}>
-                                                    <Grid item xs={10}>
-                                                        <Typography noWrap={true} variant={"h1"}>
-                                                            {server.name}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={12}>
-                                                        <Grid container justify={"center"}>
-                                                            <Grid item xs={12}>
-                                                                <Grid container style={{marginTop: "1em"}}>
-                                                                    <Grid item xs={6}>
-                                                                        <Typography variant={"h5"}>
-                                                                            {this.getServerAddress()}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={6}>
-                                                                        <Chip clickable={true}
-                                                                              avatar={<Avatar><AttachFile/></Avatar>}
-                                                                              onClick={this.clipAddress.bind(this)}
-                                                                              label={"Zkopírovat"}/>
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                    <Grid item xs={12}>
-                                                        {this.renderSocialBadges()}
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                </Grid>
+                                {this.renderServerTitle()}
+                                {this.renderServerInfo()}
                                 {this.renderServerImage()}
                                 {this.renderDescription()}
                                 {this.renderStats()}
