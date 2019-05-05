@@ -210,13 +210,11 @@ class Servers extends Component {
         } else {
             return (
                 <CardMedia
+                    component="img"
+                    image="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22288%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20288%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_164edaf95ee%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_164edaf95ee%22%3E%3Crect%20width%3D%22288%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2296.32500076293945%22%20y%3D%22118.8%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
                     className={classes.cardMedia}
                     title={server.name}
-                >
-                    <Image fluid
-                           src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22288%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20288%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_164edaf95ee%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_164edaf95ee%22%3E%3Crect%20width%3D%22288%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2296.32500076293945%22%20y%3D%22118.8%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                    />
-                </CardMedia>)
+                />)
         }
     }
 
@@ -627,36 +625,37 @@ class Server extends Component {
 
         const {stats} = this.state;
         const {selected} = this.state.stats;
-        const {filteredArray} = stats.values[selected];
-        const data = filteredArray.map((item) => {
-            return {
-                x: new Date(item.date).toLocaleDateString('cs-CZ', {hour: "2-digit", minute: "2-digit"}),
-                avg: item.avg,
-                max: item.max,
-            }
-        });
+        if (stats.values[selected]) {
+            const {filteredArray} = stats.values[selected];
+            const data = filteredArray.map((item) => {
+                return {
+                    x: new Date(item.date).toLocaleDateString('cs-CZ', {hour: "2-digit", minute: "2-digit"}),
+                    avg: item.avg,
+                    max: item.max,
+                }
+            });
 
-
-        return (
-            <ResponsiveContainer width={"95%"} height={320}>
-                <LineChart data={data}>
-                    <XAxis dataKey="x"/>
-                    <YAxis/>
-                    <CartesianGrid vertical={false} strokeDasharray="3 3"/>
-                    <Tooltip/>
-                    <Legend/>
-                    <Line type="monotone" name={"Průměr"} dataKey="avg" stroke="#007bff"/>
-                    <Line type="monotone" name={"Maximum"} dataKey="max" stroke="#dc3545"/>
-                </LineChart>
-            </ResponsiveContainer>
-        );
+            return (
+                <ResponsiveContainer width={"95%"} height={320}>
+                    <LineChart data={data}>
+                        <XAxis dataKey="x"/>
+                        <YAxis/>
+                        <CartesianGrid vertical={false} strokeDasharray="3 3"/>
+                        <Tooltip/>
+                        <Legend/>
+                        <Line type="monotone" name={"Průměr"} dataKey="avg" stroke="#007bff"/>
+                        <Line type="monotone" name={"Maximum"} dataKey="max" stroke="#dc3545"/>
+                    </LineChart>
+                </ResponsiveContainer>
+            );
+        }
     }
 
     renderStats() {
         const {classes} = this.props;
         const {stats} = this.state;
 
-        if (this.state.stats.isLoaded) {
+        if (stats.isLoaded && stats.values.length !== 0) {
             return (
                 <Grid item xs={12}>
                     <Paper className={classNames(classes.dark, classes.paper)}>
@@ -677,17 +676,20 @@ class Server extends Component {
                                         <Typography variant={"body1"} paragraph={true}>
                                             Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes()}.
 
-                                            Z Vašeho aktuálního času se vypočte průměrný počet hráčů a maximální počet hráčů za posledních 14 dní.
+                                            Z Vašeho aktuálního času se vypočte průměrný počet hráčů a maximální počet
+                                            hráčů za posledních 14 dní.
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={10}>
-                                        <Tabs className={classes.dark} style={{marginBottom: "1em"}} value={stats.selected}
+                                        <Tabs className={classes.dark} style={{marginBottom: "1em"}}
+                                              value={stats.selected}
                                               onChange={this.changeStat.bind(this)}>
                                             {
                                                 stats.keys.map((key) => {
                                                         let keyTitle = stats.values[key]["title"];
                                                         if (stats.values[key].items.length > 0)
-                                                            return (<Tab label={keyTitle} value={parseInt(key)} key={parseInt(key)}/>)
+                                                            return (<Tab label={keyTitle} value={parseInt(key)}
+                                                                         key={parseInt(key)}/>)
                                                     }
                                                 )
                                             }
@@ -719,13 +721,12 @@ class Server extends Component {
 
 
     renderServerImage() {
-        if (this.state.server.imageUrl) {
+        const {server} = this.state;
+        if (server.imageUrl) {
             return (
-                <Grid item xs={12} sm={10} md={8} lg={6}>
+                <Grid item xs={12} md={4}>
                     <Card>
-                        <CardMedia>
-                            <Image src={this.state.server.imageUrl}/>
-                        </CardMedia>
+                        <CardMedia component="img" src={server.imageUrl} title={server.title} />
                     </Card>
                 </Grid>
             );
@@ -772,12 +773,12 @@ class Server extends Component {
             <>
                 <div className={classes.header}>
                     <Grid container justify={"center"}>
-                        <Grid item>
+                        <Grid item xs={12}>
                             <FacebookShareButton url={window.location.href} quote={quote}>
                                 <FacebookIcon size={64} round={true}/>
                             </FacebookShareButton>
                         </Grid>
-                        <Grid item>
+                        <Grid item xs={12}>
                             <TwitterShareButton url={window.location.href} quote={quote}>
                                 <TwitterIcon size={64} round={true}/>
                             </TwitterShareButton>
@@ -847,7 +848,8 @@ class Server extends Component {
 
     renderServerInfo = () => {
         let {classes} = this.props;
-        return (<Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
+        return (
+        <Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
             <Paper className={classes.paper}>
                 <Grid container justify={"center"} spacing={16}>
                     <Grid item xs={12}>
@@ -894,7 +896,8 @@ class Server extends Component {
                     </Grid>
                 </Grid>
             </Paper>
-        </Grid>);
+        </Grid>
+        );
     };
 
     renderServerTitle = () => {

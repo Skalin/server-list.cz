@@ -61,7 +61,6 @@ export class Notification extends Component {
                 url += "/" + key + "/" + obj[key];
             }
         }
-        console.log(url);
         this.setState({redirect: true, redirectUrl: url}, () => this.setState({redirect: false, redirectUrl: null}));
     };
 
