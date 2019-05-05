@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {Grid, Paper, Typography} from "@material-ui/core";
 
 
-export class Conditions extends Component
-{
+export class Conditions extends Component {
 
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
 
     }
 
-    render()
-    {
+    render() {
         return (
             <Grid container justify={"center"}>
                 <Grid item xs={12} sm={10} md={8}>

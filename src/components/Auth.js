@@ -10,11 +10,11 @@ import {
     Link,
     ExpansionPanel, ExpansionPanelDetails
 } from "@material-ui/core";
-import { UserContext } from "./User";
+import {UserContext} from "./User";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import amber from '@material-ui/core/colors/amber';
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 
 const signUp = 1;
 const signIn = 2;
@@ -37,29 +37,24 @@ const styles = {
 };
 
 
-export class Auth extends Component
-{
+export class Auth extends Component {
 
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         let login = true;
-        this.state = { isLoginOpen: login, isRegisterOpen: !login};
+        this.state = {isLoginOpen: login, isRegisterOpen: !login};
     }
 
-    switchBox( type )
-    {
+    switchBox(type) {
         if ((type === signIn && !this.state.isLoginOpen) || (type === signUp && !this.state.isRegisterOpen))
             this.setState({isRegisterOpen: !this.state.isRegisterOpen, isLoginOpen: !this.state.isLoginOpen})
 
     }
 
-    renderForm()
-    {
-        if (!this.context.user.actions.checkLogin())
-        {
+    renderForm() {
+        if (!this.context.user.actions.checkLogin()) {
 
             let data = null;
             if (this.state.isLoginOpen)
@@ -68,48 +63,46 @@ export class Auth extends Component
             if (this.state.isRegisterOpen)
                 data = <Register/>;
 
-            return(
+            return (
                 <>
                     <Grid item xs={12}>
                         {data}
                     </Grid>
                 </>
             )
-        }
-        else
-        {
-            return  (
+        } else {
+            return (
                 <Redirect to={"/account"}/>
             );
         }
     }
 
-    renderButtons()
-    {
+    renderButtons() {
         let data =
             <>
                 <Grid item xs={6}>
-                    <Button variant={"contained"} style={styles.heading} size={"large"} color={"primary"} onClick={this.switchBox.bind(this, signIn)}>
+                    <Button variant={"contained"} style={styles.heading} size={"large"} color={"primary"}
+                            onClick={this.switchBox.bind(this, signIn)}>
                         Přihlásit se
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant={"contained"} style={styles.headingRed} size={"large"} color={"secondary"} onClick={this.switchBox.bind(this, signUp)}>
+                    <Button variant={"contained"} style={styles.headingRed} size={"large"} color={"secondary"}
+                            onClick={this.switchBox.bind(this, signUp)}>
                         Registrovat
                     </Button>
                 </Grid>
             </>;
 
-        return(
+        return (
             data
         )
     }
 
-    render()
-    {
-        return(
+    render() {
+        return (
             <React.Fragment>
-                {this.context.user.actions.checkLogin() ? <Redirect to={"/"} /> :
+                {this.context.user.actions.checkLogin() ? <Redirect to={"/"}/> :
                     <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
                         <Grid item xs={12}>
                             <ExpansionPanel expanded={true} xs={6} style={{marginTop: "25px"}}>
@@ -127,12 +120,10 @@ export class Auth extends Component
     }
 }
 
-class Login extends Component
-{
+class Login extends Component {
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
             user:
@@ -146,8 +137,7 @@ class Login extends Component
         };
     }
 
-    onChange(formData)
-    {
+    onChange(formData) {
         let user = {...this.state.user};
         let property = formData.target.name;
         user[property] = formData.target.value;
@@ -155,52 +145,47 @@ class Login extends Component
         this.setState({user})
     }
 
-    submitForm(e)
-    {
+    submitForm(e) {
         e.preventDefault();
         let state = this.context.user.actions.login(this.state.user);
 
-        if (typeof(state) == "boolean" && state)
-        {
+        if (typeof (state) == "boolean" && state) {
             this.setState({loggedIn: true});
-        }
-        else
-        {
+        } else {
             this.setState({snackOpen: true})
         }
     }
 
-    renderForm()
-    {
+    renderForm() {
         return (
-            <form onSubmit={this.submitForm.bind(this)} >
+            <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Login</h1>
                 <FormGroup>
-                    <TextField autoFocus={true} autoComplete={"username"} label={"Uživatelské jméno"} type="text" name="username" onChange={this.onChange.bind(this)} />
+                    <TextField autoFocus={true} autoComplete={"username"} label={"Uživatelské jméno"} type="text"
+                               name="username" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Heslo"} autoComplete={"current-password"} type="password" onChange={this.onChange.bind(this)} name="password" />
+                    <TextField label={"Heslo"} autoComplete={"current-password"} type="password"
+                               onChange={this.onChange.bind(this)} name="password"/>
                 </FormGroup>
-                <Button variant={"contained"} color={"primary"} type="submit"  style={styles.heading}>Přihlásit se</Button>
+                <Button variant={"contained"} color={"primary"} type="submit" style={styles.heading}>Přihlásit
+                    se</Button>
             </form>
         )
     }
 
-    render()
-    {
-        return(
+    render() {
+        return (
             this.state.loggedIn ? <Redirect to={"/account"}/> : this.renderForm()
         )
     }
 }
 
-class Register extends Component
-{
+class Register extends Component {
 
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
             user: {
@@ -217,36 +202,34 @@ class Register extends Component
         };
     }
 
-    onChange(formData)
-    {
+    onChange(formData) {
         let user = {...this.state.user};
         let property = formData.target.name;
         user[property] = formData.target.value;
         this.setState({user});
     }
 
-    submitForm(e)
-    {
+    submitForm(e) {
         e.preventDefault();
         if (this.context.user.actions.register(this.state.user))
             this.setState({loggedIn: true});
-        else
-        {
+        else {
 
         }
 
     }
 
-    renderForm()
-    {
+    renderForm() {
         return (
             <form onSubmit={this.submitForm.bind(this)}>
                 <h1>Registration</h1>
                 <FormGroup>
-                    <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username" onChange={this.onChange.bind(this)}/>
+                    <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username"
+                               onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Heslo"} autoComplete={"new-password"} type="password" name="password" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Heslo"} autoComplete={"new-password"} type="password" name="password"
+                               onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <TextField label={"Jméno"} type="text" name="name" onChange={this.onChange.bind(this)}/>
@@ -271,19 +254,19 @@ class Register extends Component
                         label={
                             <>
                                 {"Souhlasím s "}
-                                <Link to={'/conditions'} >podmínkami služby Server-List.cz</Link>
+                                <Link to={'/conditions'}>podmínkami služby Server-List.cz</Link>
                             </>
                         }
                     />
                 </FormGroup>
-                <Button style={styles.headingRed} variant={"contained"} color={"secondary"} type="submit">Registrovat se</Button>
+                <Button style={styles.headingRed} variant={"contained"} color={"secondary"} type="submit">Registrovat
+                    se</Button>
             </form>
         );
     }
 
-    render()
-    {
-        return(
+    render() {
+        return (
             this.state.loggedIn ? <Redirect to={"/account"}/> : this.renderForm()
         )
     }

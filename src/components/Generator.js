@@ -31,12 +31,10 @@ const styles = theme => ({
     }
 });
 
-export default class ServerWidgetGenerator extends Component
-{
+export default class ServerWidgetGenerator extends Component {
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
             servers: [],
@@ -48,30 +46,28 @@ export default class ServerWidgetGenerator extends Component
         };
     }
 
-    componentDidMount()
-    {
+    componentDidMount() {
 
-        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
-            .then((res) => {this.setState({servers: res.data})});
+        axios.post(config.apiUserUrl + '/servers', {login_token: this.context.user.actions.getRawToken()})
+            .then((res) => {
+                this.setState({servers: res.data})
+            });
     }
 
-    generateSeo()
-    {
-        if (this.state.server)
-        {
+    generateSeo() {
+        if (this.state.server) {
             return (
                 <MetaTags>
                     <title>{"Vygenerovat status widget" + config.titlePageName}</title>
-                    <meta name="description" content={this.state.server.description} />
-                    <meta property="og:title" content={this.state.server.name} />
+                    <meta name="description" content={this.state.server.description}/>
+                    <meta property="og:title" content={this.state.server.name}/>
                 </MetaTags>
             )
         }
     }
 
 
-    onChange(formData)
-    {
+    onChange(formData) {
         let generator = {...this.state.generator};
         let property = formData.target.name;
         generator[property] = formData.target.value;
@@ -84,7 +80,7 @@ export default class ServerWidgetGenerator extends Component
             <>
                 <Grid container justify={"center"} style={{marginTop: '25px'}}>
                     {this.generateSeo()}
-                    <Grid item xs={10} >
+                    <Grid item xs={10}>
                         <Grid container justify={"center"} spacing={16}>
                             <Grid item xs={12}>
                                 <Typography color={"inherit"} variant={"h3"}>Generátor widgetů</Typography>
@@ -94,7 +90,8 @@ export default class ServerWidgetGenerator extends Component
                                     <ExpansionPanelDetails xs={6}>
                                         <Grid container justify={"center"} spacing={16}>
                                             <Grid item>
-                                                <form style={{marginTop: '25px'}} onSubmit={this.generateWidgetFile.bind(this)}>
+                                                <form style={{marginTop: '25px'}}
+                                                      onSubmit={this.generateWidgetFile.bind(this)}>
                                                     <FormGroup style={{margin: "1em"}}>
                                                         <InputLabel htmlFor="server-select">Server</InputLabel>
                                                         <Select
@@ -110,7 +107,7 @@ export default class ServerWidgetGenerator extends Component
                                                                 <em>Nevybrán</em>
                                                             </MenuItem>
                                                             {
-                                                                this.state.servers.map( (server) => (
+                                                                this.state.servers.map((server) => (
                                                                         <MenuItem key={server.id} value={server}>
                                                                             <em>{server.name} - {server.ip}:{server.port}</em>
                                                                         </MenuItem>
@@ -134,7 +131,7 @@ export default class ServerWidgetGenerator extends Component
                                                                 <em>Nevybrán</em>
                                                             </MenuItem>
                                                             {
-                                                                this.state.languages.map( (key, value) => (
+                                                                this.state.languages.map((key, value) => (
                                                                         <MenuItem key={value} value={value}>
                                                                             <em>{key}</em>
                                                                         </MenuItem>
@@ -162,7 +159,7 @@ export default class ServerWidgetGenerator extends Component
                 </Grid>
             </>
         )
-    }
+    };
 
 
     generateWidgetFile = (e) => {
@@ -174,7 +171,7 @@ export default class ServerWidgetGenerator extends Component
         if (this.state.languages[this.state.generator.language] === 'PHP') {
             extension = 'php';
             data =
-`<?php
+                `<?php
 
     class Widget
     {
@@ -238,9 +235,7 @@ export default class ServerWidgetGenerator extends Component
                     `;
 
 
-        }
-        else if (this.state.languages[this.state.generator.language] === 'JavaScript')
-        {
+        } else if (this.state.languages[this.state.generator.language] === 'JavaScript') {
             extension = 'js';
         }
 
@@ -248,24 +243,22 @@ export default class ServerWidgetGenerator extends Component
         let fileURL = window.URL.createObjectURL(file);
         let link = document.createElement('a');
         link.href = fileURL;
-        link.setAttribute('download', "Widget."+extension);
+        link.setAttribute('download', "Widget." + extension);
         link.click();
-    }
+    };
 
 
     renderWidget = () => {
-        if (this.state.generator.server !== "" && this.state.generator.language !== "")
-        {
+        if (this.state.generator.server !== "" && this.state.generator.language !== "") {
             var data = (<Button style={styles.headingButton} type={"submit"}>Stáhnout</Button>);
 
             return (
                 data
             )
         }
-    }
+    };
 
-    render()
-    {
+    render() {
         return (
             <>
                 {this.context.user.account ? this.renderForm() : <Redirect to={"/auth"}/>}

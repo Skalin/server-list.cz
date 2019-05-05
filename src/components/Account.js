@@ -12,7 +12,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableRow,
     Typography, Dialog, DialogTitle, DialogActions, IconButton, DialogContent, DialogContentText, Tooltip
 } from "@material-ui/core";
-import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {MetaTags} from "react-meta-tags";
 import DeleteIcon from '@material-ui/icons/Delete';
 import PageviewIcon from '@material-ui/icons/Pageview';
@@ -56,13 +56,11 @@ const styles = {
     }
 };
 
-class Account extends Component
-{
+class Account extends Component {
 
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.classes = props;
         this.state = {
@@ -71,23 +69,21 @@ class Account extends Component
         }
     }
 
-    componentDidMount()
-    {
-            if (this.context.user.actions.getUser())
-            {
-                this.setServers();
-            }
+    componentDidMount() {
+        if (this.context.user.actions.getUser()) {
+            this.setServers();
+        }
     }
 
-    setServers = () =>
-    {
+    setServers = () => {
 
-        axios.post(config.apiUserUrl+'/servers', {login_token: this.context.user.actions.getRawToken()})
-            .then((res) => {this.setState({servers: res.data})});
+        axios.post(config.apiUserUrl + '/servers', {login_token: this.context.user.actions.getRawToken()})
+            .then((res) => {
+                this.setState({servers: res.data})
+            });
     };
 
-    generateSeo = () =>
-    {
+    generateSeo = () => {
         return (
             <MetaTags>
                 <title>{"Nastavení účtu" + config.titlePageName}</title>
@@ -96,13 +92,11 @@ class Account extends Component
         )
     };
 
-    renderServers = () =>
-    {
+    renderServers = () => {
 
-        let { servers } = this.state;
+        let {servers} = this.state;
         let data = [];
-        if (servers.length)
-        {
+        if (servers.length) {
             data =
                 <Table>
                     <TableHead>
@@ -123,9 +117,9 @@ class Account extends Component
                                 </TableCell>
                                 {
                                     isWidthUp('md', this.props.width) ?
-                                    <TableCell>
-                                        {server.ip}:{server.port}
-                                    </TableCell> : null
+                                        <TableCell>
+                                            {server.ip}:{server.port}
+                                        </TableCell> : null
                                 }
                                 <TableCell align={"right"}>
                                     {this.renderDetailButton(server)}
@@ -139,19 +133,18 @@ class Account extends Component
         return (data);
     };
 
-    renderDetailButton = (server) =>
-    {
+    renderDetailButton = (server) => {
         return (
             <Tooltip title="Detail">
-                <IconButton style={styles.headingButton} component={Link} to={`services/${server.service_id}/servers/${server.id}`} >
-                    <PageviewIcon />
+                <IconButton style={styles.headingButton} component={Link}
+                            to={`services/${server.service_id}/servers/${server.id}`}>
+                    <PageviewIcon/>
                 </IconButton>
             </Tooltip>
         )
     };
 
-    handleDeleteButton = () =>
-    {
+    handleDeleteButton = () => {
         this.setState({dialogOpen: true});
     };
 
@@ -160,31 +153,31 @@ class Account extends Component
     };
 
     handleDeleteServer = (server) => {
-        let deleteServerUrl = normalizeUrl(config.apiUrl+"/services/"+server.service_id+"/servers/"+server.id, {stripAuthentication: false});
+        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/servers/" + server.id, {stripAuthentication: false});
         axios.delete(deleteServerUrl, {data: {'login_token': this.context.user.actions.getRawToken()}})
-            .then((res) =>
-                {
+            .then((res) => {
                     this.setServers();
                     this.handleDialogClose();
                 }
             );
     };
 
-    renderDeleteButton = (server) =>
-    {
+    renderDeleteButton = (server) => {
         return (
             <>
 
                 <Tooltip title="Smazat">
                     <IconButton variant={"outlined"} style={styles.headingButtonRed} onClick={this.handleDeleteButton}>
-                        <DeleteIcon />
+                        <DeleteIcon/>
                     </IconButton>
                 </Tooltip>
                 <Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose}>
                     <DialogTitle>Opravdu si přejete smazat server?</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Smazáním serveru `{server.name}` - {server.ip}:{server.port} dojde k jeho nenávratnému smazání. Nebude dostupný ve výpisu serveru, nikdo jej nebude moci najít a nebudou o něm sbírány žádné statistiky.
+                            Smazáním serveru `{server.name}` - {server.ip}:{server.port} dojde k jeho nenávratnému
+                            smazání. Nebude dostupný ve výpisu serveru, nikdo jej nebude moci najít a nebudou o něm
+                            sbírány žádné statistiky.
                         </DialogContentText>
                         <DialogActions>
                             <Button onClick={this.handleDialogClose}>
@@ -198,110 +191,117 @@ class Account extends Component
                 </Dialog>
             </>
         )
-    }
+    };
 
 
-    renderAccount()
-    {
+    renderAccount() {
         return (
-                <Grid container justify={"center"} style={{marginTop: '25px'}}>
-                    {this.generateSeo()}
-                    <Grid item xs={10} >
-                            <Grid container justify={"center"} spacing={16}>
-                                <Grid item xs={12}>
-                                    <Typography style={styles.white} variant={"h3"}>Účet</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={10} md={8}>
-                                    <ExpansionPanel expanded={true}>
-                                        <ExpansionPanelSummary style={styles.heading}>
-                                            Osobní údaje
-                                        </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"} spacing={16}>
-                                                <Grid item xs={12}>
-                                                    Zde bude formulář s vypsanými údaji, bude možnost editace dat.
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Button style={styles.heading} onClick={this.context.user.actions.updateUser.bind(this)}>
-                                                        Uložit
-                                                    </Button>
-                                                </Grid>
-                                            </Grid>
-                                        </ExpansionPanelDetails>
-                                    </ExpansionPanel>
-                                </Grid>
-                                <Grid item  xs={12} sm={10} md={8}>
-                                    <ExpansionPanel expanded={true}>
-                                        <ExpansionPanelSummary style={styles.heading}>
-                                            Nástroje
-                                        </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"} spacing={16}>
-                                                <Grid item xs={12}>
-                                                    <Typography variant={"h3"} style={{margin: "1em"}}>
-                                                        Odhlášení
-                                                    </Typography>
-                                                    <Typography>
-                                                        Využitím jednoho z těchto nástrojů se můžete odhlásit z tohoto zařízení a nebo se odhlásit ze všech zařízení, na kterých jste se v průběhu posledních 30 dní přihlásil.
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12} md={6}>
-                                                    <Button style={styles.headingButton} onClick={this.context.user.actions.logout.bind(this)}>
-                                                        Odhlásit se
-                                                    </Button>
-                                                </Grid>
-                                                <Grid item xs={12} md={6} >
-                                                    <Button style={styles.headingButtonRed} onClick={this.context.user.actions.logoutAll.bind(this)}>
-                                                        Odhlásit ze všech zařízení
-                                                    </Button>
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Typography variant={"h3"} style={{margin: "1em"}}>
-                                                        Generátor widgetů
-                                                    </Typography>
-                                                    <Typography>
-                                                        Generátor widgetů slouží k tvorbě jednoduchých statusů pro vkládání na Váš web. Jedná se o jednoduchý nástroj umožňující generování PHP a jQuery widgetů. Widgety stačí do webu pouze zkopírovat, není nutné nic dalšího řešit.
-                                                    </Typography>
-                                                    <Button component={Link} style={styles.headingButton} to={'/servers/generator'}>
-                                                        Generátor widgetů pro weby
-                                                    </Button>
-                                                </Grid>
-                                            </Grid>
-                                        </ExpansionPanelDetails>
-                                    </ExpansionPanel>
-                                </Grid>
-                                <Grid item xs={12} sm={10} md={8}>
-                                    <ExpansionPanel expanded={true}>
-                                        <ExpansionPanelSummary style={styles.heading}>
-                                            Servery
-                                        </ExpansionPanelSummary>
-                                        <ExpansionPanelDetails style={styles.black}>
-                                            <Grid container justify={"center"} spacing={16}>
-                                                <Grid item xs={12}>
-                                                    <Button style={styles.heading} component={Link} to={'/servers/add'}>
-                                                        Přidat server
-                                                    </Button>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    {
-                                                        this.renderServers()
-                                                    }
-                                                </Grid>
-                                            </Grid>
-                                        </ExpansionPanelDetails>
-                                    </ExpansionPanel>
-                                </Grid>
-                            </Grid>
+            <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                {this.generateSeo()}
+                <Grid item xs={10}>
+                    <Grid container justify={"center"} spacing={16}>
+                        <Grid item xs={12}>
+                            <Typography style={styles.white} variant={"h3"}>Účet</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={10} md={8}>
+                            <ExpansionPanel expanded={true}>
+                                <ExpansionPanelSummary style={styles.heading}>
+                                    Osobní údaje
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails style={styles.black}>
+                                    <Grid container justify={"center"} spacing={16}>
+                                        <Grid item xs={12}>
+                                            Zde bude formulář s vypsanými údaji, bude možnost editace dat.
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <Button style={styles.heading}
+                                                    onClick={this.context.user.actions.updateUser.bind(this)}>
+                                                Uložit
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </Grid>
+                        <Grid item xs={12} sm={10} md={8}>
+                            <ExpansionPanel expanded={true}>
+                                <ExpansionPanelSummary style={styles.heading}>
+                                    Nástroje
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails style={styles.black}>
+                                    <Grid container justify={"center"} spacing={16}>
+                                        <Grid item xs={12}>
+                                            <Typography variant={"h3"} style={{margin: "1em"}}>
+                                                Odhlášení
+                                            </Typography>
+                                            <Typography>
+                                                Využitím jednoho z těchto nástrojů se můžete odhlásit z tohoto zařízení
+                                                a nebo se odhlásit ze všech zařízení, na kterých jste se v průběhu
+                                                posledních 30 dní přihlásil.
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Button style={styles.headingButton}
+                                                    onClick={this.context.user.actions.logout.bind(this)}>
+                                                Odhlásit se
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Button style={styles.headingButtonRed}
+                                                    onClick={this.context.user.actions.logoutAll.bind(this)}>
+                                                Odhlásit ze všech zařízení
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Typography variant={"h3"} style={{margin: "1em"}}>
+                                                Generátor widgetů
+                                            </Typography>
+                                            <Typography>
+                                                Generátor widgetů slouží k tvorbě jednoduchých statusů pro vkládání na
+                                                Váš web. Jedná se o jednoduchý nástroj umožňující generování PHP a
+                                                jQuery widgetů. Widgety stačí do webu pouze zkopírovat, není nutné nic
+                                                dalšího řešit.
+                                            </Typography>
+                                            <Button component={Link} style={styles.headingButton}
+                                                    to={'/servers/generator'}>
+                                                Generátor widgetů pro weby
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </Grid>
+                        <Grid item xs={12} sm={10} md={8}>
+                            <ExpansionPanel expanded={true}>
+                                <ExpansionPanelSummary style={styles.heading}>
+                                    Servery
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails style={styles.black}>
+                                    <Grid container justify={"center"} spacing={16}>
+                                        <Grid item xs={12}>
+                                            <Button style={styles.heading} component={Link} to={'/servers/add'}>
+                                                Přidat server
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={10}>
+                                            {
+                                                this.renderServers()
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
+            </Grid>
         );
     }
 
-    render()
-    {
-        return(
+    render() {
+        return (
             <>
-            {this.context.user.account ? this.renderAccount() : <Redirect to={"/auth"} />}
+                {this.context.user.account ? this.renderAccount() : <Redirect to={"/auth"}/>}
             </>
         );
     }
