@@ -30,7 +30,11 @@ const normalizeUrl = require('normalize-url');
 const styles = {
     loginLink: {
         color: "white",
-        flex: 1
+        flex: 1,
+        '&:hover': {
+            textDecoration: "none",
+            color: "rgb(72,72,72)",
+        },
     },
     root: {
         flex: 1,
@@ -41,6 +45,10 @@ const styles = {
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
+        '&:hover': {
+            textDecoration: "none",
+            color: "rgb(72,72,72)",
+        },
     },
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",

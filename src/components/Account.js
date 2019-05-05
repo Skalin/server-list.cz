@@ -198,7 +198,7 @@ class Account extends Component {
         return (
             <Grid container justify={"center"} style={{marginTop: '25px'}}>
                 {this.generateSeo()}
-                <Grid item xs={10}>
+                <Grid item xs={12} sm={10}>
                     <Grid container justify={"center"} spacing={16}>
                         <Grid item xs={12}>
                             <Typography style={styles.white} variant={"h3"}>Účet</Typography>
