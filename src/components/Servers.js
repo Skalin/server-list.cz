@@ -67,6 +67,7 @@ const styles = theme => ({
         color: "black",
     },
     paperHeader: {
+        marginTop: "1em",
         marginLeft: "1em",
     },
     cardGrid: {
