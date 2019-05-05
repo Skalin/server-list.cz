@@ -664,7 +664,7 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"flex-start"}>
                                     <Grid item xs={12}>
-                                        <Typography variant={"h4"} align={"left"}
+                                        <Typography variant={"h4"} align={"left"} paragraph={true}
                                                     className={classNames(classes.dark, classes.paperHeader)}>
                                             Statistiky
                                         </Typography>
@@ -674,8 +674,10 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"center"}>
                                     <Grid item xs={10}>
-                                        <Typography variant={"body1"}>
-                                            Statistiky jsou vždy získávány k aktuální hodině. Z Vašeho aktuálního času se vypočte průměrný počet hráčů za posledních 14 dní ve stejný čas a také se získá maximální počet hráčů v tuto hodinu.
+                                        <Typography variant={"body1"} paragraph={true}>
+                                            Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes()}.
+
+                                            Z Vašeho aktuálního času se vypočte průměrný počet hráčů a maximální počet hráčů za posledních 14 dní.
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={10}>
@@ -685,7 +687,7 @@ class Server extends Component {
                                                 stats.keys.map((key) => {
                                                         let keyTitle = stats.values[key]["title"];
                                                         if (stats.values[key].items.length > 0)
-                                                            return (<Tab label={keyTitle} value={key} key={parseInt(key)}/>)
+                                                            return (<Tab label={keyTitle} value={parseInt(key)} key={parseInt(key)}/>)
                                                     }
                                                 )
                                             }
