@@ -613,22 +613,25 @@ class Server extends Component {
 
 
                 let maxOfDays = groupBy(stats[id].items, it => new Date(it.date).getDate());
-                let tmp = [];
-                maxOfDays.forEach( key => {
+                let maxDays = [];
+                if (key !== 'StatusStat')
+                {
 
-                    const stat = key.reduce((max, p) => p.value > max ? p.value : max, key[0].value);
-                    const date = key.reduce((max, p) => p.value > max ? p.date : max, key[0].value);
-                    tmp.push(
-                        {
-                            date: date,
-                            maxDay: stat
-                        }
-                    )
-                });
-                filteredArray = [...new Set([...filteredArray ,...tmp])];
-                filteredArray.sort((a, b) => {
-                    return new Date(a.date) - new Date(b.date);
-                });
+                    maxOfDays.forEach( key => {
+
+                        const stat = key.reduce((prev, current) => prev.value > current.value ? prev : current);
+                        maxDays.push(
+                            {
+                                date: stat.date,
+                                maxDay: stat.value
+                            }
+                        )
+                    });
+                    filteredArray = [...new Set([...filteredArray ,...maxDays])];
+                    filteredArray.sort((a, b) => {
+                        return new Date(a.date) - new Date(b.date);
+                    });
+                }
 
 
                 stats[id]['filteredArray'] = filteredArray;
