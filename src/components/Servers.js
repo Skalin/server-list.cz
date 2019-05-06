@@ -582,7 +582,7 @@ class Server extends Component {
         _keys.map((key, id) => {
             if (values[id].length) {
                 let name = null;
-                if (key === 'PingStats') {
+                if (key === 'PingStat') {
                     name = 'Ping';
                 } else if (key === 'PlayersStat') {
                     name = 'Hráči'
