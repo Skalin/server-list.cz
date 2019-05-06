@@ -592,11 +592,10 @@ class Server extends Component {
 
                 stats[id] = {title: name, key: key, items: values[id]};
 
-                let currentHour = new Date().getHours();
-                let statsFromCurrentHour = stats[id].items.filter(d => {
-                    var hour = new Date(d.date).getHours();
-                    return (hour === currentHour);
-                });
+                const currentHour = new Date().getHours();
+                const statsFromCurrentHour = stats[id].items.filter(d =>
+                    new Date(d.date).getHours() === currentHour
+                );
 
                 let filteredArray = [];
 
@@ -612,7 +611,7 @@ class Server extends Component {
                 });
 
 
-                let maxOfDays = groupBy(stats[id].items, it => new Date(it.date).getDate());
+                const maxOfDays = groupBy(stats[id].items, it => new Date(it.date).getDate());
                 let maxDays = [];
                 if (key !== 'StatusStat')
                 {
