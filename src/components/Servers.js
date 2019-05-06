@@ -611,6 +611,26 @@ class Server extends Component {
                         });
                 });
 
+
+                let maxOfDays = groupBy(stats[id].items, it => new Date(it.date).getDate());
+                let tmp = [];
+                maxOfDays.forEach( key => {
+
+                    const stat = key.reduce((max, p) => p.value > max ? p.value : max, key[0].value);
+                    const date = key.reduce((max, p) => p.value > max ? p.date : max, key[0].value);
+                    tmp.push(
+                        {
+                            date: date,
+                            maxDay: stat
+                        }
+                    )
+                });
+                filteredArray = [...new Set([...filteredArray ,...tmp])];
+                filteredArray.sort((a, b) => {
+                    return new Date(a.date) - new Date(b.date);
+                });
+
+
                 stats[id]['filteredArray'] = filteredArray;
             }
         });
@@ -633,6 +653,7 @@ class Server extends Component {
                     x: new Date(item.date).toLocaleDateString('cs-CZ', {hour: "2-digit", minute: "2-digit"}),
                     avg: item.avg,
                     max: item.max,
+                    maxDay: item.maxDay
                 }
             });
 
@@ -644,8 +665,9 @@ class Server extends Component {
                         <CartesianGrid vertical={false} strokeDasharray="3 3"/>
                         <Tooltip/>
                         <Legend/>
-                        <Line type="monotone" name={"Průměr"} dataKey="avg" stroke="#007bff"/>
-                        <Line type="monotone" name={"Maximum"} dataKey="max" stroke="#dc3545"/>
+                        <Line type="monotone" name={"Průměr"} dataKey="avg" connectNulls={true} stroke="#007bff"/>
+                        <Line type="monotone" name={"Maximum"} dataKey="max" connectNulls={true} stroke="#dc3545"/>
+                        <Line type="monotone" name={"Maximum daného dne"} connectNulls={true} dataKey="maxDay" stroke="#008000"/>
                     </LineChart>
                 </ResponsiveContainer>
             );
