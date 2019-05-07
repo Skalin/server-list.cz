@@ -292,10 +292,6 @@ class Servers extends Component {
                                     </Grid>
                                 </Grid>
                             </CardContent>
-                            <CardActions>
-                                <Button size={"small"}><Link
-                                    to={this.props.match.url + "/servers/" + server.id}>Otevřít</Link></Button>
-                            </CardActions>
                         </Card>
                     </Grid>
                 )))
@@ -699,7 +695,7 @@ class Server extends Component {
                                 <Grid container justify={"center"}>
                                     <Grid item xs={10}>
                                         <Typography variant={"body1"} paragraph={true}>
-                                            Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes()}.
+                                            Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes() < 10 ? "0"+new Date().getMinutes() : new Date().getMinutes()}.
 
                                             Z Vašeho aktuálního času se vypočtou průměrné a maximální hodnoty za posledních 14 dní.
                                         </Typography>
