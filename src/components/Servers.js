@@ -39,6 +39,12 @@ const styles = theme => ({
         color: theme.palette.background.paper,
         backgroundColor: "#02182B",
     },
+    progress: {
+        margin: theme.spacing.unit * 2,
+        color: "white"
+
+    },
+
     heroContent: {
         maxWidth: 1000,
         margin: '0 auto',
@@ -58,6 +64,8 @@ const styles = theme => ({
         },
     },
     paper: {
+        backgroundColor: "#1a1b1a",
+        color: "white",
         margin: "1em",
     },
     header: {
@@ -74,9 +82,19 @@ const styles = theme => ({
         padding: `${theme.spacing.unit * 8}px 0`,
     },
     card: {
+        backgroundColor: "#1a1b1a",
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+    },
+    cardTitle: {
+        color: "white",
+        fontWeight: "bold",
+        textDecoration: "none",
+        "&:hover": {
+            fontSize: "large",
+            textDecoration: "inherit",
+        }
     },
     cardMedia: {
         backgroundColor: "#55595c"
@@ -85,10 +103,12 @@ const styles = theme => ({
         flexGrow: 1,
     },
     button: {
+        backgroundColor: "#0078FF",
         marginTop: '5em',
         marginBottom: '5em',
         "&:hover": {
             textDecoration: "none",
+            backgroundColor: "rgb(72,72,72)",
 
         }
     },
@@ -103,7 +123,7 @@ const styles = theme => ({
 
 import {UserContext} from "./User";
 import {
-    CardActions,
+    CardActions, CircularProgress,
     ExpansionPanel,
     ExpansionPanelDetails,
     InputLabel, MenuItem,
@@ -231,7 +251,7 @@ class Servers extends Component {
     renderStatusBadge(server) {
 
         return (
-            <Chip clickable={false} color={server.stats.StatusStat.value ? "primary" : "secondary"}
+            <Chip clickable={false} style={{backgroundColor: server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
                   label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
         );
     }
@@ -259,36 +279,37 @@ class Servers extends Component {
 
     renderServers() {
         const {servers} = this.state;
+        const {classes} = this.props;
 
         if (servers.length > 0) {
             return (
                 servers.map((server) => (
-                    <Grid item xs={12} md={6} key={server.id}>
-                        <Card>
+                    <Grid item xs={12} sm={6} md={4} key={server.id}>
+                        <Card className={classes.card}>
                             <Link to={this.props.match.url + "/servers/" + server.id} className={styles.serverItem}>
                                 {
                                     this.renderBackgroundCardImage(server)
                                 }
                             </Link>
                             <CardContent>
-                                <Grid container>
-                                    <Grid item xs={6}>
+                                <Grid container justify={"center"}>
+                                    <Grid item xs={12}>
                                         <Link to={this.props.match.url + "/servers/" + server.id}
-                                              className={styles.serverItem}>
-                                            <Typography component={"h5"}>
+                                              className={classNames(styles.serverItem, classes.cardTitle)}>
+                                            <Typography className={classes.cardTitle} component={"h5"}>
                                                 {server.name}
                                             </Typography>
                                         </Link>
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid item xs={12}>
+                                        <Typography style={{color: "white", margin: "1em"}}>
+                                            IP: {server.domain.length ? server.domain : server.ip + ":" + server.port}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
                                         {
                                             this.renderStats(server)
                                         }
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Typography>
-                                            {server.domain.length ? server.domain : server.ip + ":" + server.port}
-                                        </Typography>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -343,13 +364,13 @@ class Servers extends Component {
                         if (error) {
                             servers = <Grid>Error: {error.message}</Grid>;
                         } else if (!this.state.serversLoaded) {
-                            servers = <Grid>Loading...</Grid>;
+                            servers = <Grid><CircularProgress className={classes.progress} /></Grid>;
                         } else {
                             servers = (this.renderServers())
                         }
 
                         if (!this.state.serviceLoaded) {
-                            service = <Grid>Loading...</Grid>;
+                            service = <Grid><CircularProgress className={classes.progress} /></Grid>;
                         } else {
                             service = (this.renderService(classes));
                         }
@@ -358,7 +379,7 @@ class Servers extends Component {
                             <main>
                                 {service}
                                 <div className={classNames(classes.layout, classes.cardGrid)}>
-                                    <Grid container spacing={40}>
+                                    <Grid container spacing={40} justify={"center"}>
                                         {servers}
                                     </Grid>
                                     <Grid item xs={12}>
@@ -641,6 +662,7 @@ class Server extends Component {
 
     renderGraph() {
 
+        const {classes} = this.props;
         const {stats} = this.state;
         const {selected} = this.state.stats;
         if (stats.values[selected]) {
@@ -661,10 +683,10 @@ class Server extends Component {
                         <YAxis/>
                         <CartesianGrid vertical={false} strokeDasharray="3 3"/>
                         <Tooltip/>
-                        <Legend/>
+                        <Legend formatter={(value, entry) => (<span className={classes.white}>{value}</span>)} />
                         <Line type="monotone" name={"Průměr"} dataKey="avg" connectNulls={true} stroke="#007bff"/>
                         <Line type="monotone" name={"Maximum"} dataKey="max" connectNulls={true} stroke="#dc3545"/>
-                        <Line type="monotone" name={"Maximum daného dne"} connectNulls={true} dataKey="maxDay"
+                        <Line type="monotone" name={"Maximum daného dne"} className={classes.white} connectNulls={true} dataKey="maxDay"
                               stroke="#008000"/>
                     </LineChart>
                 </ResponsiveContainer>
@@ -684,8 +706,8 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"flex-start"}>
                                     <Grid item xs={12}>
-                                        <Typography variant={"h4"} align={"left"} paragraph={true}
-                                                    className={classNames(classes.dark, classes.paperHeader)}>
+                                        <Typography  variant={"h4"} align={"left"} paragraph={true}
+                                                    className={classNames(classes.white, classes.paperHeader)}>
                                             Statistiky
                                         </Typography>
                                     </Grid>
@@ -694,7 +716,7 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"center"}>
                                     <Grid item xs={10}>
-                                        <Typography variant={"body1"} paragraph={true}>
+                                        <Typography className={classes.white} variant={"body1"} paragraph={true}>
                                             Statistiky jsou vyměřeny
                                             k {new Date().getHours()}:{new Date().getMinutes() < 10 ? "0" + new Date().getMinutes() : new Date().getMinutes()}.
 
@@ -703,7 +725,7 @@ class Server extends Component {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={10}>
-                                        <Tabs className={classes.dark} style={{marginBottom: "1em"}}
+                                        <Tabs className={classes.white} style={{marginBottom: "1em"}}
                                               value={stats.selected}
                                               onChange={this.changeStat.bind(this)}>
                                             {
@@ -769,7 +791,7 @@ class Server extends Component {
 
         if (this.state.server.stats && this.state.server.stats.StatusStat && this.state.server.stats.StatusStat.value) {
             return (
-                <Chip clickable={false} color={this.state.server.stats.StatusStat.value ? "primary" : "secondary"}
+                <Chip clickable={false} style={{backgroundColor: this.state.server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
                       label={this.state.server.stats.StatusStat.value ? "Online" : "Offline"}/>
             );
         }
@@ -855,7 +877,7 @@ class Server extends Component {
                                 <Grid container justify={"flex-start"}>
                                     <Grid item xs={12}>
                                         <Typography align={"left"} variant={"h4"}
-                                                    className={classNames(classes.dark, classes.paperHeader)}>
+                                                    className={classNames(classes.white, classes.paperHeader)}>
                                             Popis serveru
                                         </Typography>
                                     </Grid>
@@ -863,7 +885,7 @@ class Server extends Component {
                             </Grid>
                             <Grid item xs={10}>
                                 <Grid container justify={"flex-start"}>
-                                    <Typography variant={"body1"}>
+                                    <Typography className={classes.white} variant={"body1"}>
                                         {server.description}
                                     </Typography>
                                 </Grid>
@@ -905,8 +927,8 @@ class Server extends Component {
                                         <Grid item xs={12}>
                                             <Grid container style={{marginTop: "1em"}}>
                                                 <Grid item xs={6}>
-                                                    <Typography variant={"h5"}>
-                                                        {this.getServerAddress()}
+                                                    <Typography color={"inherit"} variant={"h5"}>
+                                                        IP: {this.getServerAddress()}
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -965,7 +987,7 @@ class Server extends Component {
                 <>
                     {this.generateSeo()}
                     <Grid style={{marginTop: "1em"}} container justify={"center"}>
-                        <Grid item xs={12} sm={10} md={8}>
+                        <Grid item xs={12} sm={12} md={10}>
                             <Grid container spacing={4}>
                                 {this.renderServerTitle()}
                                 {this.renderServerInfo()}

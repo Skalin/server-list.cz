@@ -32,7 +32,7 @@ const styles = {
         color: "white",
         flex: 1,
         '&:hover': {
-            textDecoration: "none",
+            textDecoration: "inherit",
             color: "rgb(72,72,72)",
         },
     },
@@ -100,8 +100,8 @@ class Navigation extends Component {
             this.context.user.account
                 ?
                 <>
-                    <Link component={RouterLink} to={"/account"}>
-                        <Typography style={{color: "white"}}>
+                    <Link component={RouterLink} className={classes.loginLink} to={"/account"}>
+                        <Typography className={classes.loginLink}>
                             {this.context.user.account.name}
                             <AccountCircleOutlinedIcon/>
                         </Typography>
@@ -139,7 +139,7 @@ class Navigation extends Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography className={classNames(classes.grow, classes.heading)} variant={"h6"}>
-                            <Link component={RouterLink} to={"/"} color={"inherit"} variant={"inherit"}>
+                            <Link component={RouterLink} to={"/"} className={classes.menuButton} color={"inherit"} variant={"inherit"}>
                                 Server-List
                             </Link>
                         </Typography>

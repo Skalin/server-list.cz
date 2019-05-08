@@ -6,7 +6,7 @@ import * as config from "../config/config";
 import {Link} from "react-router-dom";
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
-import {CardMedia} from "@material-ui/core";
+import {CardMedia, CircularProgress} from "@material-ui/core";
 import Image from "react-bootstrap/Image";
 import {UserProvider} from "./User";
 import {MetaTags} from "react-meta-tags";
@@ -27,6 +27,9 @@ const styles = theme => ({
     heroButtons: {
         marginTop: theme.spacing.unit * 4,
     },
+    progress: {
+        margin: theme.spacing.unit * 2,
+    },
     layout: {
         width: 'auto',
         marginLeft: theme.spacing.unit * 3,
@@ -41,9 +44,19 @@ const styles = theme => ({
         padding: `${theme.spacing.unit * 8}px 0`,
     },
     card: {
+        backgroundColor: "#2c2c36",
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+    },
+    cardTitle: {
+        color: "white",
+        fontWeight: "bold",
+        textDecoration: "none",
+        "&:hover": {
+            fontSize: "large",
+            textDecoration: "inherit",
+        }
     },
     cardMedia: {
         backgroundColor: "#55595c"
@@ -60,12 +73,15 @@ class Services extends Component {
         this.endpoint = normalizeUrl(config.apiUrl + '/services', {stripAuthentication: false});
         this.state = {
             services: [],
+            loading: true,
+            isLoaded: false,
+            error: false,
         };
     }
 
     componentDidMount() {
         axios.get(this.endpoint)
-            .then(res => this.setState({services: res.data}));
+            .then(res => this.setState({services: res.data, loading: false, isLoaded: true, error: false}));
     }
 
     generateSeo() {
@@ -105,7 +121,30 @@ class Services extends Component {
 
     render() {
 
+        const {isLoaded, loading, services, error} = this.state;
         const {classes} = this.props;
+        let data = <CircularProgress className={classes.progress} />;
+        if (isLoaded && !loading)
+        {
+            data = services.map((service) => (
+                <Grid item xs={12} sm={6} md={4} key={service.id}>
+                    <Link className={classes.cardTitle}  to={{pathname: '/services/' + service.id, state: {service: service}}}>
+                        <Card className={classes.card}>
+                            {this.renderBackgroundCardImage(service)}
+                            <CardContent>
+                                <Typography className={classes.cardTitle} component={"h5"}>
+                                    {service.name}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                </Grid>
+            ))
+        }
+        else if (error && !loading)
+        {
+            data = "Error while downloading data!";
+        }
         return (
             <main>
                 {this.generateSeo()}
@@ -123,20 +162,7 @@ class Services extends Component {
                 <div className={classNames(classes.layout, classes.cardGrid)}>
                     <Grid container spacing={40}>
                         {
-                            this.state.services.map((service) => (
-                                <Grid item xs={12} sm={6} md={4} key={service.id}>
-                                    <Link to={{pathname: '/services/' + service.id, state: {service: service}}}>
-                                        <Card className={classes.card}>
-                                            {this.renderBackgroundCardImage(service)}
-                                            <CardContent>
-                                                <Typography component={"h5"}>
-                                                    {service.name}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </Grid>
-                            ))
+                            data
                         }
                     </Grid>
                 </div>
