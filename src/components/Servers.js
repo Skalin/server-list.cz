@@ -4,9 +4,9 @@ import {Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import LineChart from 'recharts/lib/chart/LineChart';
 import Line from 'recharts/lib/cartesian/Line';
 import axios from 'axios';
-import {Switch, Link, Route, Redirect, Link as RouterLink} from "react-router-dom";
+import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
-import {SupervisorAccount, DateRange, AttachFile} from '@material-ui/icons';
+import {SupervisorAccount, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
 import {
     Grid,
     Card,
@@ -33,6 +33,7 @@ import {
     TwitterShareButton,
     TwitterIcon
 } from 'react-share';
+
 
 const styles = theme => ({
     heroUnit: {
@@ -64,7 +65,7 @@ const styles = theme => ({
         },
     },
     paper: {
-        backgroundColor: "#1a1b1a",
+        backgroundColor: "#2c2c36",
         color: "white",
         margin: "1em",
     },
@@ -82,7 +83,7 @@ const styles = theme => ({
         padding: `${theme.spacing.unit * 8}px 0`,
     },
     card: {
-        backgroundColor: "#1a1b1a",
+        backgroundColor: "#2c2c36",
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -466,7 +467,7 @@ export class ServerForm extends Component {
                     <Grid item xs={10}>
                         <Grid container justify={"center"} spacing={16}>
                             <Grid item xs={12}>
-                                <Typography style={styles.white} variant={"h3"}>Nový server</Typography>
+                                <Typography style={{color: "white"}} variant={"h3"}>Nový server</Typography>
                             </Grid>
                             <Grid item xs={8} sm={6}>
                                 <ExpansionPanel expanded={true} xs={6}>
@@ -700,7 +701,7 @@ class Server extends Component {
 
         if (stats.isLoaded && stats.values.length !== 0) {
             return (
-                <Grid item xs={12}>
+                <Grid item xs={12} id={"#stats"}>
                     <Paper className={classNames(classes.dark, classes.paper)}>
                         <Grid container justify={"center"}>
                             <Grid item xs={12}>
@@ -767,13 +768,11 @@ class Server extends Component {
     renderServerImage() {
         const {server} = this.state;
         if (server.imageUrl) {
-            return (
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardMedia component="img" src={server.imageUrl} title={server.title}/>
-                    </Card>
+            /*return (
+                <Grid item xs={4}>
+                <Image roundedCircle width={"400px"} src={server.imageUrl} title={server.title}/>
                 </Grid>
-            );
+            );*/
         }
     }
 
@@ -809,32 +808,49 @@ class Server extends Component {
         return (data)
     }
 
+    showStats = () => {
+        console.log(this);
+        const hash = "#stats";
+        const id = hash;
+        console.log(id);
+        const element = document.getElementById(id);
+        console.log(element);
+        if (element)
+            element.scrollIntoView();
+    }
+
     renderSocialBadges = () => {
         const {server} = this.state;
         const {classes} = this.props;
         const quote = "Bavím se na serveru: " + server.name + "! Připoj se taky! " + this.getServerAddress();
 
-        console.log(quote);
         let data =
             <>
                 <div className={classes.header}>
-                    <Grid container justify={"flex-end"}>
-                        <Grid item xs={9} lg={10}>
-                        </Grid>
-                        <Grid item xs={3} lg={2}>
-                            <Grid container spacing={8}>
+                    <Grid container justify={"flex-end"} alignItems={"flex-end"} alignContent={"flex-end"}>
+                        <Grid item xs={6}>
+                            <Grid container justify={"flex-end"}>
                                 <Grid item xs={6}>
+                                </Grid>
+                                <Grid item xs={3} md={2} style={{marginTop: "1em"}}>
                                     <FacebookShareButton url={window.location.href} quote={quote}>
                                         <FacebookIcon size={64} round={true}/>
                                     </FacebookShareButton>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={3} sm={2}  style={{marginTop: "1em"}}>
                                     <TwitterShareButton url={window.location.href} title={quote}>
                                         <TwitterIcon size={64} round={true}/>
                                     </TwitterShareButton>
                                 </Grid>
                             </Grid>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Chip style={{margin: "1em"}} clickable={true}
+                              onClick={this.showStats.bind(this)}
+                              avatar={<Avatar><ArrowDownward/></Avatar>}
+                              label={"Statistiky"}/>
+                        </Grid>
+
                     </Grid>
                 </div>
             </>;
@@ -901,7 +917,7 @@ class Server extends Component {
     renderServerInfo = () => {
         let {classes} = this.props;
         return (
-            <Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
+            <Grid item xs={this.state.server.imageUrl ? 12 : 12} md={this.state.server.imageUrl ? 12 : 12}>
                 <Paper className={classes.paper}>
                     <Grid container justify={"center"} spacing={16}>
                         <Grid item xs={12}>
@@ -926,12 +942,12 @@ class Server extends Component {
                                     <Grid container justify={"center"}>
                                         <Grid item xs={12}>
                                             <Grid container style={{marginTop: "1em"}}>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={9} >
                                                     <Typography color={"inherit"} variant={"h5"}>
                                                         IP: {this.getServerAddress()}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={3}>
                                                     <Chip clickable={true}
                                                           avatar={<Avatar><AttachFile/></Avatar>}
                                                           onClick={this.clipAddress.bind(this)}
@@ -988,7 +1004,7 @@ class Server extends Component {
                     {this.generateSeo()}
                     <Grid style={{marginTop: "1em"}} container justify={"center"}>
                         <Grid item xs={12} sm={12} md={10}>
-                            <Grid container spacing={4}>
+                            <Grid container spacing={4} justify={"center"}>
                                 {this.renderServerTitle()}
                                 {this.renderServerInfo()}
                                 {this.renderServerImage()}
