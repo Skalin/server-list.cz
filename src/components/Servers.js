@@ -609,10 +609,9 @@ class Server extends Component {
 
                 const maxOfDays = groupBy(stats[id].items, it => new Date(it.date).getDate());
                 let maxDays = [];
-                if (key !== 'StatusStat')
-                {
+                if (key !== 'StatusStat') {
 
-                    maxOfDays.forEach( key => {
+                    maxOfDays.forEach(key => {
 
                         const stat = key.reduce((prev, current) => prev.value > current.value ? prev : current);
                         maxDays.push(
@@ -622,7 +621,7 @@ class Server extends Component {
                             }
                         )
                     });
-                    filteredArray = [...new Set([...filteredArray ,...maxDays])];
+                    filteredArray = [...new Set([...filteredArray, ...maxDays])];
                     filteredArray.sort((a, b) => {
                         return new Date(a.date) - new Date(b.date);
                     });
@@ -665,7 +664,8 @@ class Server extends Component {
                         <Legend/>
                         <Line type="monotone" name={"Průměr"} dataKey="avg" connectNulls={true} stroke="#007bff"/>
                         <Line type="monotone" name={"Maximum"} dataKey="max" connectNulls={true} stroke="#dc3545"/>
-                        <Line type="monotone" name={"Maximum daného dne"} connectNulls={true} dataKey="maxDay" stroke="#008000"/>
+                        <Line type="monotone" name={"Maximum daného dne"} connectNulls={true} dataKey="maxDay"
+                              stroke="#008000"/>
                     </LineChart>
                 </ResponsiveContainer>
             );
@@ -695,9 +695,11 @@ class Server extends Component {
                                 <Grid container justify={"center"}>
                                     <Grid item xs={10}>
                                         <Typography variant={"body1"} paragraph={true}>
-                                            Statistiky jsou vyměřeny k {new Date().getHours()}:{new Date().getMinutes() < 10 ? "0"+new Date().getMinutes() : new Date().getMinutes()}.
+                                            Statistiky jsou vyměřeny
+                                            k {new Date().getHours()}:{new Date().getMinutes() < 10 ? "0" + new Date().getMinutes() : new Date().getMinutes()}.
 
-                                            Z Vašeho aktuálního času se vypočtou průměrné a maximální hodnoty za posledních 14 dní.
+                                            Z Vašeho aktuálního času se vypočtou průměrné a maximální hodnoty za
+                                            posledních 14 dní.
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={10}>
@@ -746,7 +748,7 @@ class Server extends Component {
             return (
                 <Grid item xs={12} md={4}>
                     <Card>
-                        <CardMedia component="img" src={server.imageUrl} title={server.title} />
+                        <CardMedia component="img" src={server.imageUrl} title={server.title}/>
                     </Card>
                 </Grid>
             );
@@ -786,22 +788,30 @@ class Server extends Component {
     }
 
     renderSocialBadges = () => {
-        let {server} = this.state;
-        let {classes} = this.props;
-        let quote = "Bavím se na serveru: " + server.name + "! Připoj se taky! " + this.getServerAddress();
+        const {server} = this.state;
+        const {classes} = this.props;
+        const quote = "Bavím se na serveru: " + server.name + "! Připoj se taky! " + this.getServerAddress();
+
+        console.log(quote);
         let data =
             <>
                 <div className={classes.header}>
-                    <Grid container justify={"center"}>
-                        <Grid item xs={12}>
-                            <FacebookShareButton url={window.location.href} quote={quote}>
-                                <FacebookIcon size={64} round={true}/>
-                            </FacebookShareButton>
+                    <Grid container justify={"flex-end"}>
+                        <Grid item xs={9} lg={10}>
                         </Grid>
-                        <Grid item xs={12}>
-                            <TwitterShareButton url={window.location.href} quote={quote}>
-                                <TwitterIcon size={64} round={true}/>
-                            </TwitterShareButton>
+                        <Grid item xs={3} lg={2}>
+                            <Grid container spacing={8}>
+                                <Grid item xs={6}>
+                                    <FacebookShareButton url={window.location.href} quote={quote}>
+                                        <FacebookIcon size={64} round={true}/>
+                                    </FacebookShareButton>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TwitterShareButton url={window.location.href} title={quote}>
+                                        <TwitterIcon size={64} round={true}/>
+                                    </TwitterShareButton>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </div>
@@ -869,54 +879,54 @@ class Server extends Component {
     renderServerInfo = () => {
         let {classes} = this.props;
         return (
-        <Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
-            <Paper className={classes.paper}>
-                <Grid container justify={"center"} spacing={16}>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid item xs={6}>
-                                <Grid container justify={"flex-start"}>
-                                    {this.renderDate()}
+            <Grid item xs={12} md={this.state.server.imageUrl ? 8 : 12}>
+                <Paper className={classes.paper}>
+                    <Grid container justify={"center"} spacing={16}>
+                        <Grid item xs={12}>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-start"}>
+                                        {this.renderDate()}
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Grid container justify={"flex-end"}>
-                                    {
-                                        this.renderBadges()
-                                    }
+                                <Grid item xs={6}>
+                                    <Grid container justify={"flex-end"}>
+                                        {
+                                            this.renderBadges()
+                                        }
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container justify={"center"}>
-                            <Grid item xs={12}>
-                                <Grid container justify={"center"}>
-                                    <Grid item xs={12}>
-                                        <Grid container style={{marginTop: "1em"}}>
-                                            <Grid item xs={6}>
-                                                <Typography variant={"h5"}>
-                                                    {this.getServerAddress()}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <Chip clickable={true}
-                                                      avatar={<Avatar><AttachFile/></Avatar>}
-                                                      onClick={this.clipAddress.bind(this)}
-                                                      label={"Zkopírovat"}/>
+                        <Grid item xs={12}>
+                            <Grid container justify={"center"}>
+                                <Grid item xs={12}>
+                                    <Grid container justify={"center"}>
+                                        <Grid item xs={12}>
+                                            <Grid container style={{marginTop: "1em"}}>
+                                                <Grid item xs={6}>
+                                                    <Typography variant={"h5"}>
+                                                        {this.getServerAddress()}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Chip clickable={true}
+                                                          avatar={<Avatar><AttachFile/></Avatar>}
+                                                          onClick={this.clipAddress.bind(this)}
+                                                          label={"Zkopírovat"}/>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                {this.renderSocialBadges()}
+                                <Grid item xs={12}>
+                                    {this.renderSocialBadges()}
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Paper>
-        </Grid>
+                </Paper>
+            </Grid>
         );
     };
 
@@ -956,7 +966,7 @@ class Server extends Component {
                     {this.generateSeo()}
                     <Grid style={{marginTop: "1em"}} container justify={"center"}>
                         <Grid item xs={12} sm={10} md={8}>
-                            <Grid container spacing={40}>
+                            <Grid container spacing={4}>
                                 {this.renderServerTitle()}
                                 {this.renderServerInfo()}
                                 {this.renderServerImage()}
