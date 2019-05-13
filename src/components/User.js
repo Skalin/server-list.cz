@@ -36,10 +36,10 @@ export class UserProvider extends Component {
                     getRawToken: this.getRawToken,
                     logout: this.logout,
                     logoutAll: this.logoutAll,
-                    updateUser: this.updateUser,
+                    updateUser: this.updateUser
                 }
             }
-        };
+        }
     }
 
 
@@ -223,7 +223,7 @@ export class UserProvider extends Component {
     render() {
         return (
             <UserContext.Provider value={{
-                user: this.state.user,
+                user: this.state.user
             }}>
                 {this.props.children}
             </UserContext.Provider>

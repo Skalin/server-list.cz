@@ -22,17 +22,17 @@ const signIn = 2;
 
 const styles = {
     root: {
-        width: '100%',
+        width: '100%'
     },
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",
         color: 'white',
-        marginTop: "2em",
+        marginTop: "2em"
     },
     headingRed: {
         backgroundColor: "rgba(209, 10, 60, 1)",
         color: 'white',
-        marginTop: "2em",
+        marginTop: "2em"
     }
 };
 
@@ -133,7 +133,7 @@ class Login extends Component {
                 },
             loggedIn: false,
             state: null,
-            snackOpen: false,
+            snackOpen: false
         };
     }
 
@@ -194,11 +194,11 @@ class Register extends Component {
                 name: null,
                 surname: null,
                 mail: null,
-                tos_agreement: "0",
+                tos_agreement: "0"
 
             },
             loggedIn: false,
-            errors: [],
+            errors: []
         };
     }
 

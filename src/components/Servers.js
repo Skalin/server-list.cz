@@ -255,7 +255,8 @@ class Servers extends Component {
     renderStatusBadge(server) {
 
         return (
-            <Chip clickable={false} style={{backgroundColor: server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
+            <Chip clickable={false}
+                  style={{backgroundColor: server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
                   label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
         );
     }
@@ -368,13 +369,13 @@ class Servers extends Component {
                         if (error) {
                             data = <Grid>Error: {error.message}</Grid>;
                         } else if (!this.state.serversLoaded) {
-                            data = <Grid><CircularProgress className={classes.progress} /></Grid>;
+                            data = <Grid><CircularProgress className={classes.progress}/></Grid>;
                         } else {
                             data = (this.renderServers())
                         }
 
                         if (!this.state.serviceLoaded) {
-                            service = <Grid><CircularProgress className={classes.progress} /></Grid>;
+                            service = <Grid><CircularProgress className={classes.progress}/></Grid>;
                         } else {
                             service = (this.renderService(classes));
                         }
@@ -417,7 +418,7 @@ export class ServerForm extends Component {
             },
             services: [],
             redirect: false,
-            redirectUrl: null,
+            redirectUrl: null
         };
         this.apiUrl = normalizeUrl(config.apiUrl, {stripAuthentication: false});
     }
@@ -565,11 +566,13 @@ class Server extends Component {
             isLoggedIn: false,
             isOwner: false,
             stats: {
+                url: null,
                 isLoaded: false,
                 keys: [],
                 values: [],
                 selected: 0,
-            },
+                fetchTime: null
+            }
         };
         this.ApiUrl = normalizeUrl(config.apiUrl + this.state.match.url, {stripAuthentication: false});
     }
@@ -580,18 +583,27 @@ class Server extends Component {
         axios.get(this.ApiUrl)
             .then((res) => this.setState({isLoaded: true, server: res.data}, () => {
 
-                let statsUrl = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
-                axios.get(statsUrl)
-                    .then((res) => {
-                        const data = this.processStats(res.data);
-                        this.setState({stats: {...this.state.stats, keys: Object.keys(data)}}, () => {
-                            this.setState({stats: {...this.state.stats, values: Object.values(data)}}, () => {
-                                this.setState({stats: {...this.state.stats, isLoaded: true}})
-                            });
-                        });
-                    });
+                const {stats} = this.state;
+                stats.url = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
+                this.setState({stats: stats});
+                this.fetchStats();
             }), (error) => this.setState({isLoaded: true, error}));
 
+    }
+
+    fetchStats = () => {
+        const {stats} = this.state;
+        if (new Date(Date.now() - 60 * 1000) > stats.fetchTime) {
+            axios.get(stats.url)
+                .then((res) => {
+                    const data = this.processStats(res.data);
+                    this.setState({stats: {...this.state.stats, keys: Object.keys(data)}}, () => {
+                        this.setState({stats: {...this.state.stats, values: Object.values(data)}}, () => {
+                            this.setState({stats: {...this.state.stats, isLoaded: true, fetchTime: new Date()}})
+                        });
+                    });
+                });
+        }
     }
 
     processStats = (data) => {
@@ -661,6 +673,7 @@ class Server extends Component {
     };
 
     changeStat(event, value) {
+        this.fetchStats();
         this.setState({stats: {...this.state.stats, selected: parseInt(value)}});
     }
 
@@ -687,10 +700,11 @@ class Server extends Component {
                         <YAxis/>
                         <CartesianGrid vertical={false} strokeDasharray="3 3"/>
                         <Tooltip/>
-                        <Legend formatter={(value, entry) => (<span className={classes.white}>{value}</span>)} />
+                        <Legend formatter={(value, entry) => (<span className={classes.white}>{value}</span>)}/>
                         <Line type="monotone" name={"Průměr"} dataKey="avg" connectNulls={true} stroke="#007bff"/>
                         <Line type="monotone" name={"Maximum"} dataKey="max" connectNulls={true} stroke="#dc3545"/>
-                        <Line type="monotone" name={"Maximum daného dne"} className={classes.white} connectNulls={true} dataKey="maxDay"
+                        <Line type="monotone" name={"Maximum daného dne"} className={classes.white} connectNulls={true}
+                              dataKey="maxDay"
                               stroke="#008000"/>
                     </LineChart>
                 </ResponsiveContainer>
@@ -710,7 +724,7 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"flex-start"}>
                                     <Grid item xs={12}>
-                                        <Typography  variant={"h4"} align={"left"} paragraph={true}
+                                        <Typography variant={"h4"} align={"left"} paragraph={true}
                                                     className={classNames(classes.white, classes.paperHeader)}>
                                             Statistiky
                                         </Typography>
@@ -793,7 +807,10 @@ class Server extends Component {
 
         if (this.state.server.stats && this.state.server.stats.StatusStat && this.state.server.stats.StatusStat.value) {
             return (
-                <Chip clickable={false} style={{backgroundColor: this.state.server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
+                <Chip clickable={false} style={{
+                    backgroundColor: this.state.server.stats.StatusStat.value ? "#0a5d00" : "#B22222",
+                    color: "white"
+                }}
                       label={this.state.server.stats.StatusStat.value ? "Online" : "Offline"}/>
             );
         }
@@ -840,7 +857,7 @@ class Server extends Component {
                                         <FacebookIcon size={64} round={true}/>
                                     </FacebookShareButton>
                                 </Grid>
-                                <Grid item xs={3} sm={2}  style={{marginTop: "1em"}}>
+                                <Grid item xs={3} sm={2} style={{marginTop: "1em"}}>
                                     <TwitterShareButton url={window.location.href} title={quote}>
                                         <TwitterIcon size={64} round={true}/>
                                     </TwitterShareButton>
@@ -849,9 +866,9 @@ class Server extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <Chip style={{margin: "1em"}} clickable={true}
-                              onClick={this.showStats.bind(this)}
-                              avatar={<Avatar><ArrowDownward/></Avatar>}
-                              label={"Statistiky"}/>
+                                  onClick={this.showStats.bind(this)}
+                                  avatar={<Avatar><ArrowDownward/></Avatar>}
+                                  label={"Statistiky"}/>
                         </Grid>
 
                     </Grid>
@@ -945,7 +962,7 @@ class Server extends Component {
                                     <Grid container justify={"center"}>
                                         <Grid item xs={12}>
                                             <Grid container style={{marginTop: "1em"}}>
-                                                <Grid item xs={9} >
+                                                <Grid item xs={9}>
                                                     <Typography color={"inherit"} variant={"h5"}>
                                                         IP: {this.getServerAddress()}
                                                     </Typography>
@@ -996,32 +1013,33 @@ class Server extends Component {
     render() {
 
         const {error, isLoaded} = this.state;
+        const {classes} = this.props;
         let data = null;
         if (error) {
             data = (<div>Error: {error.message}</div>);
         } else if (!isLoaded) {
-            data = (<div>Loading...</div>);
+            data = <Grid><CircularProgress className={classes.progress}/></Grid>;
         } else {
             data = (
                 <>
                     {this.generateSeo()}
-                    <Grid style={{marginTop: "1em"}} container justify={"center"}>
-                        <Grid item xs={12} sm={12} md={10}>
-                            <Grid container spacing={4} justify={"center"}>
-                                {this.renderServerTitle()}
-                                {this.renderServerInfo()}
-                                {this.renderServerImage()}
-                                {this.renderDescription()}
-                                {this.renderStats()}
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    {this.renderServerTitle()}
+                    {this.renderServerInfo()}
+                    {this.renderServerImage()}
+                    {this.renderDescription()}
+                    {this.renderStats()}
                 </>
             );
         }
 
         return (
-            data
+            <Grid style={{marginTop: "1em"}} container justify={"center"}>
+                <Grid item xs={12} sm={12} md={10}>
+                    <Grid container spacing={4} justify={"center"}>
+                        {data}
+                    </Grid>
+                </Grid>
+            </Grid>
         );
     }
 }

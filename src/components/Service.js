@@ -68,7 +68,7 @@ const styles = theme => ({
     },
     cardContent: {
         flexGrow: 1,
-    },
+    }
 });
 
 class Services extends Component {
@@ -80,7 +80,7 @@ class Services extends Component {
             services: [],
             loading: true,
             isLoaded: false,
-            error: false,
+            error: false
         };
     }
 
