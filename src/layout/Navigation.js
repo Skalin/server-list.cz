@@ -50,6 +50,16 @@ const styles = {
             color: "rgb(72,72,72)",
         },
     },
+    navigationButton: {
+        transition: "all .2s ease-in-out",
+        '&:hover': {
+            marginLeft: "0.5em",
+            fontWeight: "20px",
+            textDecoration: "none",
+            color: "rgb(72,72,72)",
+            transform: "scale(1.1, 1.1)"
+        }
+    },
     heading: {
         backgroundColor: "rgba(0, 120, 255, 1)",
         color: 'white',
@@ -161,8 +171,8 @@ class Navigation extends Component {
                         <Divider/>
                         {
                             this.state.services.map((service) => (
-                                    <ListItem key={service.id}>
-                                        <Link component={RouterLink}
+                                    <ListItem key={service.id} onClick={this.toggleDrawer.bind(this)}>
+                                        <Link className={classes.navigationButton} component={RouterLink}
                                               to={{pathname: "/services/" + service.id, state: {service: service}}}>
                                             <ListItemText primary={service.name}/>
                                         </Link>

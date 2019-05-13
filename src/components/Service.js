@@ -48,13 +48,16 @@ const styles = theme => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        transition: "all .2s ease-in-out",
+        "&:hover": {
+            transform: "scale(1.1, 1.1)"
+        }
     },
     cardTitle: {
         color: "white",
         fontWeight: "bold",
         textDecoration: "none",
         "&:hover": {
-            fontSize: "large",
             textDecoration: "inherit",
         }
     },
