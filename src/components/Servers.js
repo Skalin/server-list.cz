@@ -364,13 +364,13 @@ class Servers extends Component {
                 {
                     content => {
                         const {error} = this.state;
-                        let servers, service = null;
+                        let data, service = null;
                         if (error) {
-                            servers = <Grid>Error: {error.message}</Grid>;
+                            data = <Grid>Error: {error.message}</Grid>;
                         } else if (!this.state.serversLoaded) {
-                            servers = <Grid><CircularProgress className={classes.progress} /></Grid>;
+                            data = <Grid><CircularProgress className={classes.progress} /></Grid>;
                         } else {
-                            servers = (this.renderServers())
+                            data = (this.renderServers())
                         }
 
                         if (!this.state.serviceLoaded) {
@@ -384,7 +384,7 @@ class Servers extends Component {
                                 {service}
                                 <div className={classNames(classes.layout, classes.cardGrid)}>
                                     <Grid container spacing={40} justify={"center"}>
-                                        {servers}
+                                        {data}
                                     </Grid>
                                     <Grid item xs={12}>
                                         {this.renderLoadButton()}

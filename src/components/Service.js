@@ -29,6 +29,8 @@ const styles = theme => ({
     },
     progress: {
         margin: theme.spacing.unit * 2,
+        color: "white"
+
     },
     layout: {
         width: 'auto',
@@ -126,7 +128,7 @@ class Services extends Component {
 
         const {isLoaded, loading, services, error} = this.state;
         const {classes} = this.props;
-        let data = <CircularProgress className={classes.progress} />;
+        let data = <Grid><CircularProgress className={classes.progress} /></Grid>;
         if (isLoaded && !loading)
         {
             data = services.map((service) => (
@@ -163,10 +165,8 @@ class Services extends Component {
                     </div>
                 </div>
                 <div className={classNames(classes.layout, classes.cardGrid)}>
-                    <Grid container spacing={40}>
-                        {
-                            data
-                        }
+                    <Grid container spacing={40} justify={"center"}>
+                        {data}
                     </Grid>
                 </div>
             </main>
