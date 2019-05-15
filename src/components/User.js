@@ -32,7 +32,6 @@ export class UserProvider extends Component {
                     storeToken: this.storeToken,
                     register: this.register,
                     getUser: this.getUser,
-                    tryLogin: this.tryLogin,
                     getRawToken: this.getRawToken,
                     logout: this.logout,
                     logoutAll: this.logoutAll,
@@ -72,10 +71,6 @@ export class UserProvider extends Component {
 
     logoutAll = () => {
 
-    };
-
-    tryLogin = () => {
-        return true;
     };
 
     componentDidMount() {
