@@ -68,6 +68,7 @@ const styles = theme => ({
         backgroundColor: "#2c2c36",
         color: "white",
         margin: "1em",
+        paddingBottom: "1em",
     },
     header: {
         margin: "1em",
@@ -78,6 +79,7 @@ const styles = theme => ({
     paperHeader: {
         marginTop: "1em",
         marginLeft: "1em",
+        paddingBottom: "0.3em",
     },
     cardGrid: {
         padding: `${theme.spacing.unit * 8}px 0`,
@@ -122,6 +124,9 @@ const styles = theme => ({
     serverItem: {
 
         textDecoration: "none",
+    },
+    title: {
+        marginBottom: "1em",
     }
 });
 
@@ -999,7 +1004,7 @@ class Server extends Component {
 
         return (
             <Grid item xs={12}>
-                <Typography className={classes.white} variant={"h2"}>
+                <Typography className={classNames(classes.white, classes.title)} variant={"h2"}>
                     {server.name}
                 </Typography>
             </Grid>

@@ -83,13 +83,13 @@ export class Auth extends Component {
                 <Grid item xs={6}>
                     <Button variant={"contained"} style={styles.heading} size={"large"} color={"primary"}
                             onClick={this.switchBox.bind(this, signIn)}>
-                        Přihlásit se
+                        Přihlášení
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant={"contained"} style={styles.headingRed} size={"large"} color={"secondary"}
                             onClick={this.switchBox.bind(this, signUp)}>
-                        Registrovat
+                        Registrace
                     </Button>
                 </Grid>
             </>;
