@@ -6,6 +6,7 @@ import Line from 'recharts/lib/cartesian/Line';
 import axios from 'axios';
 import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
+import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {SupervisorAccount, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
 import {
     Grid,
@@ -141,6 +142,8 @@ import {
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Image from "react-bootstrap/Image";
 import CartesianGrid from "recharts/es6/cartesian/CartesianGrid";
+import {Circle} from "react-circle";
+import {isWidthDown} from "@material-ui/core/es/withWidth";
 
 const normalizeUrl = require('normalize-url');
 
@@ -162,7 +165,8 @@ function servers(props) {
     return (
         <Switch>
             <Route exact path={props.match.url} component={withStyles(styles)(withRouter(Servers))}/>
-            <Route path={`${props.match.url}/servers/:serverId`} component={withStyles(styles)(Server)}/>
+            <Route path={`${props.match.url}/servers/:serverId`}
+                   component={withWidth({resizeInterval: 20})(withStyles(styles)(Server))}/>
         </Switch>
     );
 }
@@ -577,6 +581,12 @@ class Server extends Component {
                 values: [],
                 selected: 0,
                 fetchTime: null
+            },
+            review: {
+                url: null,
+                isLoaded: false,
+                users: 0,
+                admins: 0
             }
         };
         this.ApiUrl = normalizeUrl(config.apiUrl + this.state.match.url, {stripAuthentication: false});
@@ -592,9 +602,23 @@ class Server extends Component {
                 stats.url = normalizeUrl(config.apiUrl + this.state.match.url + '/stats', {stripAuthentication: false});
                 this.setState({stats: stats});
                 this.fetchStats();
+
+                const {review} = this.state;
+                review.url = normalizeUrl(config.apiUrl + this.state.match.url + '/reviews', {stripAuthentication: false});
+                this.setState({review: review});
+                this.fetchReviews();
             }), (error) => this.setState({isLoaded: true, error}));
 
     }
+
+    fetchReviews = () =>
+    {
+        const {review} = this.state;
+        review.isLoaded = true;
+        review.users = 89;
+        review.admins = 95;
+        this.setState({review: review});
+    };
 
     fetchStats = () => {
         const {stats} = this.state;
@@ -609,7 +633,7 @@ class Server extends Component {
                     });
                 });
         }
-    }
+    };
 
     processStats = (data) => {
         let _keys = Object.keys(data);
@@ -826,28 +850,12 @@ class Server extends Component {
         }
     }
 
-    renderBadges() {
-        let {classes} = this.props;
-        let data =
-            <>
-                <div className={classes.header}>
-                    {this.renderStatusBadge()}
-                    {this.renderPlayersBadge()}
-                </div>
-            </>;
-        return (data)
-    }
-
     showStats = () => {
-        console.log(this);
-        const hash = "#stats";
-        const id = hash;
-        console.log(id);
+        const id = "#stats";
         const element = document.getElementById(id);
-        console.log(element);
         if (element)
             element.scrollIntoView();
-    }
+    };
 
     renderSocialBadges = () => {
         const {server} = this.state;
@@ -899,12 +907,14 @@ class Server extends Component {
         let {classes} = this.props;
         return (
             <div className={classes.header}>
-                <Chip clickable={false} avatar={<Avatar><DateRange/></Avatar>}
-                      label={new Date(server.createdAt).toLocaleDateString('cs', {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "numeric"
-                      })}/>
+                <DateRange color={"inherit"}/>
+                <div style={{marginTop: "0.2em"}}>
+                    {new Date(server.createdAt).toLocaleDateString('cs', {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "numeric"
+                    })}
+                </div>
             </div>
         )
     };
@@ -944,54 +954,102 @@ class Server extends Component {
         return data;
     };
 
+    renderReview = (type) => {
+
+        const {classes} = this.props;
+        const {review} = this.state;
+
+        let suffix = null;
+        if (type === 'admins')
+            suffix = "odborníků";
+        else
+            suffix = "uživatelů";
+
+        return (
+            this.state.review.isLoaded ?
+            <>
+                <Typography align={"center"} variant={"h4"}
+                            className={classNames(classes.white, classes.paperHeader)}>
+                    Hodnocení {suffix}
+                </Typography>
+                <Grid container>
+                    <Grid item xs={12} style={{height: "300px"}}>
+                        <Circle
+                            progress={review[type]}
+                            roundedStroke={true}
+                            showPercentageSymbol={false}
+                            animate={true}
+                            animationDuration="1s"
+                            responsive={true}
+                        />
+                    </Grid>
+                </Grid>
+            </>
+            :
+            null
+        )
+    };
+
     renderServerInfo = () => {
         let {classes} = this.props;
         return (
-            <Grid item xs={this.state.server.imageUrl ? 12 : 12} md={this.state.server.imageUrl ? 12 : 12}>
+            <Grid item xs={12}>
                 <Paper className={classes.paper}>
                     <Grid container justify={"center"} spacing={16}>
-                        <Grid item xs={12}>
-                            <Grid container>
-                                <Grid item xs={6}>
-                                    <Grid container justify={"flex-start"}>
-                                        {this.renderDate()}
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Grid container justify={"flex-end"}>
-                                        {
-                                            this.renderBadges()
-                                        }
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                        <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
+                            {this.renderDate()}
+                            <Chip clickable={true}
+                                  avatar={<Avatar><AttachFile/></Avatar>}
+                                  onClick={this.clipAddress.bind(this)}
+                                  label={"IP"}
+                            />
+                            <Typography color={"inherit"} variant={"h5"}>
+                                {this.getServerAddress()}
+                            </Typography>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container justify={"center"}>
-                                <Grid item xs={12}>
+                        {
+                            isWidthUp('md', this.props.width) ?
+                                <Grid item xs={6}>
                                     <Grid container justify={"center"}>
-                                        <Grid item xs={12}>
-                                            <Grid container style={{marginTop: "1em"}}>
-                                                <Grid item xs={9}>
-                                                    <Typography color={"inherit"} variant={"h5"}>
-                                                        IP: {this.getServerAddress()}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={3}>
-                                                    <Chip clickable={true}
-                                                          avatar={<Avatar><AttachFile/></Avatar>}
-                                                          onClick={this.clipAddress.bind(this)}
-                                                          label={"Zkopírovat"}/>
-                                                </Grid>
-                                            </Grid>
+                                        <Grid item xs={6}>
+                                        {this.renderReview("admins")}
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                        {this.renderReview("users")}
                                         </Grid>
                                     </Grid>
+                                </Grid> :
+                                null
+                        }
+                        <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
+                            <Grid container spacing={8} alignContent={"flex-end"} alignItems={"flex-end"}
+                                  justify={"flex-end"}>
+                                <Grid item xs={12}>
+                                    {this.renderStatusBadge()}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {this.renderPlayersBadge()}
                                 </Grid>
                                 <Grid item xs={12}>
                                     {this.renderSocialBadges()}
                                 </Grid>
                             </Grid>
                         </Grid>
+                        {
+                            isWidthDown('sm', this.props.width) ?
+                                <Grid item xs={12}>
+                                    <Grid container justify={"center"}>
+                                        <Grid item xs={isWidthUp('md', this.props.width) ? 6 : 12}>
+                                            {this.renderReview("admins")}
+                                        </Grid>
+                                        <Grid item xs={isWidthUp('md', this.props.width) ? 6 : 12}>
+                                            {this.renderReview("users")}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                :
+                                null
+                        }
                     </Grid>
                 </Paper>
             </Grid>
