@@ -979,11 +979,13 @@ class Server extends Component {
         return (
             this.state.review.isLoaded ?
                 <>
-                    <Typography align={"center"} variant={"h4"}
-                                className={classNames(classes.white, classes.paperHeader)}>
-                        Hodnocení {suffix}
-                    </Typography>
                     <Grid container justify={"center"}>
+                        <Grid item xs={12}>
+                            <Typography  variant={"h4"}
+                                        className={classNames(classes.white, classes.paperHeader)}>
+                                Hodnocení {suffix}
+                            </Typography>
+                        </Grid>
                         <Grid item xs={12} style={{height: "300px"}}>
                             <Circle
                                 progress={review[type]}
