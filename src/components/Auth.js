@@ -159,7 +159,6 @@ class Login extends Component {
     renderForm() {
         return (
             <form onSubmit={this.submitForm.bind(this)}>
-                <h1>Login</h1>
                 <FormGroup>
                     <TextField autoFocus={true} autoComplete={"username"} label={"Uživatelské jméno"} type="text"
                                name="username" onChange={this.onChange.bind(this)}/>
@@ -222,7 +221,6 @@ class Register extends Component {
     renderForm() {
         return (
             <form onSubmit={this.submitForm.bind(this)}>
-                <h1>Registration</h1>
                 <FormGroup>
                     <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username"
                                onChange={this.onChange.bind(this)}/>

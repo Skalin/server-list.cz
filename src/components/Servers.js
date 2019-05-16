@@ -3,6 +3,7 @@ import '../App.css';
 import {Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import LineChart from 'recharts/lib/chart/LineChart';
 import Line from 'recharts/lib/cartesian/Line';
+import Slider from '@material-ui/lab/Slider';
 import axios from 'axios';
 import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
@@ -46,11 +47,25 @@ const styles = theme => ({
         color: "white"
 
     },
-
     heroContent: {
         maxWidth: 1000,
         margin: '0 auto',
         padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
+    },
+    headingLink: {
+        "&:hover": {
+            textDecoration: "none",
+            color: "black"
+        }
+    },
+    headingButton: {
+        marginTop: "2em",
+        backgroundColor: "rgba(0, 120, 255, 1)",
+        color: 'white',
+        "&:hover": {
+            textDecoration: "none",
+            color: "black"
+        }
     },
     heroButtons: {
         marginTop: theme.spacing.unit * 4,
@@ -136,9 +151,9 @@ const styles = theme => ({
 
 import {UserContext} from "./User";
 import {
-    CardActions, CircularProgress,
+    CardActions, Checkbox, CircularProgress,
     ExpansionPanel,
-    ExpansionPanelDetails,
+    ExpansionPanelDetails, FormControlLabel,
     InputLabel, MenuItem,
     Select
 } from "@material-ui/core";
@@ -168,10 +183,98 @@ function servers(props) {
     return (
         <Switch>
             <Route exact path={props.match.url} component={withStyles(styles)(withRouter(Servers))}/>
-            <Route path={`${props.match.url}/servers/:serverId`}
+            <Route exact path={`${props.match.url}/servers/:serverId`}
                    component={withWidth({resizeInterval: 20})(withStyles(styles)(Server))}/>
+            <Route path={`${props.match.url}/servers/:serverId/review`}
+                   component={withWidth()(withStyles(styles)(ServerReview))}/>
         </Switch>
     );
+}
+
+
+class ServerReview extends Component
+{
+
+    static contextType = UserContext;
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            review: {
+                server: null,
+                title: null,
+                rating: 50,
+                text: null
+            }
+        }
+    }
+
+    onChange(formData) {
+        let review = {...this.state.review};
+        let property = formData.target.name;
+        review[property] = formData.target.value;
+        this.context.error = null;
+        this.setState({review}, () => {console.log(this.state.review)});
+    }
+
+    handleSlider = (event, data) =>
+    {
+        const {review} = this.state;
+        review.rating = data;
+        this.setState({review: review});
+    };
+
+    submitForm = (e) =>
+    {
+        e.preventDefault();
+
+    };
+
+    renderForm = () =>
+    {
+        const {classes} = this.props;
+        const {rating} = this.state.review;
+
+        return (
+            <form onSubmit={this.submitForm.bind(this)}>
+                <h1 className={classes.dark}>Recenze</h1>
+                <FormGroup>
+                    <TextField  autoFocus={true} label={"Titulek"} type="text" name="title"
+                               onChange={this.onChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                    <TextField label={"Obsah recenze"} rows={4} multiline={true} type="text" name="text"
+                               onChange={this.onChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                    <Typography id={"slider"}>
+                        Hodnocení
+                    </Typography>
+                    <Slider value={rating} min={0} max={100} step={5} onChange={this.handleSlider} aria-labelledby={"slider"}/>
+                </FormGroup>
+                <Button className={classes.headingButton} variant={"contained"} color={"primary"} type="submit">Ohodnotit</Button>
+            </form>
+        );
+    };
+
+    render()
+    {
+        return (
+                !this.context.user.actions.checkLogin() ? <Redirect to={"/"}/> :
+                    <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
+                        <Grid item xs={12}>
+                            <ExpansionPanel expanded={true} xs={12} style={{marginTop: "25px"}}>
+                                <ExpansionPanelDetails>
+                                    <Grid container justify={"center"} alignItems={"center"}>
+                                        {this.renderForm()}
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </Grid>
+                    </Grid>
+        );
+    }
 }
 
 class Servers extends Component {
@@ -588,8 +691,16 @@ class Server extends Component {
             review: {
                 url: null,
                 isLoaded: false,
-                users: 0,
-                admins: 0
+                users: {
+                    isLoaded: false,
+                    rating: null,
+                    reviews: []
+                },
+                admins: {
+                    isLoaded: false,
+                    rating: null,
+                    reviews: []
+                }
             }
         };
         this.ApiUrl = normalizeUrl(config.apiUrl + this.state.match.url, {stripAuthentication: false});
@@ -615,11 +726,21 @@ class Server extends Component {
     }
 
     fetchReviews = () => {
-        const {review} = this.state;
-        review.isLoaded = true;
-        review.users = 89;
-        review.admins = 95;
-        this.setState({review: review});
+
+        let {review} = this.state;
+
+        axios.get(review.url)
+            .then((res) => {
+                review.admins = res.data.admins;
+                review.users = res.data.users;
+                this.setState({review: review}, () => {
+                    review.users.isLoaded = true;
+                    review.admins.isLoaded = true;
+                    this.setState({review: review}, () => {
+                        this.setState({review: {...this.state.review, isLoaded: true}});
+                    })
+                });
+            });
     };
 
     fetchStats = () => {
@@ -976,60 +1097,96 @@ class Server extends Component {
         else
             suffix = "uživatelů";
 
-        return (
-            this.state.review.isLoaded ?
-                <>
-                    <Grid container justify={"center"}>
-                        <Grid item xs={12}>
-                            <Typography  variant={"h4"}
-                                        className={classNames(classes.white, classes.paperHeader)}>
-                                Hodnocení {suffix}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} style={{height: "300px"}}>
-                            <Circle
-                                progress={review[type]}
-                                roundedStroke={true}
-                                showPercentageSymbol={false}
-                                animate={true}
-                                animationDuration="1s"
-                                responsive={true}
-                            />
-                        </Grid>
+        console.log(review);
+
+        return (review[type].rating) ?
+            <>
+                <Grid container justify={"center"}>
+                    <Grid item xs={12}>
+                        <Typography variant={"h4"}
+                                    className={classNames(classes.white, classes.paperHeader)}>
+                            Hodnocení {suffix}
+                        </Typography>
                     </Grid>
-                </>
-                :
-                null
-        )
+                    <Grid item xs={12} style={{height: "300px"}}>
+                        <Circle
+                            progress={Math.round(review[type].rating)}
+                            roundedStroke={true}
+                            showPercentageSymbol={true}
+                            animate={true}
+                            animationDuration="1s"
+                            responsive={true}
+                            textColor={"white"}
+                        />
+                    </Grid>
+                </Grid>
+            </>
+            :
+            null;
+    };
+
+    renderReviewButton = () => {
+
+        const {classes} = this.props;
+        const {server} = this.state;
+
+        return (
+            <div className={classes.header} style={{marginTop: "5em"}}>
+                <Typography variant={"h4"} className={classes.white}>
+                    Tento server ještě nebyl hodnocen! <br/> Neváhejte a pojďte jej s námi ohodnotit!
+                </Typography>
+                <Link to={`${this.props.match.url}/review`} className={classes.headingLink}>
+                    <Button variant={"contained"} className={classes.headingButton} size={"large"} >
+                        Ohodnotit
+                    </Button>
+                </Link>
+            </div>
+        );
     };
 
     renderServerInfo = () => {
         let {classes} = this.props;
+        const {review} = this.state;
+        const {width} = this.props;
+
         return (
             <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                    <Grid container justify={"center"} spacing={40}>
-                        <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
+                    <Grid container justify={"center"} spacing={8}>
+                        <Grid item
+                              xs={((!review.admins.rating && !review.users.rating) || isWidthUp('md', width)) ? 3 : 6}>
                             {this.renderDate()}
                             {this.renderStatusBadge()}
                             {this.renderPlayersBadge()}
                             {this.renderServerAddress()}
                         </Grid>
                         {
-                            this.state.review.isLoaded && isWidthUp('md', this.props.width) ?
-                                <Grid item xs={6}>
-                                    <Grid container justify={"center"}>
-                                        <Grid item xs={6}>
-                                            {this.renderReview("admins")}
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            {this.renderReview("users")}
-                                        </Grid>
+                            isWidthUp('md', width) ?
+                                review.isLoaded ?
+                                    <Grid item xs={6}>
+                                        {
+                                            (!review.users.rating && !review.admins.rating)
+                                                ?
+                                                this.renderReviewButton()
+                                                :
+                                                <Grid container justify={"center"}>
+                                                    <Grid item xs={review.users.rating ? 6 : 12}>
+                                                        {this.renderReview("admins")}
+                                                    </Grid>
+                                                    <Grid item xs={review.admins.rating ? 6 : 12}>
+                                                        {this.renderReview("users")}
+                                                    </Grid>
+                                                </Grid>
+                                        }
+                                    </Grid> :
+                                    <Grid item xs={6}>
+                                        <CircularProgress className={classes.progress}/>
                                     </Grid>
-                                </Grid> :
+                                :
                                 null
+
                         }
-                        <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
+                        <Grid item xs={isWidthUp('md', width) ? 3 : 6}>
                             <Grid container justify={"center"}>
                                 <Grid item xs={6}>
                                 </Grid>
@@ -1039,21 +1196,26 @@ class Server extends Component {
                             </Grid>
                         </Grid>
                         {
-                            this.state.review.isLoaded && isWidthDown('sm', this.props.width) ?
-                                <Grid item xs={12}>
-                                    <Grid container justify={"center"}>
-                                        <Grid item xs={isWidthUp('md', this.props.width) ? 6 : 12}>
-                                            {this.renderReview("admins")}
+                            isWidthDown('sm', width) ?
+                                review.isLoaded ?
+                                    (!review.users.rating && !review.admins.rating)
+                                        ?
+                                        this.renderReviewButton()
+                                        :
+                                        <Grid item xs={12}>
+                                            <Grid container justify={"center"}>
+                                                <Grid item xs={isWidthUp('md', width) ? 6 : 12}>
+                                                    {this.renderReview("admins")}
+                                                </Grid>
+                                                <Grid item xs={isWidthUp('md', width) ? 6 : 12}>
+                                                    {this.renderReview("users")}
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={isWidthUp('md', this.props.width) ? 6 : 12}>
-                                            {this.renderReview("users")}
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+                                    :
+                                    <Grid item xs={6}><CircularProgress className={classes.progress}/></Grid>
                                 :
-                                <Grid item xs={12}>
-
-                                </Grid>
+                                null
                         }
                     </Grid>
                 </Paper>
@@ -1108,7 +1270,7 @@ class Server extends Component {
         return (
             <Grid style={{marginTop: "1em"}} container justify={"center"}>
                 <Grid item xs={12} sm={12} md={10}>
-                    <Grid container spacing={4} justify={"center"}>
+                    <Grid container spacing={0} justify={"center"}>
                         {data}
                     </Grid>
                 </Grid>
