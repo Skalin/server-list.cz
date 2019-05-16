@@ -69,7 +69,7 @@ const styles = theme => ({
         backgroundColor: "#2c2c36",
         color: "white",
         margin: "1em",
-        paddingBottom: "1em",
+        paddingBottom: "2em",
     },
     header: {
         margin: "1em",
@@ -128,6 +128,9 @@ const styles = theme => ({
     },
     title: {
         marginBottom: "1em",
+    },
+    clickable: {
+        "&:hover": {cursor: "pointer"}
     }
 });
 
@@ -828,17 +831,19 @@ class Server extends Component {
 
 
     renderPlayersBadge() {
+
         const {stats} = this.state.server;
+        const {classes} = this.props;
 
         if (stats && stats.StatusStat && stats.StatusStat.value && stats.PlayersStat && stats.PlayersStat.value !== null && stats.PlayersStat.maxValue !== null) {
             let data = stats.PlayersStat.value + "/" + stats.PlayersStat.maxValue;
             return (
-                <>
+                <div className={classes.header}>
                     <SupervisorAccount/>
                     <Typography color={"inherit"}>
                         {data}
                     </Typography>
-                </>
+                </div>
             )
         }
     }
@@ -861,33 +866,22 @@ class Server extends Component {
         }
     }
 
-    showStats = () => {
-        const id = "#stats";
-        const element = document.getElementById(id);
-        if (element)
-            element.scrollIntoView();
-    };
-
     renderSocialBadges = () => {
         const {server} = this.state;
         const {classes} = this.props;
-        const quote = "Bavím se na serveru: " + server.name + "! Připoj se taky! " + this.getServerAddress();
+        const quote = "Bavím se na serveru: " + server.name + "! Připoj se taky! " + this.getIp();
 
         let data =
             <>
-                <div className={classes.header}>
-                    <Grid container justify={"flex-end"} alignItems={"flex-end"} alignContent={"flex-end"}>
-                        <Grid item xs={6}>
-                            <FacebookShareButton url={window.location.href} quote={quote}>
-                                <FacebookIcon size={64} round={true}/>
-                            </FacebookShareButton>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TwitterShareButton url={window.location.href} title={quote}>
-                                <TwitterIcon size={64} round={true}/>
-                            </TwitterShareButton>
-                        </Grid>
-                    </Grid>
+                <div className={classNames(classes.header, classes.clickable)}>
+                    <FacebookShareButton url={window.location.href} quote={quote}>
+                        <FacebookIcon size={48} round={true}/>
+                    </FacebookShareButton>
+                </div>
+                <div className={classNames(classes.header, classes.clickable)}>
+                    <TwitterShareButton url={window.location.href} title={quote}>
+                        <TwitterIcon size={48} round={true}/>
+                    </TwitterShareButton>
                 </div>
             </>;
 
@@ -895,25 +889,27 @@ class Server extends Component {
         return data;
     };
 
-    getIp = () =>
-    {
+    getIp = () => {
+
         const {server} = this.state;
 
         return (server.use_domain && server.domain.length ? server.domain : server.ip + ":" + server.port);
     };
 
-    getServerAddress() {
+    renderServerAddress() {
+
+        const {classes} = this.props;
 
         const data =
-            <>
+            <div className={classes.header}>
                 <AttachFile
                     onClick={this.clipAddress.bind(this)}
-                    style={{"&:hover": {cursor: "pointer"}}}
+                    className={classes.clickable}
                 />
-                <Typography color={"inherit"} >
+                <Typography color={"inherit"}>
                     {this.getIp()}
                 </Typography>
-            </>;
+            </div>;
         return data;
     }
 
@@ -1010,10 +1006,12 @@ class Server extends Component {
         return (
             <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                    <Grid container justify={"center"} spacing={16}>
+                    <Grid container justify={"center"} spacing={40}>
                         <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
                             {this.renderDate()}
-                            {this.getServerAddress()}
+                            {this.renderStatusBadge()}
+                            {this.renderPlayersBadge()}
+                            {this.renderServerAddress()}
                         </Grid>
                         {
                             this.state.review.isLoaded && isWidthUp('md', this.props.width) ?
@@ -1030,9 +1028,13 @@ class Server extends Component {
                                 null
                         }
                         <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
-                            {this.renderStatusBadge()}
-                            {this.renderPlayersBadge()}
-                            {this.renderSocialBadges()}
+                            <Grid container justify={"center"}>
+                                <Grid item xs={6}>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    {this.renderSocialBadges()}
+                                </Grid>
+                            </Grid>
                         </Grid>
                         {
                             this.state.review.isLoaded && isWidthDown('sm', this.props.width) ?
