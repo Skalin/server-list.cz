@@ -7,7 +7,7 @@ import axios from 'axios';
 import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
 import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
-import {SupervisorAccount, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
+import {SupervisorAccount, Visibility, VisibilityOff, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
 import {
     Grid,
     Card,
@@ -611,8 +611,7 @@ class Server extends Component {
 
     }
 
-    fetchReviews = () =>
-    {
+    fetchReviews = () => {
         const {review} = this.state;
         review.isLoaded = true;
         review.users = 89;
@@ -754,7 +753,7 @@ class Server extends Component {
                         <Grid item xs={12}>
                             <Grid container justify={"flex-start"}>
                                 <Grid item xs={12}>
-                                    <Typography variant={"h4"} align={"left"} paragraph={true}
+                                    <Typography variant={"h4"} align={"center"} paragraph={true}
                                                 className={classNames(classes.white, classes.paperHeader)}>
                                         Statistiky
                                     </Typography>
@@ -829,23 +828,35 @@ class Server extends Component {
 
 
     renderPlayersBadge() {
-        if (this.state.server.stats && this.state.server.stats.StatusStat && this.state.server.stats.StatusStat.value && this.state.server.stats.PlayersStat && this.state.server.stats.PlayersStat.value !== null && this.state.server.stats.PlayersStat.maxValue !== null) {
-            let data = this.state.server.stats.PlayersStat.value + "/" + this.state.server.stats.PlayersStat.maxValue;
+        const {stats} = this.state.server;
+
+        if (stats && stats.StatusStat && stats.StatusStat.value && stats.PlayersStat && stats.PlayersStat.value !== null && stats.PlayersStat.maxValue !== null) {
+            let data = stats.PlayersStat.value + "/" + stats.PlayersStat.maxValue;
             return (
-                <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
+                <>
+                    <SupervisorAccount/>
+                    <Typography color={"inherit"}>
+                        {data}
+                    </Typography>
+                </>
             )
         }
     }
 
     renderStatusBadge() {
 
-        if (this.state.server.stats && this.state.server.stats.StatusStat && this.state.server.stats.StatusStat.value) {
+        const {classes} = this.props;
+
+        if (this.state.server.stats && this.state.server.stats.StatusStat && this.state.server.stats.StatusStat) {
+            const icon = this.state.server.stats.StatusStat.value ? <Visibility color={"inherit"}/> :
+                <VisibilityOff color={"inherit"}/>;
             return (
-                <Chip clickable={false} style={{
-                    backgroundColor: this.state.server.stats.StatusStat.value ? "#0a5d00" : "#B22222",
-                    color: "white"
-                }}
-                      label={this.state.server.stats.StatusStat.value ? "Online" : "Offline"}/>
+                <div className={classes.header}>
+                    {icon}
+                    <Typography color={"inherit"}>
+                        {this.state.server.stats.StatusStat.value ? "Online" : "Offline"}
+                    </Typography>
+                </div>
             );
         }
     }
@@ -867,28 +878,15 @@ class Server extends Component {
                 <div className={classes.header}>
                     <Grid container justify={"flex-end"} alignItems={"flex-end"} alignContent={"flex-end"}>
                         <Grid item xs={6}>
-                            <Grid container justify={"flex-end"}>
-                                <Grid item xs={6}>
-                                </Grid>
-                                <Grid item xs={3} md={2} style={{marginTop: "1em"}}>
-                                    <FacebookShareButton url={window.location.href} quote={quote}>
-                                        <FacebookIcon size={64} round={true}/>
-                                    </FacebookShareButton>
-                                </Grid>
-                                <Grid item xs={3} sm={2} style={{marginTop: "1em"}}>
-                                    <TwitterShareButton url={window.location.href} title={quote}>
-                                        <TwitterIcon size={64} round={true}/>
-                                    </TwitterShareButton>
-                                </Grid>
-                            </Grid>
+                            <FacebookShareButton url={window.location.href} quote={quote}>
+                                <FacebookIcon size={64} round={true}/>
+                            </FacebookShareButton>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Chip style={{margin: "1em"}} clickable={true}
-                                  onClick={this.showStats.bind(this)}
-                                  avatar={<Avatar><ArrowDownward/></Avatar>}
-                                  label={"Statistiky"}/>
+                        <Grid item xs={6}>
+                            <TwitterShareButton url={window.location.href} title={quote}>
+                                <TwitterIcon size={64} round={true}/>
+                            </TwitterShareButton>
                         </Grid>
-
                     </Grid>
                 </div>
             </>;
@@ -897,9 +895,26 @@ class Server extends Component {
         return data;
     };
 
+    getIp = () =>
+    {
+        const {server} = this.state;
+
+        return (server.use_domain && server.domain.length ? server.domain : server.ip + ":" + server.port);
+    };
+
     getServerAddress() {
-        let {server} = this.state;
-        return (server.domain.length ? server.domain : server.ip + ":" + server.port);
+
+        const data =
+            <>
+                <AttachFile
+                    onClick={this.clipAddress.bind(this)}
+                    style={{"&:hover": {cursor: "pointer"}}}
+                />
+                <Typography color={"inherit"} >
+                    {this.getIp()}
+                </Typography>
+            </>;
+        return data;
     }
 
     renderDate = () => {
@@ -932,7 +947,7 @@ class Server extends Component {
                             <Grid item xs={12}>
                                 <Grid container justify={"flex-start"}>
                                     <Grid item xs={12}>
-                                        <Typography align={"left"} variant={"h4"}
+                                        <Typography align={"center"} variant={"h4"}
                                                     className={classNames(classes.white, classes.paperHeader)}>
                                             Popis serveru
                                         </Typography>
@@ -967,26 +982,26 @@ class Server extends Component {
 
         return (
             this.state.review.isLoaded ?
-            <>
-                <Typography align={"center"} variant={"h4"}
-                            className={classNames(classes.white, classes.paperHeader)}>
-                    Hodnocení {suffix}
-                </Typography>
-                <Grid container>
-                    <Grid item xs={12} style={{height: "300px"}}>
-                        <Circle
-                            progress={review[type]}
-                            roundedStroke={true}
-                            showPercentageSymbol={false}
-                            animate={true}
-                            animationDuration="1s"
-                            responsive={true}
-                        />
+                <>
+                    <Typography align={"center"} variant={"h4"}
+                                className={classNames(classes.white, classes.paperHeader)}>
+                        Hodnocení {suffix}
+                    </Typography>
+                    <Grid container justify={"center"}>
+                        <Grid item xs={12} style={{height: "300px"}}>
+                            <Circle
+                                progress={review[type]}
+                                roundedStroke={true}
+                                showPercentageSymbol={false}
+                                animate={true}
+                                animationDuration="1s"
+                                responsive={true}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </>
-            :
-            null
+                </>
+                :
+                null
         )
     };
 
@@ -998,45 +1013,29 @@ class Server extends Component {
                     <Grid container justify={"center"} spacing={16}>
                         <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
                             {this.renderDate()}
-                            <Chip clickable={true}
-                                  avatar={<Avatar><AttachFile/></Avatar>}
-                                  onClick={this.clipAddress.bind(this)}
-                                  label={"IP"}
-                            />
-                            <Typography color={"inherit"} variant={"h5"}>
-                                {this.getServerAddress()}
-                            </Typography>
+                            {this.getServerAddress()}
                         </Grid>
                         {
-                            isWidthUp('md', this.props.width) ?
+                            this.state.review.isLoaded && isWidthUp('md', this.props.width) ?
                                 <Grid item xs={6}>
                                     <Grid container justify={"center"}>
                                         <Grid item xs={6}>
-                                        {this.renderReview("admins")}
+                                            {this.renderReview("admins")}
                                         </Grid>
                                         <Grid item xs={6}>
-                                        {this.renderReview("users")}
+                                            {this.renderReview("users")}
                                         </Grid>
                                     </Grid>
                                 </Grid> :
                                 null
                         }
                         <Grid item xs={isWidthUp('md', this.props.width) ? 3 : 6}>
-                            <Grid container spacing={8} alignContent={"flex-end"} alignItems={"flex-end"}
-                                  justify={"flex-end"}>
-                                <Grid item xs={12}>
-                                    {this.renderStatusBadge()}
-                                </Grid>
-                                <Grid item xs={12}>
-                                    {this.renderPlayersBadge()}
-                                </Grid>
-                                <Grid item xs={12}>
-                                    {this.renderSocialBadges()}
-                                </Grid>
-                            </Grid>
+                            {this.renderStatusBadge()}
+                            {this.renderPlayersBadge()}
+                            {this.renderSocialBadges()}
                         </Grid>
                         {
-                            isWidthDown('sm', this.props.width) ?
+                            this.state.review.isLoaded && isWidthDown('sm', this.props.width) ?
                                 <Grid item xs={12}>
                                     <Grid container justify={"center"}>
                                         <Grid item xs={isWidthUp('md', this.props.width) ? 6 : 12}>
@@ -1048,7 +1047,9 @@ class Server extends Component {
                                     </Grid>
                                 </Grid>
                                 :
-                                null
+                                <Grid item xs={12}>
+
+                                </Grid>
                         }
                     </Grid>
                 </Paper>
@@ -1071,7 +1072,7 @@ class Server extends Component {
 
     clipAddress = () => {
         var doc = document.createElement('textarea');
-        doc.value = this.getServerAddress();
+        doc.value = this.getIp();
         document.body.appendChild(doc);
         doc.select();
         document.execCommand("copy");
