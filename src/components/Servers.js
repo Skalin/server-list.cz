@@ -265,7 +265,8 @@ class ServerReview extends Component {
                             onChange={this.handleSlider} aria-labelledby={"slider"} style={{marginTop: "1em"}}
                     />
                 </FormGroup>
-                <Button className={classNames(classes.headingButton, classes.darkHover)} variant={"contained"} color={"primary"}
+                <Button className={classNames(classes.headingButton, classes.darkHover)} variant={"contained"}
+                        color={"primary"}
                         type="submit">Ohodnotit</Button>
             </form>
         );
@@ -388,29 +389,55 @@ class Servers extends Component {
     }
 
     renderPlayersBadge(server) {
-        if (server.stats.StatusStat.value && server.stats.PlayersStat != null && server.stats.PlayersStat.value !== null && server.stats.PlayersStat.maxValue !== null) {
-            let data = server.stats.PlayersStat.value + "/" + server.stats.PlayersStat.maxValue;
+
+        const {stats} = server;
+        const {classes} = this.props;
+
+        if (stats && stats.StatusStat && stats.StatusStat.value && stats.PlayersStat && stats.PlayersStat.value !== null && stats.PlayersStat.maxValue !== null) {
+            let data = stats.PlayersStat.value + "/" + stats.PlayersStat.maxValue;
             return (
-                <Chip avatar={<Avatar><SupervisorAccount/></Avatar>} clickable={false} label={data}/>
+                <div className={classes.header}>
+                    <SupervisorAccount/>
+                    <Typography color={"inherit"}>
+                        {data}
+                    </Typography>
+                </div>
             )
         }
     }
 
     renderStatusBadge(server) {
 
-        return (
-            <Chip clickable={false}
-                  style={{backgroundColor: server.stats.StatusStat.value ? "#0a5d00" : "#B22222", color: "white"}}
-                  label={server.stats.StatusStat.value ? "Online" : "Offline"}/>
-        );
+        const {classes} = this.props;
+
+        if (server.stats && server.stats.StatusStat) {
+            const icon = server.stats.StatusStat.value ? <Visibility color={"inherit"}/> :
+                <VisibilityOff color={"inherit"}/>;
+            return (
+                <div className={classes.header}>
+                    {icon}
+                    <Typography color={"inherit"}>
+                        {server.stats.StatusStat.value ? "Online" : "Offline"}
+                    </Typography>
+                </div>
+            );
+        }
     }
 
     renderStats(server) {
         let data =
-            <>
-                {this.renderStatusBadge(server)}
-                {this.renderPlayersBadge(server)}
-            </>;
+            <Grid container justify={"center"}>
+                <Grid item xs={server.stats.StatusStat.value ? 6 : 12}>
+                    {this.renderStatusBadge(server)}
+                </Grid>
+                {
+                    server.stats.StatusStat.value ?
+                    <Grid item xs={6}>
+                        {this.renderPlayersBadge(server)}
+                    </Grid>
+                    : null
+                }
+            </Grid>;
         return (data)
     }
 

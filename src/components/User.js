@@ -53,11 +53,13 @@ export class UserProvider extends Component {
             this.removeUser();
             return false;
         }
-
-        let loginUrl = normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
-        axios.post(loginUrl, {'login_token': this.getRawToken()})
-            .then((res) => this.storeUser(res.data), () => {this.removeUser()});
-
+        if ((user.exp - 7 * 24 * 3600) < ((Date.now() / 1000) + timestampSync)) {
+            let loginUrl = normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
+            axios.post(loginUrl, {'login_token': this.getRawToken()})
+                .then((res) => this.storeUser(res.data), () => {
+                    this.removeUser()
+                });
+        }
 
         return true;
     };
