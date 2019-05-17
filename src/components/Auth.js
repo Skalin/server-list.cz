@@ -65,7 +65,7 @@ export class Auth extends Component {
 
             return (
                 <>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{marginTop: "1em"}}>
                         {data}
                     </Grid>
                 </>

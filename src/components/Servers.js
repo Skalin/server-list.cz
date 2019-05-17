@@ -67,6 +67,13 @@ const styles = theme => ({
             color: "black"
         }
     },
+    darkHover: {
+        "&:hover": {
+            textDecoration: "none",
+            color: "white",
+            backgroundColor: "#2c2c36"
+        }
+    },
     heroButtons: {
         marginTop: theme.spacing.unit * 4,
     },
@@ -192,22 +199,24 @@ function servers(props) {
 }
 
 
-class ServerReview extends Component
-{
+class ServerReview extends Component {
 
     static contextType = UserContext;
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
+            apiUrl: normalizeUrl(config.apiUrl + "/" + this.props.match.url + "s", {stripAuthentication: false}),
+            redirect: this.props.match.url.split("/review")[0],
             review: {
+                id: null,
                 server: null,
                 title: null,
                 rating: 50,
+                server_id: this.props.match.params["serverId"],
                 text: null
             }
-        }
+        };
     }
 
     onChange(formData) {
@@ -215,64 +224,84 @@ class ServerReview extends Component
         let property = formData.target.name;
         review[property] = formData.target.value;
         this.context.error = null;
-        this.setState({review}, () => {console.log(this.state.review)});
+        this.setState({review});
     }
 
-    handleSlider = (event, data) =>
-    {
+    handleSlider = (event, data) => {
         const {review} = this.state;
         review.rating = data;
         this.setState({review: review});
     };
 
-    submitForm = (e) =>
-    {
+    submitForm = (e) => {
         e.preventDefault();
+        const {apiUrl, review} = this.state;
 
+        axios.post(apiUrl, {"login_token": this.context.user.actions.getRawToken(), "review": review})
+            .then((res) => {
+                this.setState({review: res.data})
+            });
     };
 
-    renderForm = () =>
-    {
+    renderForm = () => {
         const {classes} = this.props;
         const {rating} = this.state.review;
 
         return (
-            <form onSubmit={this.submitForm.bind(this)}>
-                <h1 className={classes.dark}>Recenze</h1>
+            <form onSubmit={this.submitForm.bind(this)} style={{marginTop: '25px'}}>
                 <FormGroup>
-                    <TextField  autoFocus={true} label={"Titulek"} type="text" name="title"
+                    <TextField autoFocus={true} required label={"Titulek"} type="text" name="title"
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Obsah recenze"} rows={4} multiline={true} type="text" name="text"
+                    <TextField label={"Obsah recenze"} required rows={4} multiline={true} type="text" name="text"
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
-                <FormGroup>
-                    <Typography id={"slider"}>
+                <FormGroup style={{marginTop: "1em"}}>
+                    <Typography id={"slider"} style={{color: "#777777", fontSize: "15px"}} align={"left"}>
                         Hodnocení
                     </Typography>
-                    <Slider value={rating} min={0} max={100} step={5} onChange={this.handleSlider} aria-labelledby={"slider"}/>
+                    <Slider value={rating} min={0} max={100} step={5} color={"inherit"}
+                            onChange={this.handleSlider} aria-labelledby={"slider"} style={{marginTop: "1em"}}
+                    />
                 </FormGroup>
-                <Button className={classes.headingButton} variant={"contained"} color={"primary"} type="submit">Ohodnotit</Button>
+                <Button className={classNames(classes.headingButton, classes.darkHover)} variant={"contained"} color={"primary"}
+                        type="submit">Ohodnotit</Button>
             </form>
         );
     };
 
-    render()
-    {
+    render() {
+        const {redirect, review} = this.state;
+
         return (
-                !this.context.user.actions.checkLogin() ? <Redirect to={"/"}/> :
-                    <Grid container justify={"center"} alignItems={"center"} direction={"column"}>
-                        <Grid item xs={12}>
-                            <ExpansionPanel expanded={true} xs={12} style={{marginTop: "25px"}}>
-                                <ExpansionPanelDetails>
-                                    <Grid container justify={"center"} alignItems={"center"}>
-                                        {this.renderForm()}
+            !this.context.user.account ? <Redirect to={"/"}/> :
+                review.id ?
+                    <Redirect to={redirect}/>
+                    :
+                    <>
+                        <Grid container justify={"center"} style={{marginTop: '25px'}}>
+                            {//this.generateSeo()
+                            }
+                            <Grid item xs={10}>
+                                <Grid container justify={"center"} spacing={16}>
+                                    <Grid item xs={12}>
+                                        <Typography style={{color: "white"}} variant={"h3"}>Recenze</Typography>
                                     </Grid>
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
+                                    <Grid item xs={8} sm={6}>
+                                        <ExpansionPanel expanded={true} xs={6}>
+                                            <ExpansionPanelDetails xs={6}>
+                                                <Grid container justify={"center"} spacing={16}>
+
+                                                    {this.renderForm()}
+                                                </Grid>
+                                            </ExpansionPanelDetails>
+                                        </ExpansionPanel>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </>
         );
     }
 }
@@ -554,7 +583,7 @@ export class ServerForm extends Component {
         let server = {...this.state.server};
         let property = formData.target.name;
         server[property] = formData.target.value;
-        this.setState({server}, () => console.log(this.state));
+        this.setState({server});
     }
 
 
@@ -1097,8 +1126,6 @@ class Server extends Component {
         else
             suffix = "uživatelů";
 
-        console.log(review);
-
         return (review[type].rating) ?
             <>
                 <Grid container justify={"center"}>
@@ -1125,6 +1152,19 @@ class Server extends Component {
             null;
     };
 
+    renderReviewLink = () => {
+
+        const {classes} = this.props;
+
+        return (
+            <Link to={`${this.props.match.url}/review`} className={classes.headingLink}>
+                <Button variant={"contained"} className={classes.headingButton} size={"large"}>
+                    Ohodnotit
+                </Button>
+            </Link>
+        )
+    };
+
     renderReviewButton = () => {
 
         const {classes} = this.props;
@@ -1135,11 +1175,7 @@ class Server extends Component {
                 <Typography variant={"h4"} className={classes.white}>
                     Tento server ještě nebyl hodnocen! <br/> Neváhejte a pojďte jej s námi ohodnotit!
                 </Typography>
-                <Link to={`${this.props.match.url}/review`} className={classes.headingLink}>
-                    <Button variant={"contained"} className={classes.headingButton} size={"large"} >
-                        Ohodnotit
-                    </Button>
-                </Link>
+                {this.renderReviewLink()}
             </div>
         );
     };
@@ -1176,6 +1212,9 @@ class Server extends Component {
                                                     <Grid item xs={review.admins.rating ? 6 : 12}>
                                                         {this.renderReview("users")}
                                                     </Grid>
+                                                    <Grid item xs={12}>
+                                                        {this.renderReviewLink()}
+                                                    </Grid>
                                                 </Grid>
                                         }
                                     </Grid> :
@@ -1209,6 +1248,9 @@ class Server extends Component {
                                                 </Grid>
                                                 <Grid item xs={isWidthUp('md', width) ? 6 : 12}>
                                                     {this.renderReview("users")}
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    {this.renderReviewLink()}
                                                 </Grid>
                                             </Grid>
                                         </Grid>
