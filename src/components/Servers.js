@@ -276,7 +276,7 @@ class ServerReview extends Component {
         const {redirect, review} = this.state;
 
         return (
-            !this.context.user.account ? <Redirect to={"/"}/> :
+            !this.context.user.account ? <Redirect to={"/auth"}/> :
                 review.id ?
                     <Redirect to={redirect}/>
                     :
