@@ -1100,7 +1100,7 @@ class Server extends Component {
                     {new Date(server.createdAt).toLocaleDateString('cs', {
                         year: "numeric",
                         month: "2-digit",
-                        day: "numeric"
+                        day: "2-digit"
                     })}
                 </div>
             </div>
