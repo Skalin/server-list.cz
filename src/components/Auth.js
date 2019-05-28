@@ -222,21 +222,21 @@ class Register extends Component {
         return (
             <form onSubmit={this.submitForm.bind(this)}>
                 <FormGroup>
-                    <TextField autoFocus={true} label={"Uživatelské jméno"} type="text" name="username"
+                    <TextField autoFocus={true} required label={"Uživatelské jméno"} type="text" name="username"
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Heslo"} autoComplete={"new-password"} type="password" name="password"
+                    <TextField label={"Heslo"} required  autoComplete={"new-password"} type="password" name="password"
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Jméno"} type="text" name="name" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Jméno"} required  type="text" name="name" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Příjmení"} type="text" name="surname" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"Příjmení"} required type="text" name="surname" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"E-mail"} type="text" name="mail" onChange={this.onChange.bind(this)}/>
+                    <TextField label={"E-mail"} required  type="text" name="mail" onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <FormControlLabel
