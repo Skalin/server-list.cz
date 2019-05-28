@@ -499,7 +499,7 @@ class Servers extends Component {
         const {servers} = this.state;
         const {classes} = this.props;
 
-        if (servers.length > 0 && servers.length < this.state.serviceObject.serverCount) {
+        if (servers.length > 0 && servers.length < this.state.serviceObject.serversCount) {
             return (
                 <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)}
                         disabled={this.state.serversLoading} className={classes.button}>
@@ -673,7 +673,7 @@ export class ServerForm extends Component {
                                                     </Select>
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextField name={"name"}
+                                                    <TextField name={"name"} required
                                                                label={"Název"} autoFocus={true}
                                                                onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
@@ -683,10 +683,10 @@ export class ServerForm extends Component {
                                                                onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextField
+                                                    <TextField required
                                                         name={"ip"} label={"IP adresa"}
                                                         onChange={this.onChange.bind(this)}/>
-                                                    <TextField
+                                                    <TextField required
                                                         name={"port"} label={"Port"}
                                                         onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
