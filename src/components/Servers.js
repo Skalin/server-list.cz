@@ -501,6 +501,7 @@ class Servers extends Component {
 
         if (servers.length > 0 && servers.length < this.state.serviceObject.serverCount) {
             return (
+                this.state.serversLoading ? <Grid><CircularProgress className={classes.progress}/></Grid> :
                 <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)}
                         disabled={this.state.serversLoading} className={classes.button}>
                     Načíst další
