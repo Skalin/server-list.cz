@@ -499,7 +499,7 @@ class Servers extends Component {
         const {servers} = this.state;
         const {classes} = this.props;
 
-        if (servers.length > 0 && servers.length < this.state.serviceObject.serversCount) {
+        if (servers.length > 0 && servers.length < this.state.serviceObject.serverCount) {
             return (
                 <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)}
                         disabled={this.state.serversLoading} className={classes.button}>
