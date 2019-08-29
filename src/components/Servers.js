@@ -499,7 +499,8 @@ class Servers extends Component {
         const {servers} = this.state;
         const {classes} = this.props;
 
-        if (servers.length > 0 && servers.length < this.state.serviceObject.serverCount) {
+        console.log(this.state.serviceObject, servers.length);
+        if ((servers.length > 0) && (servers.length < this.state.serviceObject.serverCount)) {
             return (
                 this.state.serversLoading ? <Grid><CircularProgress className={classes.progress}/></Grid> :
                 <Button variant={"contained"} size={"large"} color={"primary"} onClick={this.loadServers.bind(this)}
