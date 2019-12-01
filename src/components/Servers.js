@@ -479,7 +479,7 @@ class Servers extends Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Typography style={{color: "white", margin: "1em"}}>
-                                            IP: {server.domain !== NULL && server.domain.length ? server.domain : server.ip + ":" + server.port}
+                                            IP: {(server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -1071,7 +1071,7 @@ class Server extends Component {
 
         const {server} = this.state;
 
-        return (server.use_domain && server.domain !== NULL && server.domain.length ? server.domain : server.ip + ":" + server.port);
+        return ((server.use_domain && server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port);
     };
 
     renderServerAddress() {
