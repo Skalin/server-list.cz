@@ -592,6 +592,7 @@ export class ServerForm extends Component {
                 ip: null,
                 port: null,
                 domain: null,
+                show_port: false
             },
             services: [],
             redirect: false,
@@ -699,6 +700,11 @@ export class ServerForm extends Component {
                                                 <FormGroup>
                                                     <TextField
                                                         name={"domain"} label={"Doména"}
+                                                        onChange={this.onChange.bind(this)}/>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <Checkbox
+                                                        name={"show_port"} label={"Zobrazovat port"}
                                                         onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
                                                 <FormGroup>
