@@ -706,7 +706,7 @@ export class ServerForm extends Component {
 
                                                     <FormControlLabel
                                                         control={<Checkbox checked={this.state.server.show_port} onChange={this.onChange.bind(this)} value="0" />}
-                                                        label="Zobrazovat port"
+                                                        label="Zobrazit port"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
