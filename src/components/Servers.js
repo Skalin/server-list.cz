@@ -455,7 +455,7 @@ class Servers extends Component {
 
 
     getIp = (server) => {
-        return ((server.show_port && server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port);
+        return ((!server.show_port && server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port);
     };
 
     renderServers() {
@@ -1076,7 +1076,7 @@ class Server extends Component {
 
         const {server} = this.state;
 
-        return ((server.show_port && server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port);
+        return ((!server.show_port && server.domain && server.domain.length) ? server.domain : server.ip + ":" + server.port);
     };
 
     renderServerAddress() {
