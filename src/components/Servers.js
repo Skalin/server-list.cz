@@ -268,6 +268,7 @@ class ServerReview extends Component {
                         label={"Obsah recenze"}
                         init={{
                             height: 200,
+                            language: 'cs_CZ',
                             menubar: false,
                             plugins: [
                                 'advlist autolink lists link image charmap print preview anchor',
@@ -756,7 +757,8 @@ export class ServerForm extends Component {
                                                         apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
                                                         label={"Popis"}
                                                         init={{
-                                                            height: 500,
+                                                            height: 300,
+                                                            language: 'cs_CZ',
                                                             menubar: false,
                                                             plugins: [
                                                                 'advlist autolink lists link image charmap print preview anchor',
