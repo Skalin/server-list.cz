@@ -685,9 +685,25 @@ export class ServerForm extends Component {
                                                                onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextField rows={4}
-                                                               multiline name={"description"} label={"Popis"}
-                                                               onChange={this.onChange.bind(this)}/>
+                                                    <Editor
+                                                        name={"description"}
+                                                        apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
+                                                        label={"Popis"}
+                                                        init={{
+                                                            height: 500,
+                                                            menubar: false,
+                                                            plugins: [
+                                                                'advlist autolink lists link image charmap print preview anchor',
+                                                                'searchreplace visualblocks code fullscreen',
+                                                                'insertdatetime media table paste code help wordcount'
+                                                            ],
+                                                            toolbar:
+                                                                'undo redo | formatselect | bold italic backcolor | \
+                                                                alignleft aligncenter alignright alignjustify | \
+                                                                bullist numlist outdent indent | removeformat | help'
+                                                        }}
+                                                        onChange={this.onChange.bind(this)}
+                                                    />
                                                 </FormGroup>
                                                 <FormGroup>
                                                     <TextField required
