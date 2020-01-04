@@ -976,7 +976,11 @@ class Server extends Component {
 
         let data = <Grid><CircularProgress className={classes.progress}/></Grid>;
 
-        if (stats.isLoaded && stats.values.length !== 0) {
+        if (stats.isLoaded && stats.values.length === 0) {
+            data = "";
+        }
+        else if (stats.isLoaded && stats.values.length !== 0)
+        {
             data =
                 <Paper className={classNames(classes.dark, classes.paper)}>
                     <Grid container justify={"center"}>
