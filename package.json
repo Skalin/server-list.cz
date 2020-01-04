@@ -42,6 +42,7 @@
     "@material-ui/lab": "^3.0.0-alpha.30",
     "@tinymce/tinymce-react": "^3.3.2",
     "classnames": "latest",
+    "html-react-parser": "^0.10.0",
     "react-circle": "^1.1.1",
     "react-code-snippet": "^0.6.13",
     "react-share": "^2.4.0",

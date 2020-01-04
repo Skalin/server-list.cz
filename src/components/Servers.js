@@ -8,6 +8,7 @@ import axios from 'axios';
 import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
 import { Editor } from '@tinymce/tinymce-react';
+import Parser from 'html-react-parser';
 import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {SupervisorAccount, Visibility, VisibilityOff, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
 import {
@@ -1179,7 +1180,7 @@ class Server extends Component {
                             <Grid item xs={10}>
                                 <Grid container justify={"flex-start"}>
                                     <Typography className={classes.white} variant={"body1"}>
-                                        {server.description}
+                                        {Parser(server.description)}
                                     </Typography>
                                 </Grid>
                             </Grid>
