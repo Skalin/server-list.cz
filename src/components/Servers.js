@@ -235,6 +235,12 @@ class ServerReview extends Component {
         this.setState({review: review});
     };
 
+    handleEditorChange = (e) => {
+        let server = {...this.state.server};
+        server['text'] = e.target.getContent();
+        this.setState({server});
+    }
+
     submitForm = (e) => {
         e.preventDefault();
         const {apiUrl, review} = this.state;
@@ -256,8 +262,26 @@ class ServerReview extends Component {
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
-                    <TextField label={"Obsah recenze"} required rows={4} multiline={true} type="text" name="text"
-                               onChange={this.onChange.bind(this)}/>
+                    <Editor
+                        name={"text"}
+                        apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
+                        label={"Obsah recenze"}
+                        height={200}
+                        init={{
+                            height: 500,
+                            menubar: false,
+                            plugins: [
+                                'advlist autolink lists link image charmap print preview anchor',
+                                'searchreplace visualblocks code fullscreen',
+                                'insertdatetime media table paste code help wordcount'
+                            ],
+                            toolbar:
+                                'undo redo | formatselect | bold italic backcolor | \
+                                alignleft aligncenter alignright alignjustify | \
+                                bullist numlist outdent indent | removeformat | help'
+                        }}
+                        onChange={this.handleEditorChange}
+                    />
                 </FormGroup>
                 <FormGroup style={{marginTop: "1em"}}>
                     <Typography id={"slider"} style={{color: "#777777", fontSize: "15px"}} align={"left"}>
@@ -266,6 +290,9 @@ class ServerReview extends Component {
                     <Slider value={rating} min={0} max={100} step={5} color={"inherit"}
                             onChange={this.handleSlider} aria-labelledby={"slider"} style={{marginTop: "1em"}}
                     />
+                    <Typography style={{color: "#777777"}}>
+                        {rating.rating} %
+                    </Typography>
                 </FormGroup>
                 <Button className={classNames(classes.headingButton, classes.darkHover)} variant={"contained"}
                         color={"primary"}
