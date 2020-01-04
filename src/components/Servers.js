@@ -499,6 +499,10 @@ class Servers extends Component {
                     </Grid>
                 )))
         }
+        else
+        {
+            return (<Grid item xs={12}>Momentálně zde nejsou žádné servery.</Grid>)
+        }
     }
 
     renderLoadButton() {
@@ -639,12 +643,13 @@ export class ServerForm extends Component {
         e.preventDefault();
         if (this.state.server.service !== "") {
             let url = normalizeUrl(this.apiUrl + "/services/" + this.state.server.service + "/servers/", {stripAuthentication: false});
+
             axios.post(url, {"login_token": this.context.user.actions.getRawToken(), "server": this.state.server})
                 .then((res) => {
                     this.setState({
                         redirect: true,
-                        redirectUrl: "/services/" + res.data.service_id + "/servers/" + server.id
-                    }, () => (this.setState({redirect: false, redirectUrl: null})))
+                        redirectUrl: "/services/" + res.data.service_id + "/servers/" + res.data.id
+                    }, () => (this.setState({redirect: true, redirectUrl: null})))
                 })
                 .catch();
         }

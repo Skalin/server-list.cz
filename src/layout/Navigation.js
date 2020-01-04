@@ -9,7 +9,7 @@ import {
     List,
     LinearProgress,
     Divider,
-    Link
+    Link, Grid
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import {Link as RouterLink} from 'react-router-dom';
@@ -181,6 +181,9 @@ class Navigation extends Component {
                             )
                         }
                     </List>
+                    <ListItem>
+                        <Link style={styles.link} to="/conditions">Podmínky</Link>
+                    </ListItem>
                 </Drawer>
             </div>
         )
