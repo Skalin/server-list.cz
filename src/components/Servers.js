@@ -623,7 +623,7 @@ export class ServerForm extends Component {
 
     handleEditorChange = (e) => {
         let server = {...this.state.server};
-        server['property'] = e.target.getContent();
+        server['description'] = e.target.getContent();
         this.setState({server});
     }
 
