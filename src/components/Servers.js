@@ -621,6 +621,11 @@ export class ServerForm extends Component {
         this.setState({server});
     }
 
+    handleEditorChange = (e) => {
+        let server = {...this.state.server};
+        server['property'] = e.target.getContent();
+        this.setState({server});
+    }
 
     submitForm(e) {
         e.preventDefault();
@@ -703,7 +708,7 @@ export class ServerForm extends Component {
                                                                 alignleft aligncenter alignright alignjustify | \
                                                                 bullist numlist outdent indent | removeformat | help'
                                                         }}
-                                                        onChange={this.onChange.bind(this)}
+                                                        onChange={this.handleEditorChange}
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
