@@ -1172,7 +1172,7 @@ class Server extends Component {
                     <Paper className={classes.paper}>
                         <Grid container justify={"center"} spacing={16}>
                             <Grid item xs={12}>
-                                <Grid container justify={"flex-start"}>
+                                <Grid container justify={"center"}>
                                     <Grid item xs={12}>
                                         <Typography align={"center"} variant={"h4"}
                                                     className={classNames(classes.white, classes.paperHeader)}>
