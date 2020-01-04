@@ -704,6 +704,26 @@ export class ServerForm extends Component {
                                                                onChange={this.onChange.bind(this)}/>
                                                 </FormGroup>
                                                 <FormGroup>
+                                                    <TextField required
+                                                               name={"ip"} label={"IP adresa"}
+                                                               onChange={this.onChange.bind(this)}/>
+                                                    <TextField required
+                                                               name={"port"} label={"Port"}
+                                                               onChange={this.onChange.bind(this)}/>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <TextField
+                                                        name={"domain"} label={"Doména"}
+                                                        onChange={this.onChange.bind(this)}/>
+                                                </FormGroup>
+                                                <FormGroup>
+
+                                                    <FormControlLabel
+                                                        control={<Checkbox checked={!!this.state.server.show_port} name={"show_port"} onChange={this.handleCheckbox} value="0" />}
+                                                        label="Zobrazit port"
+                                                    />
+                                                </FormGroup>
+                                                <FormGroup>
                                                     <Editor
                                                         name={"description"}
                                                         apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
@@ -722,26 +742,6 @@ export class ServerForm extends Component {
                                                                 bullist numlist outdent indent | removeformat | help'
                                                         }}
                                                         onChange={this.handleEditorChange}
-                                                    />
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <TextField required
-                                                        name={"ip"} label={"IP adresa"}
-                                                        onChange={this.onChange.bind(this)}/>
-                                                    <TextField required
-                                                        name={"port"} label={"Port"}
-                                                        onChange={this.onChange.bind(this)}/>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <TextField
-                                                        name={"domain"} label={"Doména"}
-                                                        onChange={this.onChange.bind(this)}/>
-                                                </FormGroup>
-                                                <FormGroup>
-
-                                                    <FormControlLabel
-                                                        control={<Checkbox checked={!!this.state.server.show_port} name={"show_port"} onChange={this.handleCheckbox} value="0" />}
-                                                        label="Zobrazit port"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup>
