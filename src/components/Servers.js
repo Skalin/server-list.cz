@@ -1182,7 +1182,7 @@ class Server extends Component {
                                 </Grid>
                             </Grid>
                             <Grid item xs={10}>
-                                <Grid container justify={"flex-start"}>
+                                <Grid container justify={"center"}>
                                     <Typography className={classes.white} align={"center"} variant={"body1"}>
                                         {Parser(server.description)}
                                     </Typography>
