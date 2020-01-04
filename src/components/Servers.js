@@ -103,7 +103,7 @@ const styles = theme => ({
     },
     paperHeader: {
         marginTop: "1em",
-        marginLeft: "1em",
+        //marginLeft: "1em",
         paddingBottom: "0.3em",
     },
     cardGrid: {
