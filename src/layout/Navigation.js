@@ -42,6 +42,11 @@ const styles = {
     grow: {
         flex: 1,
     },
+    menuSection: {
+        position: "absolute",
+        height: "auto",
+        bottom: "10px",
+    },
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
@@ -54,7 +59,7 @@ const styles = {
         transition: "all .2s ease-in-out",
         '&:hover': {
             marginLeft: "0.5em",
-            fontWeight: "20px",
+            fontWeight: "bold",
             textDecoration: "none",
             color: "rgb(72,72,72)",
             transform: "scale(1.1, 1.1)"
@@ -149,7 +154,8 @@ class Navigation extends Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography className={classNames(classes.grow, classes.heading)} variant={"h6"}>
-                            <Link component={RouterLink} to={"/"} className={classes.menuButton} color={"inherit"} variant={"inherit"}>
+                            <Link component={RouterLink} to={"/"} className={classes.menuButton} color={"inherit"}
+                                  variant={"inherit"}>
                                 Server-List
                             </Link>
                         </Typography>
@@ -180,10 +186,14 @@ class Navigation extends Component {
                                 )
                             )
                         }
+                        <Divider/>
                     </List>
-                    <ListItem>
-                        <Link style={styles.link} to="/conditions">Podmínky</Link>
+                    <List className={classes.menuSection}>
+                        <ListItem>
+                            <Link className={classes.navigationButton} component={RouterLink}
+                                  to={{pathname: "/conditions", state: {}}}><ListItemText primary={"Podmínky"}/></Link>
                     </ListItem>
+                    </List>
                 </Drawer>
             </div>
         )
