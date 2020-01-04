@@ -261,7 +261,7 @@ class ServerReview extends Component {
                     <TextField autoFocus={true} required label={"Titulek"} type="text" name="title"
                                onChange={this.onChange.bind(this)}/>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup style={{marginTop: "1em"}}>
                     <Editor
                         name={"text"}
                         apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
