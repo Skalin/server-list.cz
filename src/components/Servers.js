@@ -7,6 +7,7 @@ import Slider from '@material-ui/lab/Slider';
 import axios from 'axios';
 import {Switch, Link, Route, Redirect} from "react-router-dom";
 import * as config from '../config/config.js';
+import { Editor } from '@tinymce/tinymce-react';
 import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {SupervisorAccount, Visibility, VisibilityOff, DateRange, AttachFile, ArrowDownward} from '@material-ui/icons';
 import {
