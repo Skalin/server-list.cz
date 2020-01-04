@@ -266,9 +266,8 @@ class ServerReview extends Component {
                         name={"text"}
                         apiKey={"dc93bjdpya6u0rw7jpjm4xa9oqpd366qohvz0vjtveyjteqi"}
                         label={"Obsah recenze"}
-                        height={200}
                         init={{
-                            height: 500,
+                            height: 200,
                             menubar: false,
                             plugins: [
                                 'advlist autolink lists link image charmap print preview anchor',
