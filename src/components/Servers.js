@@ -627,6 +627,14 @@ export class ServerForm extends Component {
         this.setState({server});
     }
 
+    handleCheckbox = (e) => {
+        let property = e.target.name;
+        let server = {...this.state.server};
+        server[property] = e.target.checked;
+        this.setState({server});
+    }
+
+
     submitForm(e) {
         e.preventDefault();
         if (this.state.server.service !== "") {
@@ -727,7 +735,7 @@ export class ServerForm extends Component {
                                                 <FormGroup>
 
                                                     <FormControlLabel
-                                                        control={<Checkbox checked={this.state.server.show_port} name={"show_port"} onChange={this.onChange.bind(this)} value="0" />}
+                                                        control={<Checkbox checked={this.state.server.show_port} name={"show_port"} onChange={this.handleCheckbox} value="0" />}
                                                         label="Zobrazit port"
                                                     />
                                                 </FormGroup>
