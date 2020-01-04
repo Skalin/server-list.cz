@@ -290,8 +290,8 @@ class ServerReview extends Component {
                     <Slider value={rating} min={0} max={100} step={5} color={"inherit"}
                             onChange={this.handleSlider} aria-labelledby={"slider"} style={{marginTop: "1em"}}
                     />
-                    <Typography style={{color: "#777777"}}>
-                        {rating.rating} %
+                    <Typography style={{color: "#777777", marginTop: "1em"}}>
+                        {rating} %
                     </Typography>
                 </FormGroup>
                 <Button className={classNames(classes.headingButton, classes.darkHover)} variant={"contained"}
