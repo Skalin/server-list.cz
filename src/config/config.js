@@ -1,5 +1,8 @@
 
-export const apiUrl = 'https://api.server-list.cz/v1/';
+export const baseApiUrl = 'https://api.server-list.cz/';
+
+const version = "v1/";
+export const apiUrl = baseApiUrl + version;
 
 export const apiUserUrl = apiUrl+'user';
 
