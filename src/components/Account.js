@@ -4,13 +4,24 @@ import {Link, Redirect} from "react-router-dom";
 import * as config from "../config/config";
 import axios from 'axios';
 import {
-    Grid,
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     ExpansionPanel,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
-    Table, TableBody, TableCell, TableHead, TableRow,
-    Typography, Dialog, DialogTitle, DialogActions, IconButton, DialogContent, DialogContentText, Tooltip
+    Grid,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography
 } from "@material-ui/core";
 import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {MetaTags} from "react-meta-tags";
@@ -153,7 +164,7 @@ class Account extends Component {
     };
 
     handleDeleteServer = (server) => {
-        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/servers/" + server.id, {stripAuthentication: false});
+        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/index/" + server.id, {stripAuthentication: false});
         axios.delete(deleteServerUrl, {data: {'login_token': this.context.user.actions.getRawToken()}})
             .then((res) => {
                     this.setServers();
@@ -279,7 +290,7 @@ class Account extends Component {
                                 <ExpansionPanelDetails style={styles.black}>
                                     <Grid container justify={"center"} spacing={16}>
                                         <Grid item xs={12}>
-                                            <Button style={styles.heading} component={Link} to={'/servers/add'}>
+                                            <Button style={styles.heading} component={Link} to={'/index/add'}>
                                                 Přidat server
                                             </Button>
                                         </Grid>

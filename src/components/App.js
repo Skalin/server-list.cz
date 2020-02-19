@@ -3,10 +3,10 @@ import '../App.css';
 import Header from './../layout/Header';
 import Footer from './../layout/Footer';
 import Services from './Service';
-import servers from './Servers';
+import index from './Servers';
+import {ServerForm} from './Servers/ServerForm';
 import {Conditions} from './Conditions';
 import ServerWidgetGenerator from './Generator';
-import {ServerForm} from './Servers';
 import {UserProvider} from './User';
 import ReactGA from 'react-ga';
 
@@ -17,7 +17,6 @@ import axios from 'axios';
 import Account from "./Account";
 import {MetaTags} from 'react-meta-tags';
 import * as config from "./../config/config";
-import {withStyles} from "@material-ui/core";
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -110,6 +109,7 @@ const styles = theme => ({
         textDecoration: "none",
     }
 });
+
 class App extends Component {
 
     generateSeo() {

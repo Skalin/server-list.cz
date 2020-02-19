@@ -124,7 +124,7 @@ export class Notification extends Component {
         let {anchorEl} = this.state;
         return (
             <>
-                {this.state.redirect ? <Redirect to={this.state.redirectUrl}/> : ""}
+                {this.state.redirect && <Redirect to={this.state.redirectUrl}/>}
                 <IconButton aria-owns={anchorEl ? 'notifications-menu' : undefined} aria-haspopup="true" color="inherit"
                             onClick={this.openNotifications.bind(this)}>
                     <Badge badgeContent={this.state.unreadCount} color="secondary">

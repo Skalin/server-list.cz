@@ -8,3 +8,6 @@ export const apiUserUrl = apiUrl+'user';
 
 export const pageName = "ServerList";
 export const titlePageName = " | "+ pageName;
+
+
+export const normalizeUrl = require('normalize-url');
