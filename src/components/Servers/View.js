@@ -17,7 +17,6 @@ import {isWidthUp} from "@material-ui/core/withWidth";
 import {isWidthDown} from "@material-ui/core/es/withWidth";
 
 
-
 function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -437,10 +436,8 @@ export class View extends Component {
                                 </Grid>
                             </Grid>
                             <Grid item xs={10}>
-                                <Grid container justify={"center"}>
-                                    <Typography className={classes.white} align={"center"} variant={"body1"}>
-                                        {Parser(server.description)}
-                                    </Typography>
+                                <Grid container justify={"center"} className={classes.white} alignItems={"center"}>
+                                    {Parser(server.description)}
                                 </Grid>
                             </Grid>
                         </Grid>

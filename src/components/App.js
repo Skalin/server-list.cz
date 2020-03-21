@@ -3,8 +3,8 @@ import '../App.css';
 import Header from './../layout/Header';
 import Footer from './../layout/Footer';
 import Services from './Service';
-import index from './Servers';
-import {ServerForm} from './Servers/ServerForm';
+import servers from './Servers/Index';
+import {Create} from './Servers/Create';
 import {Conditions} from './Conditions';
 import ServerWidgetGenerator from './Generator';
 import {UserProvider} from './User';
@@ -145,7 +145,7 @@ class App extends Component {
                         <Route path="/services/:id" component={servers}/>
                         <Route path="/account" component={Account}/>
                         <Route path="/servers/generator" component={ServerWidgetGenerator}/>
-                        <Route path="/servers/add" component={ServerForm}/>
+                        <Route path="/servers/add" component={Create}/>
                         <Route path="/conditions" component={Conditions}/>
                     </div>
                     <Footer/>

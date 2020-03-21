@@ -15,6 +15,7 @@ import {UserContext} from "../User";
 import {CircularProgress} from "@material-ui/core";
 import Image from "react-bootstrap/Image";
 import {View} from "./View";
+import {Update} from "./Update";
 
 function servers(props) {
     return (
@@ -22,6 +23,8 @@ function servers(props) {
             <Route exact path={props.match.url} component={withStyles(styles)(withRouter(Servers))}/>
             <Route exact path={`${props.match.url}/servers/:serverId`}
                    component={withWidth({resizeInterval: 20})(withStyles(styles)(View))}/>
+            <Route path={`${props.match.url}/servers/:serverId/update`}
+                   component={withWidth()(withStyles(styles)(Update))}/>
             <Route path={`${props.match.url}/servers/:serverId/review`}
                    component={withWidth()(withStyles(styles)(ServerReview))}/>
         </Switch>

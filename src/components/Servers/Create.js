@@ -22,7 +22,7 @@ import {Editor} from "@tinymce/tinymce-react";
 import { Redirect } from "react-router-dom";
 
 
-export class ServerForm extends Component {
+export class Create extends Component {
     static contextType = UserContext;
 
     constructor(props) {

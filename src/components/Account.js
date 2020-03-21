@@ -27,6 +27,7 @@ import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 import {MetaTags} from "react-meta-tags";
 import DeleteIcon from '@material-ui/icons/Delete';
 import PageviewIcon from '@material-ui/icons/Pageview';
+import UpdateIcon from '@material-ui/icons/Update';
 
 const normalizeUrl = require('normalize-url');
 
@@ -134,6 +135,7 @@ class Account extends Component {
                                 }
                                 <TableCell align={"right"}>
                                     {this.renderDetailButton(server)}
+                                    {this.renderUpdateButton(server)}
                                     {this.renderDeleteButton(server)}
                                 </TableCell>
                             </TableRow>
@@ -144,6 +146,16 @@ class Account extends Component {
         return (data);
     };
 
+    renderUpdateButton = (server) => {
+        return (
+            <Tooltip title="Upravit">
+                <IconButton style={styles.headingButton} component={Link}
+                            to={`services/${server.service_id}/servers/${server.id}/update`}>
+                    <UpdateIcon/>
+                </IconButton>
+            </Tooltip>
+        )
+    };
     renderDetailButton = (server) => {
         return (
             <Tooltip title="Detail">
@@ -290,7 +302,7 @@ class Account extends Component {
                                 <ExpansionPanelDetails style={styles.black}>
                                     <Grid container justify={"center"} spacing={16}>
                                         <Grid item xs={12}>
-                                            <Button style={styles.heading} component={Link} to={'/index/add'}>
+                                            <Button style={styles.heading} component={Link} to={'/servers/add'}>
                                                 Přidat server
                                             </Button>
                                         </Grid>
