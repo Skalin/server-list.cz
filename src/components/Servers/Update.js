@@ -127,7 +127,6 @@ export class Update extends Component {
                                 <ExpansionPanel expanded={true} xs={6}>
                                     <ExpansionPanelDetails xs={6}>
                                         <Grid container justify={"center"} spacing={16}>
-                                            {console.log(this.state)}
                                             <form onSubmit={this.submitForm.bind(this)} style={{marginTop: '25px'}}>
                                                 <FormGroup>
 

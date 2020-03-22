@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import * as config from "../config/config";
 import axios from 'axios';
 import {
-    Button,
+    Button, Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
@@ -12,7 +12,7 @@ import {
     DialogTitle,
     ExpansionPanel,
     ExpansionPanelDetails,
-    ExpansionPanelSummary,
+    ExpansionPanelSummary, FormControlLabel, FormGroup,
     Grid,
     IconButton,
     Table,
@@ -28,6 +28,8 @@ import {MetaTags} from "react-meta-tags";
 import DeleteIcon from '@material-ui/icons/Delete';
 import PageviewIcon from '@material-ui/icons/Pageview';
 import UpdateIcon from '@material-ui/icons/Update';
+import TextField from "@material-ui/core/es/TextField";
+import {Editor} from "@tinymce/tinymce-react";
 
 const normalizeUrl = require('normalize-url');
 
@@ -76,6 +78,12 @@ class Account extends Component {
         super(props);
         this.classes = props;
         this.state = {
+            user: {
+                name: "",
+                surname: "",
+                mail: "",
+                gdpr_agreement: 0,
+            },
             servers: [],
             dialogOpen: false,
         }
@@ -84,6 +92,7 @@ class Account extends Component {
     componentDidMount() {
         if (this.context.user.actions.getUser()) {
             this.setServers();
+            this.getUserData();
         }
     }
 
@@ -94,6 +103,15 @@ class Account extends Component {
                 this.setState({servers: res.data})
             });
     };
+
+    getUserData = () => {
+        axios.post(config.apiUserUrl + '/account', {login_token: this.context.user.actions.getRawToken()})
+            .then((res) => {
+                this.setState({user: res.data});
+            })
+
+
+    }
 
     generateSeo = () => {
         return (
@@ -142,6 +160,11 @@ class Account extends Component {
                         ))}
                     </TableBody>
                 </Table>;
+        } else {
+            data =
+                <Typography>
+                    Momentálně nemáte žádné servery.
+                </Typography>;
         }
         return (data);
     };
@@ -176,7 +199,7 @@ class Account extends Component {
     };
 
     handleDeleteServer = (server) => {
-        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/index/" + server.id, {stripAuthentication: false});
+        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/servers/" + server.id, {stripAuthentication: false});
         axios.delete(deleteServerUrl, {data: {'login_token': this.context.user.actions.getRawToken()}})
             .then((res) => {
                     this.setServers();
@@ -216,6 +239,47 @@ class Account extends Component {
         )
     };
 
+    onChange = (event) => {
+        let user = {...this.state.user};
+        let property = event.target.name;
+        user[property] = event.target.value;
+        this.setState({user}, () => {
+            console.log(this.state.user)
+        });
+    }
+
+    submitForm = (e) => {
+        e.preventDefault();
+
+        this.context.user.actions.updateUser();
+    }
+
+    renderUserData = () => {
+
+        return (
+            <form onSubmit={this.submitForm.bind(this)} style={{marginTop: '25px'}}>
+                <FormGroup>
+
+                    <TextField name={"name"} required
+                               label={"Název"} autoFocus={true}
+                               onChange={this.onChange.bind(this)} value={this.state.user.name}/>
+
+                    <TextField name={"surname"} required
+                               label={"Příjmení"}
+                               onChange={this.onChange.bind(this)} value={this.state.user.surname}/>
+
+                </FormGroup>
+                <FormGroup>
+
+                    <TextField name={"mail"} required
+                               label={"E-mail"}
+                               onChange={this.onChange.bind(this)} value={this.state.user.mail}/>
+
+                </FormGroup>
+
+            </form>);
+    }
+
 
     renderAccount() {
         return (
@@ -234,11 +298,12 @@ class Account extends Component {
                                 <ExpansionPanelDetails style={styles.black}>
                                     <Grid container justify={"center"} spacing={16}>
                                         <Grid item xs={12}>
-                                            Zde bude formulář s vypsanými údaji, bude možnost editace dat.
+                                            {this.renderUserData()}
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+
+                                        <Grid item xs={12} md={6}>
                                             <Button style={styles.heading}
-                                                    onClick={this.context.user.actions.updateUser.bind(this)}>
+                                                    onClick={this.submitForm.bind(this)}>
                                                 Uložit
                                             </Button>
                                         </Grid>
@@ -301,15 +366,15 @@ class Account extends Component {
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails style={styles.black}>
                                     <Grid container justify={"center"} spacing={16}>
-                                        <Grid item xs={12}>
-                                            <Button style={styles.heading} component={Link} to={'/servers/add'}>
-                                                Přidat server
-                                            </Button>
-                                        </Grid>
                                         <Grid item xs={10}>
                                             {
                                                 this.renderServers()
                                             }
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Button style={styles.heading} component={Link} to={'/servers/add'}>
+                                                Přidat server
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                 </ExpansionPanelDetails>

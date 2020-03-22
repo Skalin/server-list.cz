@@ -56,7 +56,7 @@ export class UserProvider extends Component {
 
         if ((user.exp - 7 * 24 * 3600) < ((Date.now() / 1000) + timestampSync)) {
             let loginUrl = normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
-            axios.post(loginUrl, {'login_token': this.getRawToken()})
+            axios.put(loginUrl, {'login_token': this.getRawToken()})
                 .then((res) => this.storeUser(res.data), () => {
                     this.removeUser()
                 });
@@ -65,9 +65,20 @@ export class UserProvider extends Component {
         return true;
     };
 
-    updateUser = () => {
+    updateUser = (user) => {
 
-    };
+        let url = config.normalizeUrl(config.apiUserUrl, {stripAuthentication: false});
+
+        axios.post(url, {"login_token": this.getRawToken(), "user": user})
+            .then((res) => {
+                this.setState({
+                    redirect: true,
+                    redirectUrl: "/account"
+                }, () => (this.setState({redirect: true, redirectUrl: null})))
+            })
+            .catch();
+
+    };da
 
     logoutAll = () => {
         let user = this.getUser();

@@ -20,6 +20,7 @@ import {
 import {TextInput} from "../Form/TextInput";
 import {Editor} from "@tinymce/tinymce-react";
 import { Redirect } from "react-router-dom";
+import TextField from "@material-ui/core/es/TextField";
 
 
 export class Create extends Component {
@@ -139,14 +140,19 @@ export class Create extends Component {
                                                     </Select>
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextInput name={"name"} required={true} label={"Název"}
-                                                               autofocus={true} callback={this.onChange.bind(this)}/>
+                                                    <TextField name={"name"} required
+                                                               label={"Název"} autoFocus={true}
+                                                               onChange={this.onChange.bind(this)} value={this.state.server.name}/>
+
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextInput name={"ip"} required={true} label={"IP adresa"}
-                                                               autofocus={false} callback={this.onChange.bind(this)}/>
-                                                    <TextInput name={"port"} required={true} label={"Port"}
-                                                               autofocus={false} callback={this.onChange.bind(this)}/>
+                                                    <TextField name={"ip"} required
+                                                               label={"IP Adresa"}
+                                                               onChange={this.onChange.bind(this)} value={this.state.server.ip}/>
+                                                    <TextField name={"port"} required
+                                                               label={"Port"}
+                                                               onChange={this.onChange.bind(this)} value={this.state.server.port}/>
+
                                                 </FormGroup>
                                                 <FormGroup>
                                                     <TextInput name={"domain"} required={false} label={"Doména"}
