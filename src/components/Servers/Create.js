@@ -155,8 +155,9 @@ export class Create extends Component {
 
                                                 </FormGroup>
                                                 <FormGroup>
-                                                    <TextInput name={"domain"} required={false} label={"Doména"}
-                                                               autofocus={false} callback={this.onChange.bind(this)}/>
+                                                    <TextField name={"domain"}
+                                                               label={"Doména"}
+                                                               onChange={this.onChange.bind(this)} value={this.state.server.domain}/>
                                                 </FormGroup>
                                                 <FormGroup>
                                                     <Editor
