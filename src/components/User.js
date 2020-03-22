@@ -5,7 +5,6 @@ import React, {Component} from 'react';
 import jwt from 'jsonwebtoken';
 import {Redirect} from "react-router-dom";
 
-const normalizeUrl = require('normalize-url');
 export const UserContext = React.createContext();
 
 const timestampSync = 60;
@@ -55,7 +54,7 @@ export class UserProvider extends Component {
         }
 
         if ((user.exp - 7 * 24 * 3600) < ((Date.now() / 1000) + timestampSync)) {
-            let loginUrl = normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
+            let loginUrl = config.normalizeUrl(apiUserUrl + '/relogin', {stripAuthentication: false});
             axios.put(loginUrl, {'login_token': this.getRawToken()})
                 .then((res) => this.storeUser(res.data), () => {
                     this.removeUser()
@@ -93,7 +92,7 @@ export class UserProvider extends Component {
         }
 
         const _this = this;
-        let logoutUrl = normalizeUrl(config.apiUserUrl + '/logoutall', {stripAuthentication: false});
+        let logoutUrl = config.normalizeUrl(config.apiUserUrl + '/logoutall', {stripAuthentication: false});
         axios.post(logoutUrl, {login_token: this.getRawToken()})
             .then(() => _this.removeUser());
     };
@@ -117,7 +116,7 @@ export class UserProvider extends Component {
         const _this = this;
 
         if (!this.checkLogin() && user) {
-            let loginUrl = normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
+            let loginUrl = config.normalizeUrl(apiUserUrl + '/login', {stripAuthentication: false});
             axios.post(loginUrl, {user: user})
                 .then((res) => {
                     this.storeUser(res.data);
@@ -181,7 +180,7 @@ export class UserProvider extends Component {
         }
         let user = this.getUser();
 
-        let url = normalizeUrl(apiUserUrl + '/server/' + server, {stripAuthentication: false});
+        let url = config.normalizeUrl(apiUserUrl + '/server/' + server, {stripAuthentication: false});
         let state = false;
         axios.post(url, {"login_token": user.token})
             .then((res) => state = res.data);
@@ -228,7 +227,7 @@ export class UserProvider extends Component {
         }
 
         const _this = this;
-        let logoutUrl = normalizeUrl(config.apiUserUrl + '/logout', {stripAuthentication: false});
+        let logoutUrl = config.normalizeUrl(config.apiUserUrl + '/logout', {stripAuthentication: false});
         axios.post(logoutUrl, {login_token: this.getRawToken()})
             .then(() => _this.removeUser());
     };

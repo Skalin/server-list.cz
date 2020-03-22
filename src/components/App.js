@@ -116,6 +116,10 @@ class App extends Component {
         return (
             <MetaTags>
                 <meta charSet="utf-8"/>
+                <meta
+                    name="viewport"
+                    content="minimum-scale=1, initial-scale=1, width=device-width"
+                />
                 <title>{config.pageName}</title>
                 <meta name="description"
                       content="Hledáte svůj vysněný herní server? Pak stačí hledat zde! ServerList Vám pomůže najít místo ke hraní!"/>
@@ -123,6 +127,7 @@ class App extends Component {
                 <meta property="keywords"
                       content="minecraft, counter-ctrike: global offensive, rust, csgo, cs:go, mc, server, serverlist, list, hry, servery"/>
                 <meta name="robots" content="index,follow"/>
+
             </MetaTags>
         )
     }

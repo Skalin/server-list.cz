@@ -31,8 +31,6 @@ import UpdateIcon from '@material-ui/icons/Update';
 import TextField from "@material-ui/core/es/TextField";
 import {Editor} from "@tinymce/tinymce-react";
 
-const normalizeUrl = require('normalize-url');
-
 const styles = {
     root: {
         width: '100%',
@@ -199,7 +197,7 @@ class Account extends Component {
     };
 
     handleDeleteServer = (server) => {
-        let deleteServerUrl = normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/servers/" + server.id, {stripAuthentication: false});
+        let deleteServerUrl = config.normalizeUrl(config.apiUrl + "/services/" + server.service_id + "/servers/" + server.id, {stripAuthentication: false});
         axios.delete(deleteServerUrl, {data: {'login_token': this.context.user.actions.getRawToken()}})
             .then((res) => {
                     this.setServers();
