@@ -251,7 +251,7 @@ class Account extends Component {
     submitForm = (e) => {
         e.preventDefault();
 
-        this.context.user.actions.updateUser();
+        this.context.user.actions.updateUser(this.state.user);
     }
 
     renderUserData = () => {
@@ -261,7 +261,7 @@ class Account extends Component {
                 <FormGroup>
 
                     <TextField name={"name"} required
-                               label={"Název"} autoFocus={true}
+                               label={"Jméno"} autoFocus={true}
                                onChange={this.onChange.bind(this)} value={this.state.user.name}/>
 
                     <TextField name={"surname"} required

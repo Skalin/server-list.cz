@@ -67,9 +67,11 @@ export class UserProvider extends Component {
 
     updateUser = (user) => {
 
-        let url = config.normalizeUrl(config.apiUserUrl, {stripAuthentication: false});
+        let url = config.normalizeUrl(config.apiUrl + "/users/" + user.id, {stripAuthentication: false});
+        let data = {"login_token": this.getRawToken(), "user": user};
+        console.log(data);
 
-        axios.post(url, {"login_token": this.getRawToken(), "user": user})
+        axios.put(url, data)
             .then((res) => {
                 this.setState({
                     redirect: true,
@@ -78,7 +80,7 @@ export class UserProvider extends Component {
             })
             .catch();
 
-    };da
+    };
 
     logoutAll = () => {
         let user = this.getUser();
@@ -151,8 +153,7 @@ export class UserProvider extends Component {
 
         const _this = this;
 
-        if (!this.checkLogin() && user)
-        {
+        if (!this.checkLogin() && user) {
             axios.post(config.apiUserUrl + '/register', {user: user})
                 .then((res) => this.storeUser(res.data), (error) => {
                     _this.setState({loadingError: true, error: error.response});
